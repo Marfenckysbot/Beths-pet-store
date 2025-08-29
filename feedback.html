@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback - Beth's Pet Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo">Beth's Pet Store</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="faqs.html">FAQs</a></li>
+                <li><a href="support.html">Support</a></li>
+                <li><a href="feedback.html">Feedback</a></li>
+            </ul>
+        </nav>
+        <div class="hero" style="background: url('https://source.unsplash.com/1600x900/?feedback,survey') center/cover no-repeat;">
+            <div class="hero-overlay">
+                <div class="hero-content">
+                    <h1>We Value Your Feedback!</h1>
+                    <p>Let us know how we're doing or suggest improvements.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="section feedback-section">
+            <h2>Send Us Feedback</h2>
+            <p>Your thoughts help us improve. Please fill out the form below.</p>
+            <form name="feedback" method="POST" action="thank-you.html" data-netlify="true" class="contact-form">
+                <input type="hidden" name="form-name" value="feedback">
+                <label for="feedback-name">Name</label>
+                <input type="text" id="feedback-name" name="name" placeholder="Your Name">
+                <label for="feedback-email">Email</label>
+                <input type="email" id="feedback-email" name="email" placeholder="Your Email">
+                <label for="feedback-category">Category</label>
+                <select id="feedback-category" name="category">
+                    <option>Website</option>
+                    <option>Products</option>
+                    <option>Support</option>
+                    <option>Other</option>
+                </select>
+                <label for="feedback-message">Message</label>
+                <textarea id="feedback-message" name="message" placeholder="Your feedback..."></textarea>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section about">
+                <h3>About Beth's Pet Store</h3>
+                <p>We're always looking to improve. Your feedback is important to us!</p>
+            </div>
+            <div class="footer-section links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="faqs.html">FAQs</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h3>Contact</h3>
+                <p>Email: <a href="mailto:marfenckys@yahoo.com">marfenckys@yahoo.com</a></p>
+                <p>Email: <a href="mailto:bobsmithjulie@gmail.com">bobsmithjulie@gmail.com</a></p>
+                <p>Phone: <a href="tel:+15551234567">+1 (555) 123-4567</a></p>
+                <div class="social-icons">
+                    <a href="https://facebook.com/BethsPetStore" target="_blank">Facebook</a> |
+                    <a href="https://instagram.com/BethsPetStore" target="_blank">Instagram</a> |
+                    <a href="https://wa.me/15551234567" target="_blank">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; <span id="year"></span> Beth's Pet Store. All rights reserved.
+        </div>
+    </footer>
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

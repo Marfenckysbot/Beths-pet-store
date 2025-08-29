@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shop — Beth Store</title>
+  <link rel="icon" href="assets/icons/favicon.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Config & content population -->
+  <script defer src="js/site.config.js"></script>
+  <script defer src="js/social.config.js"></script>
+  <script defer src="js/image-manifest.js"></script>
+
+  <!-- Accessibility & SEO -->
+  <script defer src="js/seo.js"></script>
+  <script defer src="js/a11y.js"></script>
+
+  <!-- Core UI scripts -->
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/main.js"></script>
+
+  <!-- Feature modules -->
+  <script defer src="js/wishlist.js"></script>
+  <script defer src="js/quickview.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container nav">
+      <a href="index.html" class="logo">
+        <img id="logo" src="" alt="" width="32" height="32" />
+        <span id="brand-name"></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="shop.html" aria-current="page">Shop</a>
+        <a href="services.html">Services</a>
+        <a href="adoption.html">Adoption</a>
+        <a href="blog.html">Blog</a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="nav-cta">
+        <button id="dark-mode-toggle" class="theme-toggle" aria-pressed="false">🌓</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main id="main">
+    <section class="section container">
+      <h1>Available companions</h1>
+      <p class="lead">Browse rare breeds and favorites. Tap the heart to save to your wishlist.</p>
+      <div id="grid" class="products grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container section">
+      <strong id="footer-store-name"></strong>
+      <p id="footer-address" class="muted"></p>
+      <p>
+        <a id="social-whatsapp" href="#" rel="noopener">WhatsApp</a> ·
+        <a id="social-facebook" href="#" rel="noopener">Facebook</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Card Template -->
+  <template id="card-template">
+    <article class="product-card">
+      <button class="wishlist-btn" aria-label="Add to wishlist" data-id="">
+        <img src="assets/icons/heart.svg" alt="" aria-hidden="true" />
+      </button>
+      <div class="media">
+        <img class="product-image" src="" alt="" loading="lazy" />
+      </div>
+      <h3 class="title product-title"></h3>
+      <div class="price-row">
+        <p class="price product-price"></p>
+        <button class="btn btn-ghost quickview quickview-btn" data-id="">Quick view</button>
+      </div>
+    </article>
+  </template>
+
+  <!-- Quick View Modal -->
+  <dialog id="quickview-modal" aria-label="Product quick view">
+    <div class="modal-header">
+      <strong id="qv-title"></strong>
+      <button class="close" id="quickview-close" aria-label="Close">✕</button>
+    </div>
+    <div id="quickview-content" class="modal-body"></div>
+  </dialog>
+
+  <!-- Optional Contact Hub -->
+  <div id="contact-hub" class="contact-hub"></div>
+</body>
+</html>

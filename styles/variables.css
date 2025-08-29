@@ -1,0 +1,90 @@
+/* Color system, typography scale, spacing, radii, z-index, shadows */
+:root {
+  /* Brand */
+  --brand-50:  #f5fbff;
+  --brand-100: #e6f4ff;
+  --brand-200: #cce9ff;
+  --brand-300: #99d3ff;
+  --brand-400: #66bcff;
+  --brand-500: #339fff;
+  --brand-600: #0b7fe6;
+  --brand-700: #0764b4;
+  --brand-800: #064b87;
+  --brand-900: #083a66;
+
+  /* Accent */
+  --accent:    #ff7a59;
+  --accent-2:  #22c55e;
+  --warning:   #f59e0b;
+  --danger:    #ef4444;
+
+  /* Neutral (light) */
+  --bg:        #ffffff;
+  --bg-2:      #fafafa;
+  --bg-3:      #f4f4f5;
+  --line:      #e5e7eb;
+  --muted:     #6b7280;
+  --text:      #111827;
+
+  /* Neutral (dark) */
+  --bg-dark:   #0b1220;
+  --bg-2-dark: #0f172a;
+  --bg-3-dark: #111827;
+  --line-dark: #1f2937;
+  --muted-dark:#9ca3af;
+  --text-dark: #f9fafb;
+
+  /* Typography */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --fs-900: clamp(2rem, 1.2rem + 2.5vw, 3rem);
+  --fs-800: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  --fs-700: 1.5rem;
+  --fs-600: 1.25rem;
+  --fs-500: 1.125rem;
+  --fs-400: 1rem;
+  --fs-300: 0.9375rem;
+  --fs-200: 0.875rem;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius:    10px;
+  --radius-lg: 16px;
+  --radius-xl: 26px;
+  --pill: 999px;
+
+  /* Z-index */
+  --z-header: 1000;
+  --z-overlay: 1100;
+  --z-toast: 1200;
+
+  /* Shadows */
+  --shadow-1: 0 1px 2px rgba(0,0,0,0.06), 0 1px 1px rgba(0,0,0,0.04);
+  --shadow-2: 0 6px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-3: 0 12px 24px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.08);
+
+  /* Component heights */
+  --nav-h: 64px;
+}
+
+/* Dark mode surface mapping toggled by [data-theme="dark"] on <html> */
+html[data-theme="dark"] {
+  --bg:      var(--bg-dark);
+  --bg-2:    var(--bg-2-dark);
+  --bg-3:    var(--bg-3-dark);
+  --line:    var(--line-dark);
+  --muted:   var(--muted-dark);
+  --text:    var(--text-dark);
+}

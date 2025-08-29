@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Community - Beth's Pet Store</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo">Beth's Pet Store</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="faqs.html">FAQs</a></li>
+                <li><a href="support.html">Support</a></li>
+                <li><a href="feedback.html">Feedback</a></li>
+            </ul>
+        </nav>
+        <div class="hero" style="background: url('https://source.unsplash.com/1600x900/?pets,community') center/cover no-repeat;">
+            <div class="hero-overlay">
+                <div class="hero-content">
+                    <h1>Join Our Pet Community!</h1>
+                    <p>Share your pet stories and tips with fellow pet lovers.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="section">
+            <h2>Community Posts</h2>
+            <p>Welcome to our community page. Feel free to connect, ask questions, and share your pet experiences!</p>
+            <div id="posts-container" class="posts">
+                <div class="post">
+                    <h4>Alice says:</h4>
+                    <p>I just adopted a kitten from Beth's Pet Store and she is purring up a storm! The staff was so helpful.</p>
+                </div>
+                <div class="post">
+                    <h4>Michael says:</h4>
+                    <p>Does anyone have tips on training a new puppy? I'd love some advice from the community.</p>
+                </div>
+                <div class="post">
+                    <h4>Sarah says:</h4>
+                    <p>Thank you for the quick delivery! My cat loves the new scratching post I ordered from Best Sellers.</p>
+                </div>
+            </div>
+
+            <form id="post-form" class="post-form">
+                <h3>Share Your Story</h3>
+                <input type="text" id="post-name" name="name" placeholder="Your name" required>
+                <textarea id="post-message" name="message" placeholder="Your message or tip..." required></textarea>
+                <button type="submit" class="btn btn-primary">Post</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section about">
+                <h3>About Beth's Pet Store</h3>
+                <p>We care about pets and pet owners. Our community is here to support each other and share knowledge.</p>
+            </div>
+            <div class="footer-section links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="faqs.html">FAQs</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h3>Contact Us</h3>
+                <p>Email: <a href="mailto:marfenckys@yahoo.com">marfenckys@yahoo.com</a></p>
+                <p>Email: <a href="mailto:bobsmithjulie@gmail.com">bobsmithjulie@gmail.com</a></p>
+                <p>Phone: <a href="tel:+15551234567">+1 (555) 123-4567</a></p>
+                <div class="social-icons">
+                    <a href="https://facebook.com/BethsPetStore" target="_blank">Facebook</a> |
+                    <a href="https://instagram.com/BethsPetStore" target="_blank">Instagram</a> |
+                    <a href="https://wa.me/15551234567" target="_blank">WhatsApp</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; <span id="year"></span> Beth's Pet Store. All rights reserved.
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+/* ===== Base Component Styles (shared across seasons) ===== */
+.hero-banner {
+  background: var(--hero-bg) center/cover no-repeat;
+  color: #fff;
+  padding: clamp(2rem, 6vw, 4rem) 2rem;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: 
+    background-image 0.6s ease-in-out,
+    background-color 0.6s ease-in-out,
+    color 0.3s ease-in-out;
+}
+
+.cta-btn {
+  background-color: var(--season-secondary);
+  color: #fff;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.25s ease;
+}
+.cta-btn:hover,
+.cta-btn:focus {
+  background-color: var(--season-primary);
+  transform: translateY(-2px);
+}
+
+.season-spotlight {
+  background-color: var(--season-accent);
+  padding: 1rem;
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+  transition: background-color 0.6s ease, color 0.3s ease;
+}
+
+.countdown-panel {
+  background-color: var(--season-secondary);
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  font-weight: bold;
+  transition: background-color 0.6s ease, color 0.3s ease;
+}
+
+/* ===== Seasonal Variable Sets ===== */
+/* SPRING */
+:root.spring {
+  --season-primary: #b2e6d4;  /* mint green */
+  --season-secondary: #ffb3c1; /* blush pink */
+  --season-accent: #ffd580;   /* soft yellow */
+  --hero-bg: url('../images/seasonal/spring/hero.jpg');
+}
+
+/* SUMMER */
+:root.summer {
+  --season-primary: #ffb400;  /* sunny yellow */
+  --season-secondary: #ff6347; /* coral red */
+  --season-accent: #00c4cc;   /* tropical aqua */
+  --hero-bg: url('../images/seasonal/summer/hero.jpg');
+}
+
+/* AUTUMN */
+:root.autumn {
+  --season-primary: #d2691e;  /* burnt orange */
+  --season-secondary: #8b4513; /* saddle brown */
+  --season-accent: #f4a460;   /* sandy brown */
+  --hero-bg: url('../images/seasonal/autumn/hero.jpg');
+}
+
+/* FESTIVE / WINTER */
+:root.festive {
+  --season-primary: #c41e3a;  /* festive red */
+  --season-secondary: #006400; /* evergreen */
+  --season-accent: #ffd700;   /* gold */
+  --hero-bg: url('../images/seasonal/festive/hero.jpg');
+}
+
+/* ===== Smooth Fade Between Seasons ===== */
+html {
+  transition: 
+    --season-primary 0.6s ease-in-out,
+    --season-secondary 0.6s ease-in-out,
+    --season-accent 0.6s ease-in-out,
+    --hero-bg 0.6s ease-in-out;
+}
+
+.hero-banner {
+  background-size: cover;
+  animation: heroZoom 0.6s ease;
+}
+@keyframes heroZoom {
+  from { background-size: 102%; }
+  to   { background-size: 100%; }
+}
+
+/* Accessibility: reduce motion if preferred */
+@media (prefers-reduced-motion: reduce) {
+  .hero-banner,
+  .cta-btn,
+  .season-spotlight,
+  .countdown-panel,
+  html {
+    transition: none !important;
+    animation: none !important;
+  }
+}
