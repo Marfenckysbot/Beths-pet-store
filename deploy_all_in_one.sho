@@ -1,0 +1,278 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+# -------------------------
+# deploy_all_in_one.sh
+# Single-shot helper for Beth's Pet Store (Termux)
+#
+# What it attempts:
+#  - configure git user (global)
+#  - normalize index filenames (remove Index.html)
+#  - add/commit changes (including images)
+#  - push to GitHub either via GITHUB_TOKEN (env) or SSH (generate key if needed)
+nl -ba deploy_all_in_one.sh | sed -n '1,320p'
+bash -n deploy_all_in_one.sh || true
+
+#  - optionally optimize JPG/PNG -> WebP using Python/Pillow
+#  - deploy to Netlify via netlify CLI if present
+#  - test Formspree endpoint
+#  - scan HTML for missing local images and report
+#
+# USAGE:
+#   1) Put this file in your project root (/storage/emulated/0/Download/Beths pet store)
+#   2) Optional (HTTPS non-interactive): export GITHUB_TOKEN="ghp_..."
+#   3) Optional (Netlify): ensure netlify CLI is installed and you are logged in (netlify login)
+#   4) chmod +x deploy_all_in_one.sh
+#   5) ./deploy_all_in_one.sh
+# -------------------------
+
+# --- CONFIG (edit here if you want) ---
+REPO_USER="${REPO_USER:-Marfenckysbot}"
+REPO_NAME="${REPO_NAME:-beths-pet-store}"
+GIT_USER_NAME="${GIT_USER_NAME:-Beth's Pet Store}"
+GIT_USER_EMAIL="${GIT_USER_EMAIL:-marfenckys@yahoo.com}"
+FORMSPREE_ENDPOINT="${FORMSPREE_ENDPOINT:-https://formspree.io/f/xrblwjra}"
+# If you want the script to target a specific Netlify site id, export NETLIFY_SITE_ID before running
+NETLIFY_SITE_ID="${NETLIFY_SITE_ID:-}"
+# End config
+# ---------------------------------------
+
+echo
+echo "=== Beth's Pet Store — deploy_all_in_one ==="
+echo "Working directory: $(pwd)"
+echo
+
+# helper
+cmd_exists(){ command -v "$1" >/dev/null 2>&1; }
+
+# 1) Ensure git present
+if ! cmd_exists git; then
+  echo "git not found. Installing..."
+  pkg update -y && pkg install git -y
+fi
+
+# 2) Configure git identity (global) if not set
+cur_name=$(git config --global user.name || true)
+if [ -z "$cur_name" ]; then
+  git config --global user.name "$GIT_USER_NAME"
+fi
+cur_email=$(git config --global user.email || true)
+if [ -z "$cur_email" ]; then
+  git config --global user.email "$GIT_USER_EMAIL"
+fi
+echo "git user: $(git config --global user.name) <$(git config --global user.email)>"
+
+# 3) Normalize index filenames to avoid case-sensitivity issues
+if [ -f "Index.html" ] && [ -f "index.html" ]; then
+  echo "Removing duplicate 'Index.html' (keeping lowercase index.html)..."
+  git rm --cached "Index.html" 2>/dev/null || true
+  rm -f "Index.html"
+elif [ -f "Index.html" ] && [ ! -f "index.html" ]; then
+  echo "Renaming 'Index.html' -> 'index.html'..."
+  git mv "Index.html" "index.html"
+fi
+
+# 4) Stage images and site files
+echo "Staging files (images, html, styles, scripts)..."
+git add -A
+
+# 5) Commit if needed
+if git status --porcelain | grep -q .; then
+  echo "Committing changes..."
+  git commit -m "Automated commit: update site content/images"
+else
+  echo "No changes to commit."
+fi
+
+# 6) Ensure branch is main
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branch" != "main" ]; then
+  echo "Switching branch $branch -> main"
+  git branch -M main || true
+fi
+
+# 7) Push logic
+echo
+echo "=== Pushing to GitHub ==="
+if [ -n "${GITHUB_TOKEN:-}" ]; then
+  echo "GITHUB_TOKEN found in environment. Using HTTPS push with token (will not echo token)."
+  # Use a temporary remote URL that embeds token (not stored in file system by us)
+  tmp_remote="https://${REPO_USER}:${GITHUB_TOKEN}@github.com/${REPO_USER}/${REPO_NAME}.git"
+  git remote remove origin 2>/dev/null || true
+  git remote add origin "$tmp_remote"
+  # Pull remote changes if any, allow unrelated histories
+  set +e
+  git pull origin main --allow-unrelated-histories
+  set -e
+  git push -u origin main
+  # reset origin to normal URL without token
+  git remote set-url origin "https://github.com/${REPO_USER}/${REPO_NAME}.git"
+else
+  echo "No GITHUB_TOKEN. Attempting SSH flow (recommended)."
+  SSH_KEY="$HOME/.ssh/id_ed25519"
+  if [ ! -f "$SSH_KEY" ]; then
+    echo "Generating SSH key at $SSH_KEY (no passphrase) — it will be printed so you can add it to GitHub."
+    mkdir -p ~/.ssh
+    ssh-keygen -t ed25519 -C "$GIT_USER_EMAIL" -f "$SSH_KEY" -N "" || true
+    chmod 700 ~/.ssh
+    chmod 600 "$SSH_KEY"
+    chmod 644 "${SSH_KEY}.pub"
+    echo
+    echo "=== COPY THIS PUBLIC KEY AND ADD TO GITHUB (Settings → SSH and GPG keys → New SSH key) ==="
+    echo
+    cat "${SSH_KEY}.pub"
+    echo
+    echo "After you've added the SSH key to GitHub, press Enter to continue..."
+    read -r
+  fi
+
+  # start agent and add key (best-effort)
+  if cmd_exists ssh-agent; then
+    eval "$(ssh-agent -s)" >/dev/null 2>&1 || true
+    ssh-add "$SSH_KEY" >/dev/null 2>&1 || true
+  fi
+
+  # set remote to SSH
+  ssh_remote="git@github.com:${REPO_USER}/${REPO_NAME}.git"
+  git remote remove origin 2>/dev/null || true
+  git remote add origin "$ssh_remote"
+
+  # fetch and pull (allow unrelated histories), then push
+  set +e
+  git pull origin main --allow-unrelated-histories
+  set -e
+  echo "Pushing via SSH (may prompt if SSH not yet configured server-side)..."
+  git push -u origin main || {
+    echo "Push via SSH failed. If you just added the key in GitHub, wait ~30s and retry the command 'git push -u origin main'."
+  }
+fi
+
+# 8) Image optimization: convert JPG/PNG to WebP (optional) using Python Pillow
+echo
+echo "=== Image optimization (JPG/PNG -> WebP) ==="
+if cmd_exists python3; then
+  # ensure Pillow installed
+  if ! python3 -c "import PIL" 2>/dev/null; then
+    echo "Pillow not installed. Attempting to install via pip..."
+    if cmd_exists pip || cmd_exists pip3; then
+      pip3 install --user pillow || pip install --user pillow || true
+    else
+      echo "pip not found. Skipping WebP conversion."
+    fi
+  fi
+
+  python3 - <<'PYCODE' || true
+import os, sys
+from glob import glob
+try:
+    from PIL import Image
+except Exception as e:
+    print("Pillow not available; skipping conversion.")
+    sys.exit(0)
+
+count=0
+for ext in ('*.jpg','*.jpeg','*.png'):
+    for src in glob(os.path.join('images','**',ext), recursive=True):
+        webp = os.path.splitext(src)[0] + '.webp'
+        try:
+            im = Image.open(src).convert('RGB')
+            im.save(webp, 'WEBP', quality=78, method=6)
+            count+=1
+        except Exception as e:
+            print("skip:", src, "->", e)
+print(f"Converted {count} images to WebP (if Pillow available).")
+PYCODE
+
+  # add new webp files to git if created
+  git add -A images/**/*.webp || true
+  if git status --porcelain | grep -q .; then
+    echo "Committing converted WebP images and any other changes..."
+    git commit -m "Auto: add WebP images"
+    git push origin main || true
+  else
+    echo "No new WebP images to commit."
+  fi
+else
+  echo "python3 not found — skipping image conversions."
+fi
+
+# 9) Netlify deploy (if netlify CLI installed)
+echo
+if cmd_exists netlify; then
+  echo "Netlify CLI found. Attempting production deploy..."
+  # If site is already linked to this folder, this succeeds. If not, it will ask to link or init.
+  if [ -n "${NETLIFY_SITE_ID:-}" ]; then
+    echo "Deploying to site id: $NETLIFY_SITE_ID"
+    netlify deploy --prod --dir="." --site="$NETLIFY_SITE_ID" --message "Auto-deploy"
+  else
+    netlify deploy --prod --dir="." --message "Auto-deploy" || {
+      echo "If the CLI isn't linked to a site, run 'netlify link' interactively or 'netlify init' to create/link a site."
+    }
+  fi
+else
+  echo "Netlify CLI not installed. To auto-deploy to Netlify from CLI, install: npm i -g netlify-cli"
+fi
+
+# 10) Quick Formspree test (non-invasive)
+echo
+echo "=== Testing Formspree endpoint (one sample POST) ==="
+if cmd_exists curl; then
+  resp=$(curl -s -o /dev/stderr -w "%{http_code}" -X POST "$FORMSPREE_ENDPOINT" \
+    -H "Accept: application/json" \
+    -F "name=Test User" \
+    -F "email=test@example.com" \
+    -F "message=Automated test from deploy script" \
+    -F "_subject=Test submission" \
+    -F "_next=https://beths-pet-store.netlify.app/thank-you.html") || true
+  echo "Formspree returned HTTP status: $resp"
+else
+  echo "curl not found; skipping Formspree test."
+fi
+
+# 11) Scan HTML files for missing local images
+echo
+echo "=== Scanning HTML for missing local image files ==="
+missing=0
+mapfile -t html_files < <(find . -maxdepth 3 -type f -name "*.html")
+for f in "${html_files[@]}"; do
+  while IFS= read -r src; do
+    # skip external URLs
+    if [[ "$src" =~ ^https?:// ]]; then
+      continue
+    fi
+    norm="${src#/}"
+    if [ ! -f "$norm" ]; then
+      echo "MISSING: $norm (referenced in $f)"
+      missing=$((missing+1))
+    fi
+  done < <(grep -oPh '<img[^>]+src="\K[^"]+' "$f" || true)
+done
+
+if [ "$missing" -eq 0 ]; then
+  echo "No missing local image files detected in HTML files."
+else
+  echo "Found $missing missing image references. Fix names or add files to images/."
+fi
+
+# 12) final summary
+echo
+echo "=== Summary ==="
+echo "- Git branch: $(git rev-parse --abbrev-ref HEAD)"
+echo "- Last commit: $(git log -1 --pretty=format:'%h %s')"
+echo "- GitHub repo: https://github.com/${REPO_USER}/${REPO_NAME}"
+if cmd_exists netlify; then
+  echo "- Netlify CLI available."
+  echo "  (Check deploys in Netlify dashboard -> https://app.netlify.com/sites/${REPO_NAME}/deploys )"
+else
+  echo "- Netlify CLI not available locally."
+fi
+if [ -n "${GITHUB_TOKEN:-}" ]; then
+  echo "Note: You used an env GITHUB_TOKEN. If it was exposed before, revoke old tokens now."
+fi
+
+echo
+echo "Done. Open your live site: https://beths-pet-store.netlify.app"
+echo
+
+# end
