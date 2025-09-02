@@ -57,8 +57,8 @@
 
         <!-- Images -->
         <div class="gallery-images">
-          <img src="images/animals/dog1.webp" alt="Dog" />
-          <img src="images/animals/cat1.webp" alt="Cat" />
+          <img src="images/animals/dog1.jpg" alt="Dog" />
+          <img src="images/animals/cat1.jpg" alt="Cat" />
         </div>
 
         <!-- Right Arrow -->
@@ -78,10 +78,10 @@
         <button class="btn btn-ghost filter-btn" data-filter="farm">Farm</button>
       </div>
       <div class="masonry" id="galleryGrid">
-        <img src="images/animals/dog-run.webp" data-type="dogs" alt="Dog running" width="400" height="300" loading="lazy" decoding="async" />
-        <img src="images/animals/cat-nap.webp" data-type="cats" alt="Cat napping" width="400" height="500" loading="lazy" decoding="async" />
-        <img src="images/animals/goat-field.webp" data-type="farm" alt="Goat in field" width="400" height="300" loading="lazy" decoding="async" />
-        <img src="images/animals/sheep.webp" data-type="farm" alt="Sheep grazing" width="400" height="300" loading="lazy" decoding="async" />
+        <img src="images/animals/dog-run.jpg" data-type="dogs" alt="Dog running" width="400" height="300" loading="lazy" decoding="async" />
+        <img src="images/animals/cat-nap.jpg" data-type="cats" alt="Cat napping" width="400" height="500" loading="lazy" decoding="async" />
+        <img src="images/animals/goat-field.jpg" data-type="farm" alt="Goat in field" width="400" height="300" loading="lazy" decoding="async" />
+        <img src="images/animals/sheep.jpg" data-type="farm" alt="Sheep grazing" width="400" height="300" loading="lazy" decoding="async" />
       </div>
       <div id="lightbox" class="lightbox" hidden>
         <button class="lightbox-close" aria-label="Close">×</button>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Services — Beth Store</title>
+  <link rel="icon" href="assets/icons/favicon.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Configs -->
+  <script defer src="js/site.config.js"></script>
+  <script defer src="js/social.config.js"></script>
+
+  <!-- Core -->
+  <script defer src="js/seo.js"></script>
+  <script defer src="js/a11y.js"></script>
+  <script defer src="js/ui.js"></script>
+  <script defer src="js/main.js"></script>
+
+  <!-- Page-specific -->
+  <script defer src="js/add-on-selector.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container nav">
+      <a href="index.html" class="logo">
+        <img id="logo" src="" alt="" width="32" height="32" />
+        <span id="brand-name"></span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="shop.html">Shop</a>
+        <a href="services.html" aria-current="page">Services</a>
+        <a href="adoption.html">Adoption</a>
+        <a href="blog.html">Blog</a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <div class="nav-cta">
+        <button id="dark-mode-toggle" class="theme-toggle" aria-pressed="false">🌓</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main id="main">
+    <section class="section container">
+      <h1>Care services and transparent pricing</h1>
+      <p>Choose a base service and customize with add‑ons. Prices shown are estimates.</p>
+
+      <div class="grid grid-2">
+        <div class="service-card card">
+          <div class="card-body">
+            <h3>Grooming <small>From $40</small></h3>
+            <ul>
+              <li>Bath and brush</li>
+              <li>Nail trim</li>
+              <li>Ear cleaning</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="service-card card">
+          <div class="card-body">
+            <h3>Vaccination <small>From $25</small></h3>
+            <ul>
+              <li>Core vaccines</li>
+              <li>Booster schedule</li>
+              <li>Wellness check</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="hr" />
+
+      <form id="delivery-estimator" class="estimator stack" novalidate>
+        <h2>Delivery estimator</h2>
+        <label>
+          Distance (miles)
+          <input type="number" id="distance" min="0" step="0.1" required class="input" />
+        </label>
+        <button type="submit" class="btn btn-primary">Estimate</button>
+        <output id="estimate" aria-live="polite">$0.00</output>
+      </form>
+
+      <div id="add-on-selector" class="stack"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container section">
+      <strong id="footer-store-name"></strong>
+      <p id="footer-address" class="muted"></p>
+      <p>
+        <a id="social-whatsapp" href="#" rel="noopener">WhatsApp</a> ·
+        <a id="social-facebook" href="#" rel="noopener">Facebook</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Optional contact hub -->
+  <div id="contact-hub" class="contact-hub"></div>
+</body>
+</html>
