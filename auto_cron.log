@@ -192,3 +192,27 @@ To https://github.com/Marfenckysbot/beths-pet-store.git
 [2/5] Creating robots.txt...
 [3/5] Injecting SEO meta & GA4 tracking...
 [4/5] Committing & pushing to GitHub...
+[main 26cf543] Automated SEO + Netlify setup
+ 3 files changed, 131 insertions(+)
+ create mode 100644 auto_full.sh.new
+remote: This repository moved. Please use the new location:        
+remote:   https://github.com/Marfenckysbot/Beths-pet-store.git        
+To https://github.com/Marfenckysbot/beths-pet-store.git
+   bc6838c..26cf543  main -> main
+[5/5] Deploying to Netlify...
+[96m[1m​[22m[39m
+[96m[1mNetlify Build                                                 [22m[39m
+[96m[1m────────────────────────────────────────────────────────────────[22m[39m
+[36m[1m​[22m[39m
+[36m[1m❯ Version[22m[39m
+  @netlify/build 35.1.3
+[36m[1m​[22m[39m
+[36m[1m❯ Flags[22m[39m
+  accountId: 68b0dea96426a1436721e5e8
+[91m[1m​[22m[39m
+[91m[1mConfiguration error                                           [22m[39m
+[91m[1m────────────────────────────────────────────────────────────────[22m[39m
+​
+  [31m[1mError message[22m[39m
+  Failed retrieving extensions for site 1f46014e-6ccb-41a0-9b02-ddc35a635264: fetch failed. Double-check your login status with 'netlify status' or contact support with details of your error.
+​
