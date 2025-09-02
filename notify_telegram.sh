@@ -1,23 +1,20 @@
-#!/usr/bin/env bash
-# Usage: notify_telegram.sh "TITLE" "message body"
-# Requires env vars: TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID
+#!/bin/bash
+LOG_FILE="/storage/emulated/0/Download/Beths pet store/auto_cron.log"
+TELEGRAM_BOT_TOKEN="$TELEGRAM_BOT_TOKEN"
+TELEGRAM_CHAT_ID="$TELEGRAM_CHAT_ID"
 
-BOT="${TELEGRAM_BOT_TOKEN:-}"
-CHAT="${TELEGRAM_CHAT_ID:-}"
+send_telegram() {
+  curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+       -d chat_id="$TELEGRAM_CHAT_ID" \
+       -d parse_mode="Markdown" \
+       -d text="$1"
+}
 
-if [ -z "$BOT" ] || [ -z "$CHAT" ]; then
-  echo "notify_telegram: TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID must be set"
-  exit 1
+send_telegram "*Deploy Started* – Beth's Pet Store is updating..."
+
+if bash auto_deploy.sh >> "$LOG_FILE" 2>&1; then
+    send_telegram "*Deploy Successful!* ✅\nNetlify: https://beths-pet-store.netlify.app"
+else
+    ERROR_LOG=$(tail -n 40 "$LOG_FILE")
+    send_telegram "*Deploy Failed!* ❌\n\n\`\`\`\n$ERROR_LOG\n\`\`\`\nRun manually: cd '/storage/emulated/0/Download/Beths pet store' && bash auto_full.sh"
 fi
-
-TITLE="$1"
-BODY="$2"
-
-# Compose message with timestamp
-MSG="*${TITLE}*\n$(date -u +"%Y-%m-%d %H:%M:%S UTC")\n\n${BODY}"
-
-# Send via Telegram (markdown)
-curl -s -X POST "https://api.telegram.org/bot${BOT}/sendMessage" \
-  -d chat_id="${CHAT}" \
-  -d parse_mode="Markdown" \
-  -d text="${MSG}" >/dev/null 2>&1 || true
