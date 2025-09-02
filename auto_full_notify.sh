@@ -1,30 +1,22 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
+set -e
 
-# Path to the real script (auto_full.sh)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SCRIPT="${SCRIPT_DIR}/auto_full.sh"
-NOTIFY="${SCRIPT_DIR}/notify_telegram.sh"
+SCRIPT="/storage/emulated/0/Download/Beths pet store/auto_full.sh"
 
-# on_error: send failure message and exit with non-zero status
-on_error() {
-  rc=\$?
-  if [ -x "\$NOTIFY" ]; then
-    # send first 3000 chars of logfile or a short failure note
-    \$NOTIFY "Deploy FAILED — Beth's Pet Store" "Exit code: \$rc\nLast command failed. Check logs and Netlify deploys."
-  fi
-  exit \$rc
-}
+bash ~/notify_telegram.sh "Deploy Started" "Beth's Pet Store is updating..."
 
-# on_success: send success message
-on_success() {
-  if [ -x "\$NOTIFY" ]; then
-    \$NOTIFY "Deploy SUCCESS — Beth's Pet Store" "Automated deploy finished successfully. Live: https://beths-pet-store.netlify.app"
-  fi
-}
+if [ -f "$SCRIPT" ]; then
+    bash "$SCRIPT"
+    rc=$?
+else
+    rc=1
+    echo "Error: $SCRIPT not found"
+fi
 
-trap 'on_error' ERR
-trap 'on_success' EXIT
+if [ $rc -eq 0 ]; then
+    bash ~/notify_telegram.sh "Deploy Success" "Deployment succeeded via GitHub remote build."
+else
+    bash ~/notify_telegram.sh "Deploy Failed" "Deployment failed. Exit code: $rc"
+fi
 
-# Run the real automation script
-bash "\$SCRIPT"
+exit $rc
