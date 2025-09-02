@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
 Sitemap: https://beths-pet-store.netlify.app/sitemap.xml

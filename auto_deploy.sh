@@ -1,51 +1,31 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
 
-# --- Create Netlify config ---
-cat <<'EOF' > netlify.toml
-[build]
-  publish = "."
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-EOF
-
-# --- Create robots.txt ---
-cat <<'EOF' > robots.txt
-User-agent: *
-Allow: /
-
-Sitemap: https://beths-pet-store.netlify.app/sitemap.xml
-EOF
-
-# --- Create sitemap.xml ---
-cat <<'EOF' > sitemap.xml
+echo "[1/5] Generating sitemap.xml..."
+cat <<'MAP' > sitemap.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://beths-pet-store.netlify.app/\</loc\>
-    <lastmod>2025-09-01</lastmod>
+    <lastmod>$(date +%F)</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://beths-pet-store.netlify.app/\#gallery\</loc\>
-    <lastmod>2025-09-01</lastmod>
+    <lastmod>$(date +%F)</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>
-EOF
+MAP
 
-# --- Inject SEO meta & GA4 tracking ---
+echo "[2/5] Creating robots.txt..."
+cat <<'ROB' > robots.txt
+User-agent: *
+Allow: /
+Sitemap: https://beths-pet-store.netlify.app/sitemap.xml
+ROB
+
+echo "[3/5] Injecting SEO meta & GA4 tracking..."
 sed -i '/<head>/a \
 <title>Beth'\''s Pet Store – Quality Pet Supplies & Care</title>\n\
 <meta name="description" content="Shop at Beth'\''s Pet Store for quality pet supplies, accessories, and care tips.">\n\
@@ -65,10 +45,14 @@ sed -i '/<head>/a \
   function gtag(){dataLayer.push(arguments);}\n\
   gtag('js', new Date());\n\
   gtag('config', 'G-XXXXXXXXXX');\n\
-</script>' index.html
+</script>' index.html || echo "Index.html not found!"
 
-# --- Commit and Deploy ---
+echo "[4/5] Committing & pushing to GitHub..."
 git add .
-git commit -m "Automated SEO + Netlify setup"
+git commit -m "Automated SEO + Netlify setup" || echo "Nothing to commit."
 git push origin main
+
+echo "[5/5] Deploying to Netlify..."
 netlify deploy --prod --dir="."
+
+echo "🚀 Done! Your site is live: https://beths-pet-store.netlify.app"
