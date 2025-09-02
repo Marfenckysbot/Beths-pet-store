@@ -1,44 +1,50 @@
-bash -c '
-cat <<EOF > sitemap.xml
+#!/bin/bash
+set -e
+
+echo "[1/5] Pulling latest changes..."
+git pull origin main || echo "No updates from remote."
+
+echo "[2/5] Generating sitemap.xml..."
+cat <<'XML' > sitemap.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://beths-pet-store.netlify.app/</loc>
-    <lastmod>2025-09-01</lastmod>
+    <loc>https://beths-pet-store.netlify.app/\</loc\>
     <priority>1.0</priority>
   </url>
 </urlset>
-EOF
+XML
 
-cat <<ROB > robots.txt
-User-agent: *
-Allow: /
-Sitemap: https://beths-pet-store.netlify.app/sitemap.xml
-ROB
+echo "[3/5] Optimizing images..."
+find ./images -type f \( -iname "*.jpg" -o -iname "*.png" \) | while read img; do
+  cwebp -q 80 "$img" -o "${img%.*}.webp" || echo "Skipped: $img"
+done
 
-sed -i "/<head>/a \
-<title>Beth'\''s Pet Store – Quality Pet Supplies & Care</title>\n\
-<meta name=\"description\" content=\"Shop at Beth'\''s Pet Store for quality pet supplies, accessories, and care tips.\">\n\
-<link rel=\"canonical\" href=\"https://beths-pet-store.netlify.app/\">\n\
-<meta property=\"og:title\" content=\"Beth'\''s Pet Store\">\n\
-<meta property=\"og:description\" content=\"Your one-stop shop for quality pet supplies and accessories.\">\n\
-<meta property=\"og:image\" content=\"https://beths-pet-store.netlify.app/images/og-image.jpg\">\n\
-<meta property=\"og:url\" content=\"https://beths-pet-store.netlify.app/\">\n\
-<meta property=\"og:type\" content=\"website\">\n\
-<meta name=\"twitter:card\" content=\"summary_large_image\">\n\
-<meta name=\"twitter:title\" content=\"Beth'\''s Pet Store\">\n\
-<meta name=\"twitter:description\" content=\"Shop for pet supplies and accessories at Beth'\''s Pet Store.\">\n\
-<meta name=\"twitter:image\" content=\"https://beths-pet-store.netlify.app/images/og-image.jpg\">\n\
-<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-BETHPET01A\"></script>\n\
-<script>\n\
-  window.dataLayer = window.dataLayer || [];\n\
-  function gtag(){dataLayer.push(arguments);}\n\
-  gtag('js', new Date());\n\
-  gtag('config', 'G-BETHPET01A');\n\
-</script>" index.html || echo "Index.html not found!"
+echo "[4/5] Configuring Netlify forms & analytics..."
+cat <<'TOML' > netlify.toml
+[build]
+  publish = "."
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact.html"
+  status = 200
+
+[functions]
+  node_bundler = "esbuild"
+TOML
 
 git add .
-git commit -m "Final automation: SEO, GA4, auto-deploy enabled" || echo "Nothing new to commit"
+git commit -m "Auto: SEO, images, forms & analytics" || echo "No changes to commit"
 git push origin main
+
+echo "[5/5] Deploying to Netlify..."
 netlify deploy --prod --dir="."
-'
+
+echo "🚀 Fully automated deployment complete!"
