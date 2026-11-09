@@ -13,7 +13,7 @@ const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
 for (const path of [migrationPath, storagePath, inventoryPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
-  if (!existsSync(path)) errors.push("Missing required SQL file: " + path);
+  if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
 if (!errors.length) {
@@ -71,7 +71,7 @@ if (!errors.length) {
   if (/service_role\s*[:=]\s*["']|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(account)) errors.push("Do not expose privileged or payment credentials in customer account JavaScript");
 
   if (!handoff.includes("Never paste passwords") || !handoff.includes("encrypted server environment")) errors.push("Founder handoff must clearly explain secret handling");
-  if (!readiness.includes("Definition of ready to accept real orders") || !readiness.includes("checkout is disabled")) errors.push("Marketplace readiness must document real-order launch gates");
+  if (!readiness.includes("Definition of ready to accept real orders") || !readiness.includes("Checkout, payment collection")) errors.push("Marketplace readiness must document real-order launch gates");
   if (!functionsReadme.includes("SUPABASE_SERVICE_ROLE_KEY") || !functionsReadme.includes("server functions only")) errors.push("Server integration documentation must keep privileged keys server-side");
 }
 
