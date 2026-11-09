@@ -32,6 +32,7 @@ async function boot(){
   });
   $("#sign-out").addEventListener("click",()=>supabase.auth.signOut());
   $("#claim-form").addEventListener("submit",claimSeller);
+  $("#application-form").addEventListener("submit",submitApplication);
   $("#product-form").addEventListener("submit",createProduct);
   document.addEventListener("click",handleModeration);
   supabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>renderSession(session),0);});
@@ -55,11 +56,29 @@ async function boot(){
     if(error){message("#workspace-message",error.message,true);return;}
     const seller=sellers?.[0];
     if(!seller){
-      $("#seller-stats").innerHTML=stat("Shop status","Not claimed")+stat("Next step","Apply / claim")+stat("Listings","—")+stat("Orders","—");
+      window.currentSellerId=null;
       show("#product-form-card",false);
-      message("#workspace-message","No seller shop is linked to this account yet. Submit an application on the Seller Centre page. Once approved, use the application ID above to claim your shop.");
+      const {data:applications,error:applicationError}=await supabase.from("seller_applications").select("id,business_name,status,created_at").eq("applicant_id",user.id).order("created_at",{ascending:false}).limit(1);
+      if(applicationError){message("#workspace-message",applicationError.message,true);return;}
+      const application=applications?.[0];
+      show("#application-card",!application);
+      show("#claim-card",application?.status==="approved");
+      if(application){
+        $("#seller-stats").innerHTML=stat("Shop status","Not claimed")+stat("Application",application.status)+stat("Listings","—")+stat("Orders","—");
+        if(application.status==="approved"){
+          $("#claim-application").value=application.id;
+          message("#workspace-message",`Good news — ${application.business_name} has been approved. Claim your shop below.`);
+        }else{
+          message("#workspace-message",`Your application for ${application.business_name} is ${application.status}. You can return here to check its progress.`);
+        }
+      }else{
+        $("#seller-stats").innerHTML=stat("Shop status","Not claimed")+stat("Next step","Apply")+stat("Listings","—")+stat("Orders","—");
+        message("#workspace-message","No seller application is linked to this account yet. Complete the application form below to get started.");
+      }
       return;
     }
+    show("#application-card",false);
+    show("#claim-card",false);
     window.currentSellerId=seller.id;
     $("#seller-stats").innerHTML=stat("Shop",seller.store_name)+stat("Status",seller.status)+stat("Listings","Loading…")+stat("Order items","Read only");
     show("#product-form-card",seller.status==="active");
@@ -83,6 +102,31 @@ async function boot(){
   async function loadCategories(){
     const {data}=await supabase.from("categories").select("id,name").eq("is_active",true).order("sort_order");
     $("#product-category").innerHTML='<option value="">No category selected</option>'+(data||[]).map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+  }
+
+  async function submitApplication(event){
+    event.preventDefault();
+    const user=(await supabase.auth.getUser()).data.user;
+    if(!user?.email){message("#workspace-message","A verified account email is required to apply.",true);return;}
+    const website=$("#application-website").value.trim();
+    if(website){try{if(!["http:","https:"].includes(new URL(website).protocol))throw new Error();}catch{message("#workspace-message","Enter a valid http or https website or social link.",true);return;}}
+    const payload={
+      applicant_id:user.id,
+      business_name:$("#application-business").value.trim(),
+      contact_name:$("#application-contact").value.trim(),
+      email:user.email,
+      country_code:$("#application-country").value,
+      website_url:website||null,
+      category:$("#application-category").value,
+      description:$("#application-description").value.trim(),
+      status:"pending"
+    };
+    message("#workspace-message","Submitting your seller application…");
+    const {error}=await supabase.from("seller_applications").insert(payload);
+    if(error){message("#workspace-message",error.message,true);return;}
+    $("#application-form").reset();
+    message("#workspace-message","Application submitted successfully. The marketplace team will review it; you can return here to check its status.");
+    await renderSession((await supabase.auth.getSession()).data.session);
   }
 
   async function claimSeller(event){
