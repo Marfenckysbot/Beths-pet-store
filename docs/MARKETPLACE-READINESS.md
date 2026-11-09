@@ -45,3 +45,12 @@ The repository includes a GitHub Actions workflow that checks the marketplace Ja
 ## Seller and administrator workflow migration
 
 The follow-on SQL migration `supabase/migrations/20261109_admin_and_seller_workflows.sql` adds administrator-only review access, secure application decisions, email-matched claiming of approved applications, separate seller activation and product moderation functions. Apply it only after the base schema. Setup and test instructions are in [ADMIN-SELLER-OPERATIONS.md](ADMIN-SELLER-OPERATIONS.md). These database changes are committed but have not been applied to a live Supabase project.
+
+
+## Seller/admin portal and public catalogue (implementation committed)
+
+- `portal.html` now provides email/password account access, seller application submission, approved-application claiming, seller product management and an administrator moderation workspace.
+- The administrator workspace reviews applications, activates or pauses seller shops and approves/rejects product listings through database functions protected by admin checks.
+- `supabase/migrations/20261109_product_image_storage.sql` creates a public-read product image bucket with seller-owned upload paths, image MIME restrictions and a 5 MB per-file limit.
+- The public shop and homepage can fetch approved seller listings from Supabase when public project configuration is present. Preview-cart checkout remains disabled.
+- Setup steps are in `docs/PORTAL-SETUP.md`. The Supabase project is not yet configured, and neither migration has been applied to a live database. The existing Netlify seller form is not automatically imported into Supabase.
