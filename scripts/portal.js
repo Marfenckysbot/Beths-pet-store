@@ -139,14 +139,35 @@ async function boot(){
 
   async function createProduct(event){
     event.preventDefault();if(!window.currentSellerId){message("#workspace-message","No active seller profile found.",true);return;}
-    const images=$("#product-images").value.split(/\n/).map(x=>x.trim()).filter(Boolean);
-    if(images.some(url=>{try{return !["http:","https:"].includes(new URL(url).protocol)}catch{return true}})){message("#workspace-message","Every image must be a valid http or https URL.",true);return;}
+    const manualImages=$("#product-images").value.split(/\n/).map(x=>x.trim()).filter(Boolean);
+    const files=Array.from($("#product-image-files").files||[]);
+    if(manualImages.some(url=>{try{return !["http:","https:"].includes(new URL(url).protocol)}catch{return true}})){message("#workspace-message","Every image URL must use http or https.",true);return;}
+    if(files.length+manualImages.length>5){message("#workspace-message","Use no more than five images in total.",true);return;}
+    const allowedTypes=["image/jpeg","image/png","image/webp"];
+    if(files.some(file=>!allowedTypes.includes(file.type)||file.size>5*1024*1024)){message("#workspace-message","Photos must be JPG, PNG or WebP and no larger than 5 MB each.",true);return;}
     const name=$("#product-name").value.trim();
+    const uploadedPaths=[];
+    const images=[...manualImages];
+    message("#workspace-message","Uploading photos and submitting product for review…");
+    for(const file of files){
+      const extension={"image/jpeg":"jpg","image/png":"png","image/webp":"webp"}[file.type];
+      const token=globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      const path=`${window.currentSellerId}/${token}.${extension}`;
+      const {error:uploadError}=await supabase.storage.from("product-images").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
+      if(uploadError){
+        if(uploadedPaths.length)await supabase.storage.from("product-images").remove(uploadedPaths);
+        message("#workspace-message",uploadError.message,true);return;
+      }
+      uploadedPaths.push(path);
+      images.push(supabase.storage.from("product-images").getPublicUrl(path).data.publicUrl);
+    }
     const payload={seller_id:window.currentSellerId,name,slug:slugify(name),description:$("#product-description").value.trim(),price_usd:Number($("#product-price").value),inventory_quantity:Number($("#product-stock").value),image_urls:images,status:"pending",category_id:$("#product-category").value||null};
-    message("#workspace-message","Submitting product for review…");
     const {error}=await supabase.from("products").insert(payload);
-    if(error){message("#workspace-message",error.message,true);return;}
-    $("#product-form").reset();message("#workspace-message","Product submitted. It will remain hidden until an administrator approves it.");
+    if(error){
+      if(uploadedPaths.length)await supabase.storage.from("product-images").remove(uploadedPaths);
+      message("#workspace-message",error.message,true);return;
+    }
+    $("#product-form").reset();message("#workspace-message","Product submitted. Its photos are stored and the listing will remain hidden until an administrator approves it.");
     await loadSellerProducts(window.currentSellerId);
   }
 
