@@ -9,7 +9,7 @@ const cataloguePath = "scripts/marketplace.js";
 const configPath = "scripts/portal-config.js";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html"]) {
+for (const path of [migrationPath, storagePath, inventoryPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js"]) {
   if (!existsSync(path)) errors.push("Missing required SQL file: " + path);
 }
 
@@ -21,6 +21,8 @@ if (!errors.length) {
   const storage = readFileSync(storagePath, "utf8");
   const inventory = readFileSync(inventoryPath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
+  const account = readFileSync("scripts/account.js", "utf8");
+  const accountHtml = readFileSync("account.html", "utf8");
   const requiredFunctions = [
     "review_seller_application",
     "claim_approved_seller",
@@ -57,6 +59,11 @@ if (!errors.length) {
   if (!storage.includes("storage.foldername(name)") || !storage.includes("s.owner_user_id = auth.uid()")) errors.push("Product image uploads must be scoped to the owning seller");
   if (!catalogue.includes('eq("status","active")') || !catalogue.includes("loadLiveProducts")) errors.push("Public catalogue must load approved seller products only");
   if (/service_role\s*[:=]\s*["']|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(portalConfig + portal)) errors.push("Do not expose privileged or payment credentials in browser files");
+  if (!schema.includes("create table if not exists public.favorites") || !schema.includes("favorites owner only")) errors.push("Customer favorites must use owner-only row-level security");
+  if (!schema.includes("profiles read own") || !schema.includes("profiles update own")) errors.push("Customer profiles must use owner-only row-level security");
+  if (!accountHtml.includes('id="customer-profile-form"') || !accountHtml.includes('id="customer-orders"')) errors.push("Customer account page is missing profile or order-history sections");
+  if (/service_role\s*[:=]\s*["']|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(account)) errors.push("Do not expose privileged or payment credentials in customer account JavaScript");
+
 }
 
 if (errors.length) {
