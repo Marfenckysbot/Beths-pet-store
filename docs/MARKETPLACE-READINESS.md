@@ -40,3 +40,8 @@ Sample prices are shown in USD for design consistency. Replace every preview pro
 
 ## Automated checks
 The repository includes a GitHub Actions workflow that checks the marketplace JavaScript syntax, local page and asset references, Netlify form markup and public configuration for known placeholder location/analytics values. A passing check does not replace visual, form-submission, security or payment-provider testing.
+
+
+## Seller and administrator workflow migration
+
+The follow-on SQL migration `supabase/migrations/20261109_admin_and_seller_workflows.sql` adds administrator-only review access, secure application decisions, email-matched claiming of approved applications, separate seller activation and product moderation functions. Apply it only after the base schema. Setup and test instructions are in [ADMIN-SELLER-OPERATIONS.md](ADMIN-SELLER-OPERATIONS.md). These database changes are committed but have not been applied to a live Supabase project.
