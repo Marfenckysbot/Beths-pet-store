@@ -39,11 +39,17 @@ For the initial pilot, use manual confirmation and a secure business-owned workf
 
 ## Stage 4 — Website backend and payments
 
-- Create Supabase only when ready to configure and secure it; apply the schema after a security review.
-- Implement authentication, role permissions, seller approval, listing moderation, inventory timestamps and audit logs.
-- Use server-side payment initiation and verified payment webhooks. Never put secret keys in browser code or Git.
-- Agree commissions, settlement timing, refunds, disputes, chargebacks, taxes, shipping and seller responsibilities before enabling checkout.
-- Run sandbox tests and a controlled pilot before public launch.
+**Already implemented in the preview branch:** Supabase schema blueprint, email/password customer and seller authentication flows, seller applications and claiming, admin moderation, approved seller catalogue, seller inventory editing/stock/archive controls, customer profile/wishlist/read-only order history, and documented server-side integration slots. These are code-complete foundations only; no live Supabase project is configured and no migration has been applied to a production database.
+
+**Still required before activation:**
+- Create and secure Supabase; review and apply the base schema and migrations in the order documented in `docs/PORTAL-SETUP.md`.
+- Configure Auth redirect URLs and bootstrap the founder admin through trusted SQL. Test separate customer, seller and admin accounts, including cross-account denial and row-level security.
+- Review audit-log and data-retention needs before accepting real customer data.
+- Agree commissions, settlement timing, refunds, disputes, chargebacks, taxes, shipping and seller responsibilities.
+- Implement trusted server-side order creation, payment initiation and signed/idempotent payment webhooks only after merchant onboarding and legal/operational approval.
+- Run sandbox, failure, duplicate-webhook, refund and reconciliation tests before any controlled pilot.
+
+Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` and `docs/INTEGRATION-REGISTRY.md` to track later details. Never put secret keys in browser code, Git or chat. Checkout remains disabled.
 
 ## Stage 5 — Regulated categories
 
