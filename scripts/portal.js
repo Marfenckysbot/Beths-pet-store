@@ -120,7 +120,9 @@ async function boot(){
 
   async function loadCategories(){
     const {data}=await supabase.from("categories").select("id,name").eq("is_active",true).order("sort_order");
-    $("#product-category").innerHTML='<option value="">No category selected</option>'+(data||[]).map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+    const options='<option value="">No category selected</option>'+(data||[]).map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+    $("#product-category").innerHTML=options;
+    $("#edit-product-category").innerHTML=options;
   }
 
   async function submitApplication(event){
@@ -208,6 +210,8 @@ async function boot(){
   }
 
   async function handleModeration(event){
+    const cancelEdit=event.target.closest("[data-cancel-product-edit]");
+    if(cancelEdit){$("#product-edit-card").hidden=true;return;}
     const edit=event.target.closest("[data-edit-product]");
     const stock=event.target.closest("[data-save-stock]");
     const archive=event.target.closest("[data-archive-product]");
