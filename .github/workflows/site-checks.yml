@@ -1,0 +1,22 @@
+name: Beth's Pet Store checks
+
+on:
+  push:
+    branches: [main, marketplace-foundation]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check marketplace JavaScript syntax
+        run: node --check scripts/marketplace.js
+      - name: Validate local links, assets and form markup
+        run: node scripts/validate-site.mjs
