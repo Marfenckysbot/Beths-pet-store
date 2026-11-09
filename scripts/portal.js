@@ -83,14 +83,14 @@ async function boot(){
     $("#seller-stats").innerHTML=stat("Shop",seller.store_name)+stat("Status",seller.status)+stat("Listings","Loading…")+stat("Order items","Read only");
     show("#product-form-card",seller.status==="active");
     message("#workspace-message",seller.status==="active"?"Your shop is active. New product submissions are held for review.":`Your shop status is ${seller.status}. Product listing is available after an administrator verifies and activates your storefront.`);
-    await Promise.all([loadSellerProducts(seller.id),loadSellerOrders(seller.id),loadCategories()]);
+    await Promise.all([loadSellerProducts(seller.id,seller.status),loadSellerOrders(seller.id),loadCategories()]);
   }
 
-  async function loadSellerProducts(sellerId){
+  async function loadSellerProducts(sellerId,sellerStatus){
     const {data,error}=await supabase.from("products").select("id,name,price_usd,inventory_quantity,status").eq("seller_id",sellerId).order("created_at",{ascending:false});
     if(error){$("#seller-products").innerHTML=row(4,error.message);return;}
     $("#seller-products").innerHTML=data.length?data.map(p=>`<tr><td>${escapeHtml(p.name)}</td><td>${money(p.price_usd)}</td><td>${p.inventory_quantity}</td><td>${pill(p.status)}</td></tr>`).join(""):row(4,"No products yet.");
-    $("#seller-stats").innerHTML=stat("Shop","Linked")+stat("Status","Active")+stat("Listings",data.length)+stat("Pending review",data.filter(p=>p.status==="pending").length);
+    $("#seller-stats").innerHTML=stat("Shop","Linked")+stat("Status",sellerStatus)+stat("Listings",data.length)+stat("Pending review",data.filter(p=>p.status==="pending").length);
   }
 
   async function loadSellerOrders(sellerId){
