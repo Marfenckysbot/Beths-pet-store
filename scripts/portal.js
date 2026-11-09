@@ -249,7 +249,6 @@ async function boot(){
       return;
     }
     const app=event.target.closest("[data-review-app]");
-    const app=event.target.closest("[data-review-app]");
     const seller=event.target.closest("[data-seller-status]");
     const product=event.target.closest("[data-review-product]");
     let result;
