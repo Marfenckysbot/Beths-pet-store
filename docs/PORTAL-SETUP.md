@@ -23,7 +23,7 @@ The portal is available at `portal.html`. It is a browser client for the Supabas
 
 ## Current limitations
 
-- The portal does not provision seller accounts automatically from Netlify form submissions. Seller applications must be present in `public.seller_applications` for the admin queue and claim workflow. An approved applicant signs up using the same email address, then claims the application ID.
+- The portal accepts seller applications from signed-in accounts and stores them in `public.seller_applications`. Existing Netlify form submissions are not automatically imported; an administrator must transfer those applications through a controlled process before they can be reviewed and claimed in the portal. An approved applicant signs up using the same email address, then claims the application ID.
 - Product images are entered as existing HTTPS URLs. A managed upload bucket and file-type/size validation still need to be configured.
 - Orders are read-only. There is no checkout, payment collection, refund, payout, or shipping action.
 - Seller order-item rows show item information only; customer addresses and payment details are not exposed.
