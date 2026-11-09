@@ -77,7 +77,7 @@ begin
   if not public.is_marketplace_admin() then
     raise exception 'Administrator access required' using errcode = '42501';
   end if;
-  if p_decision not in ('under_review', 'approved', 'rejected') then
+  if p_decision is null or p_decision not in ('under_review', 'approved', 'rejected') then
     raise exception 'Invalid application decision';
   end if;
 
@@ -173,7 +173,7 @@ begin
   if not public.is_marketplace_admin() then
     raise exception 'Administrator access required' using errcode = '42501';
   end if;
-  if p_status not in ('active', 'paused', 'suspended', 'pending') then
+  if p_status is null or p_status not in ('active', 'paused', 'suspended', 'pending') then
     raise exception 'Invalid seller status';
   end if;
 
@@ -203,7 +203,7 @@ begin
   if not public.is_marketplace_admin() then
     raise exception 'Administrator access required' using errcode = '42501';
   end if;
-  if p_decision not in ('active', 'rejected', 'pending', 'archived') then
+  if p_decision is null or p_decision not in ('active', 'rejected', 'pending', 'archived') then
     raise exception 'Invalid product decision';
   end if;
   if p_decision = 'active' and not exists (
