@@ -20,3 +20,5 @@ jobs:
         run: node --check scripts/marketplace.js
       - name: Validate local links, assets and form markup
         run: node scripts/validate-site.mjs
+      - name: Validate Supabase workflow security guardrails
+        run: node scripts/validate-supabase.mjs
