@@ -4,6 +4,7 @@
 - Responsive storefront, category browsing, search, filters and sorting.
 - CSS perspective, depth shadows and hover transforms for product-card imagery.
 - Browser-local preview bag and wishlist; these do not create orders or take payment.
+- Customer account page with email authentication, private profile, account wishlist and read-only order history (`docs/CUSTOMER-ACCOUNT.md`).
 - Just-for-fun Pet Match quiz with a non-veterinary disclaimer.
 - Netlify Forms markup for seller, contact, support and feedback forms.
 - Human-review language for seller applications and future adoption partners.
@@ -54,3 +55,8 @@ The follow-on SQL migration `supabase/migrations/20261109_admin_and_seller_workf
 - `supabase/migrations/20261109_product_image_storage.sql` creates a public-read product image bucket with seller-owned upload paths, image MIME restrictions and a 5 MB per-file limit.
 - The public shop and homepage can fetch approved seller listings from Supabase when public project configuration is present. Preview-cart checkout remains disabled.
 - Setup steps are in `docs/PORTAL-SETUP.md`. The Supabase project is not yet configured, and neither migration has been applied to a live database. The existing Netlify seller form is not automatically imported into Supabase.
+
+
+## Customer account and seller inventory implementation
+
+The customer account page at `account.html` provides profile fields, an account wishlist and read-only order history using the existing owner-scoped Supabase policies. It can import real product UUIDs from the browser wishlist when a customer signs in. The seller portal supports product content edits, stock updates and archive/restore using seller ownership checks. Apply `supabase/migrations/20261109_seller_inventory_management.sql` after the earlier workflow and image-storage migrations. These features are implemented in code but are not live until Supabase is configured and the migrations are applied. The account and inventory test plans are in `docs/CUSTOMER-ACCOUNT.md` and `docs/SELLER-INVENTORY-MANAGEMENT.md`.
