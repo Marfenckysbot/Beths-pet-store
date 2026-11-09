@@ -37,3 +37,6 @@ Seller, contact, support and feedback forms use Netlify Forms markup. After a su
 - Verified reviews, adoption partner feeds, editorial review and accessibility/performance QA.
 
 Sample prices are shown in USD for design consistency. Replace every preview product with a real seller-supplied listing and verified price before enabling transactions.
+
+## Automated checks
+The repository includes a GitHub Actions workflow that checks the marketplace JavaScript syntax, local page and asset references, Netlify form markup and public configuration for known placeholder location/analytics values. A passing check does not replace visual, form-submission, security or payment-provider testing.

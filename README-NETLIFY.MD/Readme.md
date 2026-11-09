@@ -32,3 +32,6 @@ Follow docs/MARKETPLACE-READINESS.md. A real merchant/payment account, verified 
 
 ## Privacy and safety
 Do not commit private addresses, location coordinates, passwords, access tokens, API keys, payment credentials or identity documents. Never fabricate customer reviews, seller ratings, product availability, adoption listings or delivery guarantees.
+
+## Automated checks
+A GitHub Actions workflow checks JavaScript syntax, local HTML references, product image paths, Netlify form markup and public configuration for old placeholder location/analytics values on pushes and pull requests.
