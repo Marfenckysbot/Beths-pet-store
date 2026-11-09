@@ -41,3 +41,18 @@ create policy "favorites owner only" on public.favorites for all to authenticate
 -- No client policies for payment_transactions or admin_users. Payment creation, verification,
 -- refunds, order creation and seller payouts must run in trusted server-side code.
 -- Never expose service-role keys or payment secrets in browser JavaScript.
+
+-- Seller commission ledger and payout references; raw bank/card data never belongs here.
+create table if not exists public.seller_ledger_entries(id uuid primary key default gen_random_uuid(),seller_id uuid not null references public.sellers(id) on delete restrict,order_item_id uuid references public.order_items(id) on delete set null,entry_type text not null check(entry_type in ('sale','commission','refund','adjustment','payout')),amount_usd numeric(12,2) not null,description text,created_at timestamptz not null default now());
+create table if not exists public.seller_payouts(id uuid primary key default gen_random_uuid(),seller_id uuid not null references public.sellers(id) on delete restrict,amount_usd numeric(12,2) not null check(amount_usd>0),currency char(3) not null default 'USD' check(currency='USD'),status text not null default 'pending' check(status in ('pending','processing','paid','failed','reversed')),provider text,provider_reference text,created_at timestamptz not null default now(),paid_at timestamptz);
+create table if not exists public.seller_payout_accounts(id uuid primary key default gen_random_uuid(),seller_id uuid not null unique references public.sellers(id) on delete restrict,provider text not null,provider_recipient_reference text not null,status text not null default 'unverified' check(status in ('unverified','verified','disabled')),created_at timestamptz not null default now());
+alter table public.seller_ledger_entries enable row level security;
+alter table public.seller_payouts enable row level security;
+alter table public.seller_payout_accounts enable row level security;
+create policy "seller reads own ledger" on public.seller_ledger_entries for select to authenticated using(exists(select 1 from public.sellers s where s.id=seller_id and s.owner_user_id=auth.uid()));
+create policy "seller reads own payouts" on public.seller_payouts for select to authenticated using(exists(select 1 from public.sellers s where s.id=seller_id and s.owner_user_id=auth.uid()));
+create policy "seller reads own payout reference" on public.seller_payout_accounts for select to authenticated using(exists(select 1 from public.sellers s where s.id=seller_id and s.owner_user_id=auth.uid()));
+drop policy if exists "buyer create verified review" on public.reviews;
+create policy "buyer create verified review" on public.reviews for insert to authenticated with check(customer_id=auth.uid() and exists(select 1 from public.order_items oi join public.orders o on o.id=oi.order_id where oi.id=order_item_id and oi.product_id=reviews.product_id and o.customer_id=auth.uid() and o.status='delivered'));
+insert into public.categories(name,slug,description,sort_order) values('Food & treats','food-treats','Pet food and treats',1),('Accessories & toys','accessories-toys','Collars, leads, toys and daily essentials',2),('Beds & comfort','beds-comfort','Rest and comfort products',3),('Habitats & aquatics','habitats-aquatics','Aquarium and habitat supplies',4),('Grooming & care','grooming-care','Grooming and everyday care',5) on conflict(slug) do nothing;
+-- Payout rows, ledger entries, payment transactions and admin membership are writable only by trusted server-side code.
