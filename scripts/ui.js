@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (wa && social.whatsapp) wa.href = social.whatsapp;
   if (fb && social.facebook) fb.href = social.facebook;
 
-  // Only expose contact actions after real business-owned contact channels are configured.
+  // Only expose contact actions after real business-owned channels are configured.
   if (uiFlags.contactHub) {
     const hub = document.getElementById("contact-hub");
     if (hub) {

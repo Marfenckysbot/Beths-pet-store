@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const adoptionForm = document.getElementById("adoption-form");
   if (adoptionForm) {
     adoptionForm.addEventListener("submit", (event) => {
-      // A front-end-only form must never claim an application was approved or received.
       const status = document.getElementById("adoption-status");
       if (status) status.textContent = "Online application processing is not connected yet. Please contact the team before submitting personal documents.";
       event.preventDefault();

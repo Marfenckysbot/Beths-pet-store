@@ -5,8 +5,7 @@ export const store = {
   marketLabel: "Nigeria and international markets",
 };
 
-// Delivery prices and availability must come from an actual delivery provider or a confirmed business policy.
-// Do not display estimates until those rules are configured.
+// Delivery prices and availability must come from a real provider or confirmed business policy.
 export const delivery = {
   mode: "disabled",
 };
