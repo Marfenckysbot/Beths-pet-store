@@ -8,3 +8,12 @@
 #product-edit-card .auth-actions{margin-top:14px}
 #product-edit-card .auth-actions button{margin-top:0}
 @media(max-width:520px){.stock-control{min-width:125px}.stock-control input{width:62px;min-width:62px}}
+
+/* Customer account */
+.account-favorites{display:grid;gap:10px}
+.account-favorite{display:grid;grid-template-columns:54px minmax(0,1fr) auto;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid #e8eae2}
+.account-favorite img{width:54px;height:54px;object-fit:contain;border-radius:8px;background:#f1f3ec}
+.account-favorite a,.account-favorite strong{display:block}
+.account-favorite a{font-size:12px;font-weight:700}
+.account-favorite strong{font-size:12px;color:#c85d4d;margin-top:4px}
+.account-favorite button{white-space:nowrap}
