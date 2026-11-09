@@ -1,12 +1,13 @@
 import { readFileSync, existsSync } from "node:fs";
 
 const migrationPath = "supabase/migrations/20261109_admin_and_seller_workflows.sql";
+const storagePath = "supabase/migrations/20261109_product_image_storage.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const configPath = "scripts/portal-config.js";
 const errors = [];
 
-for (const path of [migrationPath, schemaPath, portalPath, configPath, "portal.html"]) {
+for (const path of [migrationPath, storagePath, schemaPath, portalPath, configPath, "portal.html"]) {
   if (!existsSync(path)) errors.push("Missing required SQL file: " + path);
 }
 
@@ -14,6 +15,7 @@ if (!errors.length) {
   const migration = readFileSync(migrationPath, "utf8");
   const schema = readFileSync(schemaPath, "utf8");
   const portal = readFileSync(portalPath, "utf8");
+  const storage = readFileSync(storagePath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
   const requiredFunctions = [
     "review_seller_application",
@@ -37,6 +39,8 @@ if (!errors.length) {
   for (const fn of ["review_seller_application", "claim_approved_seller", "set_seller_moderation_status", "review_marketplace_product"]) {
     if (!portal.includes(`rpc("${fn}"`)) errors.push("Portal is missing moderation integration: " + fn);
   }
+  if (!storage.includes("5242880") || !storage.includes("image/webp")) errors.push("Product image bucket must enforce size and image MIME limits");
+  if (!storage.includes("storage.foldername(name)") || !storage.includes("s.owner_user_id = auth.uid()")) errors.push("Product image uploads must be scoped to the owning seller");
   if (/service_role\s*[:=]\s*["']|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(portalConfig + portal)) errors.push("Do not expose privileged or payment credentials in browser files");
 }
 
