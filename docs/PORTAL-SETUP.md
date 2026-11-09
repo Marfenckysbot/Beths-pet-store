@@ -7,7 +7,7 @@ The portal is available at `portal.html`. It is a browser client for the Supabas
 1. Create a Supabase project.
 2. Apply `supabase/schema.sql`.
 3. Apply `supabase/migrations/20261109_admin_and_seller_workflows.sql`.
-4. In Supabase Authentication, enable email/password sign-in and set the Site URL and redirect URL to the deployed portal URL (and local development URL if needed).
+4. In Supabase Authentication, enable email/password sign-in, keep email confirmation enabled, and set the Site URL and redirect URL to the deployed portal URL (and local development URL if needed).
 5. Add the Supabase Project URL and anon/publishable key to `scripts/portal-config.js`. The anon/publishable key is public by design; never add a service-role key.
 6. Sign up with the founder email, confirm it, then add the founder's Auth user UUID to `public.admin_users` from the Supabase SQL Editor. The admin membership table is not writable through the browser.
 7. Test with separate admin, seller and ordinary user accounts before inviting applicants.
