@@ -29,7 +29,7 @@ if (!errors.length) {
   if (!migration.includes("revoke all on function")) errors.push("Workflow functions must revoke default public execution");
   if (/service[_-]?role|sk_live_|sk_test_/i.test(migration)) errors.push("Do not commit service-role or payment secrets");
   if (!migration.includes("v_application.email") || !migration.includes("auth.users")) errors.push("Seller claiming must verify the approved applicant's authenticated email");
-  if (!migration.includes("status = 'pending'")) errors.push("New seller accounts must remain pending until manually activated");
+  if (!migration.includes("auth.uid(), v_application.id") || !migration.includes("'pending'")) errors.push("New seller accounts must remain pending until manually activated");
 }
 
 if (errors.length) {
