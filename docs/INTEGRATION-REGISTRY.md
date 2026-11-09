@@ -14,6 +14,8 @@ This is the handoff map for the details and credentials the founder can provide 
 
 Never send or commit a Supabase service-role key, database password, recovery code or private credential in chat or repository files. If a secret is required, use the provider's server-side environment-variable settings.
 
+Server-side provider handlers belong in `netlify/functions/`; see `netlify/functions/README.md` for the planned payment, order, delivery and email boundaries and server-only environment-variable names.
+
 ## 2. Payments and settlement — intentionally not connected
 
 | Item to provide later | Integration area | Readiness gate |
