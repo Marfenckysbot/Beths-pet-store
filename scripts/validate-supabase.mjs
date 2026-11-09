@@ -7,9 +7,12 @@ const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const cataloguePath = "scripts/marketplace.js";
 const configPath = "scripts/portal-config.js";
+const handoffPath = "docs/FOUNDER-HANDOFF-CHECKLIST.md";
+const readinessPath = "docs/MARKETPLACE-READINESS.md";
+const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js"]) {
+for (const path of [migrationPath, storagePath, inventoryPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required SQL file: " + path);
 }
 
@@ -23,6 +26,9 @@ if (!errors.length) {
   const portalConfig = readFileSync(configPath, "utf8");
   const account = readFileSync("scripts/account.js", "utf8");
   const accountHtml = readFileSync("account.html", "utf8");
+  const handoff = readFileSync(handoffPath, "utf8");
+  const readiness = readFileSync(readinessPath, "utf8");
+  const functionsReadme = readFileSync(functionsReadmePath, "utf8");
   const requiredFunctions = [
     "review_seller_application",
     "claim_approved_seller",
@@ -64,6 +70,9 @@ if (!errors.length) {
   if (!accountHtml.includes('id="customer-profile-form"') || !accountHtml.includes('id="customer-orders"')) errors.push("Customer account page is missing profile or order-history sections");
   if (/service_role\s*[:=]\s*["']|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(account)) errors.push("Do not expose privileged or payment credentials in customer account JavaScript");
 
+  if (!handoff.includes("Never paste passwords") || !handoff.includes("encrypted server environment")) errors.push("Founder handoff must clearly explain secret handling");
+  if (!readiness.includes("Definition of ready to accept real orders") || !readiness.includes("checkout is disabled")) errors.push("Marketplace readiness must document real-order launch gates");
+  if (!functionsReadme.includes("SUPABASE_SERVICE_ROLE_KEY") || !functionsReadme.includes("server functions only")) errors.push("Server integration documentation must keep privileged keys server-side");
 }
 
 if (errors.length) {
