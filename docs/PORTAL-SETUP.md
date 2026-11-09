@@ -7,10 +7,11 @@ The portal is available at `portal.html`. It is a browser client for the Supabas
 1. Create a Supabase project.
 2. Apply `supabase/schema.sql`.
 3. Apply `supabase/migrations/20261109_admin_and_seller_workflows.sql`.
-4. In Supabase Authentication, enable email/password sign-in, keep email confirmation enabled, and set the Site URL and redirect URL to the deployed portal URL (and local development URL if needed).
-5. Add the Supabase Project URL and anon/publishable key to `scripts/portal-config.js`. The anon/publishable key is public by design; never add a service-role key.
-6. Sign up with the founder email, confirm it, then add the founder's Auth user UUID to `public.admin_users` from the Supabase SQL Editor. The admin membership table is not writable through the browser.
-7. Test with separate admin, seller and ordinary user accounts before inviting applicants.
+4. Apply `supabase/migrations/20261109_product_image_storage.sql` to create the public product-image bucket and seller-owned upload policies.
+5. In Supabase Authentication, enable email/password sign-in, keep email confirmation enabled, and set the Site URL and redirect URL to the deployed portal URL (and local development URL if needed).
+6. Add the Supabase Project URL and anon/publishable key to `scripts/portal-config.js`. The anon/publishable key is public by design; never add a service-role key.
+7. Sign up with the founder email, confirm it, then add the founder's Auth user UUID to `public.admin_users` from the Supabase SQL Editor. The admin membership table is not writable through the browser.
+8. Test with separate admin, seller and ordinary user accounts before inviting applicants.
 
 ## Portal capabilities
 
@@ -19,12 +20,13 @@ The portal is available at `portal.html`. It is a browser client for the Supabas
 - Admin application review, seller activation/suspension and product moderation.
 - Seller claiming for an approved application using the same verified email address.
 - Active sellers can submit product listings, which remain pending until approved.
+- Seller photo uploads accept JPG, PNG and WebP, up to 5 MB each and five images per listing. Storage paths are scoped to the seller UUID; the product image bucket is public-read only.
 - Seller catalogue and read-only order-item visibility.
 
 ## Current limitations
 
 - The portal accepts seller applications from signed-in accounts and stores them in `public.seller_applications`. Existing Netlify form submissions are not automatically imported; an administrator must transfer those applications through a controlled process before they can be reviewed and claimed in the portal. An approved applicant signs up using the same email address, then claims the application ID.
-- Product images are entered as existing HTTPS URLs. A managed upload bucket and file-type/size validation still need to be configured.
+- Product photos use the public `product-images` bucket. Public image URLs are expected; do not upload private documents, customer information or identity records.
 - Orders are read-only. There is no checkout, payment collection, refund, payout, or shipping action.
 - Seller order-item rows show item information only; customer addresses and payment details are not exposed.
 - This portal has not been connected to a live Supabase project or production domain yet.
