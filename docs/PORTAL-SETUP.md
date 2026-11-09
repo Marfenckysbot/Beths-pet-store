@@ -22,6 +22,7 @@ The portal is available at `portal.html`. It is a browser client for the Supabas
 - Active sellers can submit product listings, which remain pending until approved.
 - Seller photo uploads accept JPG, PNG and WebP, up to 5 MB each and five images per listing. Storage paths are scoped to the seller UUID; the product image bucket is public-read only.
 - Seller catalogue and read-only order-item visibility.
+- Approved seller products are fetched into the public marketplace and homepage highlights when Supabase is configured. The preview bag remains local-only and checkout is still disabled.
 
 ## Current limitations
 
