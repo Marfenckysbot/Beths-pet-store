@@ -34,6 +34,7 @@ async function boot(){
   $("#claim-form").addEventListener("submit",claimSeller);
   $("#application-form").addEventListener("submit",submitApplication);
   $("#product-form").addEventListener("submit",createProduct);
+  $("#product-edit-form").addEventListener("submit",saveProductEdits);
   document.addEventListener("click",handleModeration);
   supabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>renderSession(session),0);});
   const {data:{session}}=await supabase.auth.getSession(); await renderSession(session);
@@ -80,17 +81,35 @@ async function boot(){
     show("#application-card",false);
     show("#claim-card",false);
     window.currentSellerId=seller.id;
+    window.currentSellerStatus=seller.status;
     $("#seller-stats").innerHTML=stat("Shop",seller.store_name)+stat("Status",seller.status)+stat("Listings","Loading…")+stat("Order items","Read only");
     show("#product-form-card",seller.status==="active");
     message("#workspace-message",seller.status==="active"?"Your shop is active. New product submissions are held for review.":`Your shop status is ${seller.status}. Product listing is available after an administrator verifies and activates your storefront.`);
     await Promise.all([loadSellerProducts(seller.id,seller.status),loadSellerOrders(seller.id),loadCategories()]);
   }
 
-  async function loadSellerProducts(sellerId,sellerStatus){
-    const {data,error}=await supabase.from("products").select("id,name,price_usd,inventory_quantity,status").eq("seller_id",sellerId).order("created_at",{ascending:false});
-    if(error){$("#seller-products").innerHTML=row(4,error.message);return;}
-    $("#seller-products").innerHTML=data.length?data.map(p=>`<tr><td>${escapeHtml(p.name)}</td><td>${money(p.price_usd)}</td><td>${p.inventory_quantity}</td><td>${pill(p.status)}</td></tr>`).join(""):row(4,"No products yet.");
-    $("#seller-stats").innerHTML=stat("Shop","Linked")+stat("Status",sellerStatus)+stat("Listings",data.length)+stat("Pending review",data.filter(p=>p.status==="pending").length);
+  async function loadSellerProducts(sellerId,sellerStatus=window.currentSellerStatus){
+    const {data,error}=await supabase.from("products").select("id,name,slug,description,category_id,price_usd,inventory_quantity,status").eq("seller_id",sellerId).order("created_at",{ascending:false});
+    if(error){$("#seller-products").innerHTML=row(5,error.message);return;}
+    window.currentSellerProducts=new Map((data||[]).map(product=>[product.id,product]));
+    $("#seller-products").innerHTML=data.length?data.map(p=>'<tr><td><strong>'+escapeHtml(p.name)+'</strong><small class="table-sub">'+escapeHtml(p.slug)+'</small></td><td>'+money(p.price_usd)+'</td><td><div class="stock-control"><input aria-label="Stock quantity for '+escapeHtml(p.name)+'" type="number" min="0" step="1" value="'+p.inventory_quantity+'" data-stock-input="'+p.id+'"><button class="table-action" type="button" data-save-stock="'+p.id+'">Save</button></div></td><td>'+pill(p.status)+'</td><td><button class="table-action" type="button" data-edit-product="'+p.id+'">Edit</button>'+(p.status==="archived"?'<button class="table-action primary" type="button" data-archive-product="'+p.id+'" data-archived="false">Restore</button>':'<button class="table-action danger" type="button" data-archive-product="'+p.id+'" data-archived="true">Archive</button>')+'</td></tr>').join(""):row(5,"No products yet.");
+    $("#seller-stats").innerHTML=stat("Shop","Linked")+stat("Status",sellerStatus||"—")+stat("Listings",data.length)+stat("Pending review",data.filter(p=>p.status==="pending").length);
+  }
+
+  async function saveProductEdits(event){
+    event.preventDefault();
+    const id=$("#edit-product-id").value;
+    const current=window.currentSellerProducts?.get(id);
+    if(!current){message("#workspace-message","That product is no longer available. Refresh the page and try again.",true);return;}
+    const name=$("#edit-product-name").value.trim();
+    const price=Number($("#edit-product-price").value);
+    if(!name||!Number.isFinite(price)||price<0){message("#workspace-message","Enter a product name and a valid non-negative price.",true);return;}
+    message("#workspace-message","Saving product details for review…");
+    const {error}=await supabase.from("products").update({name,slug:slugify(name),description:$("#edit-product-description").value.trim(),price_usd:price,category_id:$("#edit-product-category").value||null,status:"pending"}).eq("id",id).eq("seller_id",window.currentSellerId);
+    if(error){message("#workspace-message",error.message,true);return;}
+    $("#product-edit-card").hidden=true;
+    message("#workspace-message","Product details saved and sent back to moderation. The listing stays hidden until an administrator approves the changes.");
+    await loadSellerProducts(window.currentSellerId);
   }
 
   async function loadSellerOrders(sellerId){
@@ -189,6 +208,43 @@ async function boot(){
   }
 
   async function handleModeration(event){
+    const edit=event.target.closest("[data-edit-product]");
+    const stock=event.target.closest("[data-save-stock]");
+    const archive=event.target.closest("[data-archive-product]");
+    if(edit){
+      const product=window.currentSellerProducts?.get(edit.dataset.editProduct);
+      if(!product)return;
+      $("#edit-product-id").value=product.id;
+      $("#edit-product-name").value=product.name;
+      $("#edit-product-description").value=product.description||"";
+      $("#edit-product-price").value=product.price_usd;
+      $("#edit-product-category").value=product.category_id||"";
+      $("#product-edit-card").hidden=false;
+      $("#product-edit-card").scrollIntoView({behavior:"smooth",block:"start"});
+      return;
+    }
+    if(stock){
+      const input=document.querySelector('[data-stock-input="'+CSS.escape(stock.dataset.saveStock)+'"]');
+      const quantity=Number(input?.value);
+      if(!Number.isInteger(quantity)||quantity<0){message("#workspace-message","Stock must be a whole number of zero or greater.",true);return;}
+      stock.disabled=true;
+      const {error}=await supabase.rpc("seller_update_inventory",{p_product_id:stock.dataset.saveStock,p_inventory_quantity:quantity});
+      stock.disabled=false;
+      if(error){message("#workspace-message",error.message,true);return;}
+      message("#workspace-message","Stock quantity updated. The product's current moderation status was preserved.");
+      await loadSellerProducts(window.currentSellerId);
+      return;
+    }
+    if(archive){
+      const archived=archive.dataset.archived==="true";
+      if(!confirm(archived?"Archive this listing? It will no longer appear in the public catalogue.":"Restore this listing to pending review? It will stay hidden until approved."))return;
+      const {error}=await supabase.rpc("seller_set_product_archived",{p_product_id:archive.dataset.archiveProduct,p_archived:archived});
+      if(error){message("#workspace-message",error.message,true);return;}
+      message("#workspace-message",archived?"Listing archived. Its record and order history are retained.":"Listing restored to pending review; an administrator must approve it before publication.");
+      await loadSellerProducts(window.currentSellerId);
+      return;
+    }
+    const app=event.target.closest("[data-review-app]");
     const app=event.target.closest("[data-review-app]");
     const seller=event.target.closest("[data-seller-status]");
     const product=event.target.closest("[data-review-product]");
