@@ -1,62 +1,67 @@
-# Marketplace readiness
+# Marketplace readiness and launch gates
 
-## Implemented in this preview branch
-- Responsive storefront, category browsing, search, filters and sorting.
-- CSS perspective, depth shadows and hover transforms for product-card imagery.
-- Browser-local preview bag and wishlist; these do not create orders or take payment.
-- Customer account page with email authentication, private profile, account wishlist and read-only order history (`docs/CUSTOMER-ACCOUNT.md`).
-- Just-for-fun Pet Match quiz with a non-veterinary disclaimer.
-- Netlify Forms markup for seller, contact, support and feedback forms.
-- Human-review language for seller applications and future adoption partners.
-- Supabase/PostgreSQL schema blueprint in supabase/schema.sql.
-- Public configuration contains no private street address, coordinates, API keys or payment secrets.
+## What is already implemented in the preview branch
 
-## Important boundaries
-Catalogue products, reference prices and discount percentages are illustrative design content, not offers for sale, confirmed inventory or real seller listings. No seller names, ratings, reviews, customer counts, stock levels, adoption animals or shipping promises are fabricated.
+- Responsive public storefront, category browsing, search, filters, sorting and product detail pages.
+- Seller storefront pages that resolve approved live listings when Supabase is configured.
+- Browser-local preview bag and wishlist. These are not orders and do not collect payment.
+- Customer account page with email/password authentication, private profile, account wishlist and read-only order history.
+- Seller/admin portal with application review, seller activation/suspension, product moderation, product creation and image uploads.
+- Seller inventory controls: edit listing details (returns the listing to moderation), update stock without unpublishing, archive without deleting history and restore to pending review.
+- Supabase/PostgreSQL schema and migrations for account, seller, admin, product-image and inventory workflows.
+- Netlify Forms markup for seller interest, contact, support and feedback.
+- Server-side integration workspace reserved under `netlify/functions/`; no payment, order, delivery or email handlers are active.
+- Founder handoff materials, including the integration registry and low-cost pre-launch roadmap.
+- GitHub Actions checks for JavaScript syntax, local links/assets/forms and selected Supabase security guardrails.
 
-No payment provider, merchant account, bank settlement destination, database project or authentication provider is connected. The preview bag is browser-local and checkout is intentionally disabled. The SQL schema is not deployed.
+## What this does not mean
 
-## Before real orders can be accepted
-1. Create a Supabase project and apply supabase/schema.sql. Review all row-level security policies before production.
-2. Create the first admin account and add its user ID to public.admin_users using trusted SQL.
-3. Connect Supabase Auth and server-side functions. Build secure seller onboarding, verification, moderation and product management.
-4. Configure a payment provider account in the business owner's legal name, complete its KYC, connect settlement details, and store API secrets only in Netlify environment variables or trusted server code.
-5. Implement server-side checkout and payment webhook verification. Never trust a browser success redirect as proof of payment.
-6. Decide seller commission, payout schedule, refunds, disputes, chargebacks, tax, shipping and cross-border rules. Get appropriate legal/accounting advice.
-7. Connect real inventory and fulfilment providers. Only display live availability and delivery promises returned by those systems.
-8. Test using provider sandbox credentials, then conduct a controlled low-value live transaction before launch.
+This repository is a pre-launch implementation, not a live operating marketplace.
 
-## Current form setup
-Seller, contact, support and feedback forms use Netlify Forms markup. After a successful deploy, verify each form appears in Netlify's Forms dashboard and run a test submission. A static thank-you page cannot independently prove email delivery or response handling.
+- No production Supabase project is configured and no migration has been applied to a live database.
+- No verified production seller accounts, suppliers, product catalogue, live stock or customer orders exist.
+- No payment merchant account, settlement destination, delivery provider, transactional email provider or analytics property is connected.
+- The preview bag does not create orders. Checkout, payment collection, refunds, settlement and payouts are disabled.
+- Netlify form markup still requires deployment and test-submission verification.
+- No production deployment has been triggered by this work.
+- Passing CI checks syntax and repository guardrails; it does not replace browser QA, database security review, provider sandbox tests or legal/compliance review.
 
-## Engineering milestones
-- Supabase project, Auth, profile and seller application workflow.
-- Admin review queue, approved seller storefronts, product upload and moderation.
-- Inventory, customer accounts, secure cart and order model.
-- Payment integration, webhooks, commission ledger and seller payout workflow.
-- Delivery quotes, tracking, returns, support workflow and international compliance.
-- Verified reviews, adoption partner feeds, editorial review and accessibility/performance QA.
+Illustrative catalogue content, sample prices, discounts and imagery are design previews. They are not offers, verified stock, seller endorsements, customer reviews or delivery promises.
 
-Sample prices are shown in USD for design consistency. Replace every preview product with a real seller-supplied listing and verified price before enabling transactions.
+## Integration order
 
-## Automated checks
-The repository includes a GitHub Actions workflow that checks the marketplace JavaScript syntax, local page and asset references, Netlify form markup and public configuration for known placeholder location/analytics values. A passing check does not replace visual, form-submission, security or payment-provider testing.
+Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` as the master handoff record and `docs/INTEGRATION-REGISTRY.md` as the provider-specific destination map.
 
+1. **Founder-owned basics:** confirm business/contact details, brand assets, policies and intended operating model. Do not publish personal home-address or identity information by default.
+2. **Supply validation:** obtain written supplier permission, real product data, current prices, stock ownership/update process and fulfilment/returns terms.
+3. **Database and identity:** create a Supabase project, review and apply migrations in the documented order, configure Auth redirects, add the founder admin UUID through trusted SQL, and test separate customer/seller/admin accounts.
+4. **Preview hosting:** configure the hosting project and domain, deploy only to a preview environment, verify Netlify Forms and all routes, and complete mobile/accessibility/browser QA.
+5. **Order operations:** agree who confirms stock, invoices, dispatches, handles customer support, returns, refunds and disputes. Keep the first workflow manual if that is safer.
+6. **Payments:** only after business and merchant onboarding are approved, implement server-side order creation, payment initiation, signed webhooks, idempotency, refunds and reconciliation. Use sandbox credentials first.
+7. **Delivery and communications:** connect providers only after coverage, rates, service levels, sender-domain ownership and support responsibilities are confirmed.
+8. **Launch review:** complete security, privacy, consumer, tax, animal-welfare and category-specific compliance checks before any real transaction.
 
-## Seller and administrator workflow migration
+## Supabase setup order
 
-The follow-on SQL migration `supabase/migrations/20261109_admin_and_seller_workflows.sql` adds administrator-only review access, secure application decisions, email-matched claiming of approved applications, separate seller activation and product moderation functions. Apply it only after the base schema. Setup and test instructions are in [ADMIN-SELLER-OPERATIONS.md](ADMIN-SELLER-OPERATIONS.md). These database changes are committed but have not been applied to a live Supabase project.
+1. `supabase/schema.sql`
+2. `supabase/migrations/20261109_admin_and_seller_workflows.sql`
+3. `supabase/migrations/20261109_product_image_storage.sql`
+4. `supabase/migrations/20261109_seller_inventory_management.sql`
 
+Review the SQL and policies before applying them. Follow `docs/PORTAL-SETUP.md` for Auth, admin bootstrap and account testing. Never put a service-role key in browser code or Git.
 
-## Seller/admin portal and public catalogue (implementation committed)
+## Definition of ready to accept real orders
 
-- `portal.html` now provides email/password account access, seller application submission, approved-application claiming, seller product management and an administrator moderation workspace.
-- The administrator workspace reviews applications, activates or pauses seller shops and approves/rejects product listings through database functions protected by admin checks.
-- `supabase/migrations/20261109_product_image_storage.sql` creates a public-read product image bucket with seller-owned upload paths, image MIME restrictions and a 5 MB per-file limit.
-- The public shop and homepage can fetch approved seller listings from Supabase when public project configuration is present. Preview-cart checkout remains disabled.
-- Setup steps are in `docs/PORTAL-SETUP.md`. The Supabase project is not yet configured, and neither migration has been applied to a live database. The existing Netlify seller form is not automatically imported into Supabase.
+- Business and applicable legal/tax obligations reviewed.
+- Supplier identities, written listing permissions and commercial/fulfilment terms recorded.
+- Product data, images, prices and stock verified and kept current.
+- Customer-facing privacy, delivery, cancellation, returns, refund and complaint policies approved.
+- Supabase RLS and RPC permissions reviewed and tested with separate accounts.
+- Server-side order/payment workflows implemented; webhook signatures, replay protection, idempotency and reconciliation tested.
+- Merchant account and settlement route approved by the provider.
+- Delivery coverage, rates, tracking and failed-delivery process tested.
+- Support mailbox, escalation owner and incident process operational.
+- Mobile, accessibility, security, forms and browser QA completed.
+- Regulated veterinary products and live-animal transactions excluded unless their exact legal, welfare, supplier, payment and transport requirements have been cleared.
 
-
-## Customer account and seller inventory implementation
-
-The customer account page at `account.html` provides profile fields, an account wishlist and read-only order history using the existing owner-scoped Supabase policies. It can import real product UUIDs from the browser wishlist when a customer signs in. The seller portal supports product content edits, stock updates and archive/restore using seller ownership checks. Apply `supabase/migrations/20261109_seller_inventory_management.sql` after the earlier workflow and image-storage migrations. These features are implemented in code but are not live until Supabase is configured and the migrations are applied. The account and inventory test plans are in `docs/CUSTOMER-ACCOUNT.md` and `docs/SELLER-INVENTORY-MANAGEMENT.md`.
+Until these gates are met, present the site as a pre-launch showcase and enquiry channel, not as a checkout-ready marketplace.
