@@ -109,6 +109,7 @@ as $$
 declare
   v_application public.seller_applications;
   v_user_email text;
+  v_email_confirmed_at timestamptz;
   v_slug text;
   v_seller_id uuid;
 begin
@@ -116,9 +117,14 @@ begin
     raise exception 'Sign in is required' using errcode = '28000';
   end if;
 
-  select lower(email) into v_user_email
+  select lower(email), email_confirmed_at
+    into v_user_email, v_email_confirmed_at
     from auth.users
    where id = auth.uid();
+
+  if v_email_confirmed_at is null then
+    raise exception 'Confirm your email address before claiming an approved seller application' using errcode = '42501';
+  end if;
 
   select * into v_application
     from public.seller_applications
