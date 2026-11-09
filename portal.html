@@ -73,7 +73,8 @@
               <label>Description<textarea id="product-description" rows="3" required maxlength="3000"></textarea></label>
               <div class="portal-form-row"><label>Price (USD)<input id="product-price" type="number" min="0" step="0.01" required></label><label>Stock quantity<input id="product-stock" type="number" min="0" step="1" value="0" required></label></div>
               <label>Category<select id="product-category"><option value="">No category selected</option></select></label>
-              <label>Product image URLs <textarea id="product-images" rows="2" placeholder="https://... (one URL per line)"></textarea></label>
+              <label>Upload product photos<input id="product-image-files" type="file" accept="image/jpeg,image/png,image/webp" multiple><small>Up to 5 photos · JPG, PNG or WebP · 5 MB maximum each</small></label>
+              <label>Or use existing image URLs <textarea id="product-images" rows="2" placeholder="https://... (one URL per line)"></textarea></label>
               <button class="btn btn-primary" type="submit">Submit for review</button>
             </form>
           </article>
