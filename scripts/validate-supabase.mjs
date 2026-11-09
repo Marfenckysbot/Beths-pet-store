@@ -2,13 +2,14 @@ import { readFileSync, existsSync } from "node:fs";
 
 const migrationPath = "supabase/migrations/20261109_admin_and_seller_workflows.sql";
 const storagePath = "supabase/migrations/20261109_product_image_storage.sql";
+const inventoryPath = "supabase/migrations/20261109_seller_inventory_management.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const cataloguePath = "scripts/marketplace.js";
 const configPath = "scripts/portal-config.js";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, schemaPath, portalPath, cataloguePath, configPath, "portal.html"]) {
+for (const path of [migrationPath, storagePath, inventoryPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html"]) {
   if (!existsSync(path)) errors.push("Missing required SQL file: " + path);
 }
 
@@ -18,6 +19,7 @@ if (!errors.length) {
   const portal = readFileSync(portalPath, "utf8");
   const catalogue = readFileSync(cataloguePath, "utf8");
   const storage = readFileSync(storagePath, "utf8");
+  const inventory = readFileSync(inventoryPath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
   const requiredFunctions = [
     "review_seller_application",
@@ -42,6 +44,16 @@ if (!errors.length) {
     if (!portal.includes(`rpc("${fn}"`)) errors.push("Portal is missing moderation integration: " + fn);
   }
   if (!storage.includes("5242880") || !storage.includes("image/webp")) errors.push("Product image bucket must enforce size and image MIME limits");
+  for (const name of ["seller_update_inventory", "seller_set_product_archived"]) {
+    if (!inventory.includes("function public." + name)) errors.push("Missing seller inventory function: " + name);
+    if (!inventory.includes("grant execute on function public." + name)) errors.push("Missing authenticated inventory grant: " + name);
+    if (!inventory.includes("revoke all on function public." + name)) errors.push("Seller inventory function must revoke public execution: " + name);
+  }
+  if (!inventory.includes("s.owner_user_id = auth.uid()")) errors.push("Seller inventory functions must verify seller ownership");
+  if (!inventory.includes("p_inventory_quantity < 0")) errors.push("Seller inventory updates must reject negative stock");
+  if (!portal.includes('rpc("seller_update_inventory"') || !portal.includes('rpc("seller_set_product_archived"')) errors.push("Portal is missing seller inventory RPC integration");
+  if (!portal.includes('status:"pending"')) errors.push("Product content edits must return listings to moderation");
+
   if (!storage.includes("storage.foldername(name)") || !storage.includes("s.owner_user_id = auth.uid()")) errors.push("Product image uploads must be scoped to the owning seller");
   if (!catalogue.includes('eq("status","active")') || !catalogue.includes("loadLiveProducts")) errors.push("Public catalogue must load approved seller products only");
   if (/service_role\s*[:=]\s*["']|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(portalConfig + portal)) errors.push("Do not expose privileged or payment credentials in browser files");
