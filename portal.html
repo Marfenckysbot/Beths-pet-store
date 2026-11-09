@@ -85,7 +85,7 @@
               <label>Product name<input id="edit-product-name" required maxlength="120"></label>
               <label>Description<textarea id="edit-product-description" rows="4" required maxlength="3000"></textarea></label>
               <div class="portal-form-row"><label>Price (USD)<input id="edit-product-price" type="number" min="0" step="0.01" required></label><label>Category<select id="edit-product-category"><option value="">No category selected</option></select></label></div>
-              <div class="auth-actions"><button class="btn btn-primary" type="submit">Save changes for review</button><button class="btn btn-secondary" type="button" id="cancel-product-edit" onclick="document.getElementById('product-edit-card').hidden=true">Cancel</button></div>
+              <div class="auth-actions"><button class="btn btn-primary" type="submit">Save changes for review</button><button class="btn btn-secondary" type="button" id="cancel-product-edit" data-cancel-product-edit>Cancel</button></div>
             </form>
           </article>
         </div>
