@@ -1,35 +1,17 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#123b3b">
-  <title>Become a Seller | Beth's Pet Store</title>
-  <meta name="description" content="Apply to join Beth's Pet Store as an independent pet business seller. Applications are reviewed before storefronts go live.">
-  <link rel="stylesheet" href="styles/marketplace.css">
-  <script defer src="scripts/marketplace.js"></script>
-  <link rel="icon" href="assets/beths-mark.svg" type="image/svg+xml">
-</head>
-<body>
-  <div class="announcement">A growing home for independent pet businesses <span>•</span> Made for Nigeria and beyond</div>
-  <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">b<span>✦</span></span><span>Beth's <strong>Pet Store</strong></span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button><nav id="primary-nav" class="primary-nav"><a href="shop.html">Marketplace</a><a href="index.html#our-difference">Why Beth's</a><a class="nav-seller" href="sell.html" aria-current="page">Seller application <span>↗</span></a></nav></header>
-  <main class="seller-main">
-    <section class="seller-intro"><p class="eyebrow">LET'S GROW SOMETHING GOOD</p><h1>Your pet business<br><em>deserves to be seen.</em></h1><p>Tell us a little about your business. We review every application before a storefront is approved, so customers can shop with more confidence.</p><div class="seller-steps"><span><b>01</b> Apply</span><span><b>02</b> Review</span><span><b>03</b> Get approved</span><span><b>04</b> Prepare your store</span></div></section>
-    <section class="application-panel">
-      <div class="application-heading"><p class="eyebrow">SELLER INTEREST FORM</p><h2>Let's meet your business.</h2><p>Submitting this form is an application only. It does not create a seller account or publish a storefront.</p></div>
-      <form name="seller-application" method="POST" action="/seller-thanks.html" data-netlify="true" netlify-honeypot="bot-field">
-        <input type="hidden" name="form-name" value="seller-application">
-        <p class="hidden-field"><label>Leave this field empty: <input name="bot-field"></label></p>
-        <label>Business or brand name<input name="business-name" autocomplete="organization" required maxlength="100"></label>
-        <div class="form-row"><label>Your name<input name="contact-name" autocomplete="name" required maxlength="100"></label><label>Business email<input type="email" name="email" autocomplete="email" required></label></div>
-        <div class="form-row"><label>Country<select name="country" required><option value="">Choose a country</option><option>Nigeria</option><option>Other African country</option><option>United States</option><option>United Kingdom</option><option>Canada</option><option>Other</option></select></label><label>Business website or social link<input type="url" name="business-link" placeholder="https://..." ></label></div>
-        <label>What do you offer?<select name="business-category" required><option value="">Choose a category</option><option>Pet food and treats</option><option>Accessories and toys</option><option>Grooming and care products</option><option>Habitats and aquarium supplies</option><option>Pet services</option><option>Other pet-related products</option></select></label>
-        <label>Tell us about your business<textarea name="business-description" rows="4" required maxlength="1200" placeholder="What do you sell or do, who do you serve, and what makes your business special?"></textarea></label>
-        <label class="consent-row"><input type="checkbox" name="seller-review-consent" value="yes" required><span>I agree that Beth's Pet Store may contact me about this application and review the business information I submit.</span></label>
-        <button class="button button-dark form-submit" type="submit">Send seller application <span>↗</span></button>
-        <p class="form-footnote">Please don't submit passwords, payment details or identity documents in this form. If additional verification is needed, we'll explain the secure next step.</p>
-      </form>
-    </section>
-  </main>
-  <footer class="site-footer"><div class="footer-bottom"><span>© <span id="year"></span> Beth's Pet Store</span><a href="index.html">Back to home</a><a href="privacy.html">Privacy</a></div></footer>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#183d39"><title>Become a Seller | Beth's Pet Store</title><meta name="description" content="Apply to join Beth's Pet Store as an independent pet business seller. Applications are reviewed before storefronts go live."><link rel="icon" href="assets/beths-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="styles/marketplace.css"><script defer src="scripts/marketplace.js"></script></head>
+<body><div class="topline"><span>🐾 A happier place for pets and the people who love them</span><span class="topline-right">Nigeria + worldwide discovery · USD display</span></div>
+<header class="main-header"><a class="brand" href="index.html"><span class="brand-mark">b<span>✦</span></span><span>Beth's <strong>Pet Store</strong><small>HAPPY PETS. HAPPIER LIVES.</small></span></a><a class="seller-top" href="shop.html">Explore marketplace ↗</a></header>
+<nav class="main-nav"><a href="index.html">Home</a><a href="shop.html">Marketplace</a><a class="active" href="sell.html">Seller centre</a><a href="care.html">Pet care journal</a><a href="contact.html">Contact</a></nav>
+<main class="seller-main"><section class="seller-intro"><p class="eyebrow">LET'S GROW SOMETHING GOOD</p><h1>Your pet business <em>deserves to be seen.</em></h1><p>Tell us a little about your business. We review every application before a storefront is approved, so customers can shop with more confidence.</p><div class="seller-steps"><span><b>01</b> Apply</span><span><b>02</b> Human review</span><span><b>03</b> Approval decision</span><span><b>04</b> Store setup when platform is ready</span></div></section>
+<section class="application-panel"><div class="application-heading"><p class="eyebrow">SELLER INTEREST FORM</p><h2>Let's meet your business.</h2><p>Submitting this form is an application only. It does not create a seller account or publish a storefront.</p></div>
+<form name="seller-application" method="POST" action="/seller-thanks.html" data-netlify="true" netlify-honeypot="bot-field"><input type="hidden" name="form-name" value="seller-application"><p class="hidden-field"><label>Leave this field empty: <input name="bot-field"></label></p>
+<label>Business or brand name<input name="business-name" autocomplete="organization" required maxlength="100"></label>
+<div class="form-row"><label>Your name<input name="contact-name" autocomplete="name" required maxlength="100"></label><label>Business email<input type="email" name="email" autocomplete="email" required></label></div>
+<div class="form-row"><label>Country<select name="country" required><option value="">Choose a country</option><option>Nigeria</option><option>Other African country</option><option>United States</option><option>United Kingdom</option><option>Canada</option><option>Other</option></select></label><label>Business website or social link<input type="url" name="business-link" placeholder="https://..."></label></div>
+<label>What do you offer?<select name="business-category" required><option value="">Choose a category</option><option>Pet food and treats</option><option>Accessories and toys</option><option>Grooming and care products</option><option>Habitats and aquarium supplies</option><option>Pet services</option><option>Other pet-related products</option></select></label>
+<label>Tell us about your business<textarea name="business-description" rows="4" required maxlength="1200" placeholder="What do you sell or do, who do you serve, and what makes your business special?"></textarea></label>
+<label class="consent-row"><input type="checkbox" name="seller-review-consent" value="yes" required><span>I agree that Beth's Pet Store may contact me about this application and review the business information I submit.</span></label>
+<button class="btn btn-primary form-submit" type="submit">Send seller application <span>↗</span></button>
+<p class="form-footnote">Please don't submit passwords, payment details or identity documents in this form. If additional verification is needed, we'll explain the secure next step. Read our <a href="privacy.html">privacy notice</a>.</p></form></section></main>
+<footer class="footer"><div class="footer-bottom"><span>© <span id="year"></span> Beth's Pet Store</span><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="index.html">Home</a></div></footer></body></html>
