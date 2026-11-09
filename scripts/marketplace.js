@@ -14,7 +14,10 @@ document.addEventListener("DOMContentLoaded",()=>{
  if(toggle&&nav)toggle.addEventListener("click",()=>{const open=toggle.getAttribute("aria-expanded")==="true";toggle.setAttribute("aria-expanded",String(!open));nav.classList.toggle("is-open",!open)});
  let cart=read("beths-preview-cart"),wish=read("beths-preview-wishlist"),filter="all",term="";
  const count=()=>document.querySelectorAll("[data-cart-count]").forEach(el=>el.textContent=cart.reduce((n,x)=>n+x.qty,0));
- const card=p=>{const saved=wish.includes(p.id),pct=p.was>p.price?Math.round((1-p.price/p.was)*100):0;return `<article class="product-card"><div class="product-visual"><span class="preview-tag">${p.isLive?"SELLER LISTING":`PREVIEW · ${pct}% OFF*`}</span><button class="wish-button ${saved?"is-wished":""}" data-wish="${p.id}" aria-label="${saved?"Remove from":"Add to"} wishlist">${saved?"♥":"♡"}</button><div class="product-image-3d"><img src="${safe(p.image)}" alt="${safe(p.alt)}" loading="lazy"></div><span class="product-category">${safe(p.tag)}</span></div><div class="product-info"><h3>${safe(p.name)}</h3><p class="product-subline">${p.isLive?`Sold by ${safe(p.sellerName)}`:"Concept listing · Seller to be confirmed"}</p><div class="price-row"><strong>${money(p.price)}</strong>${p.was>p.price?`<del>${money(p.was)}</del>`:""}</div><small class="price-disclaimer">${p.isLive?"Seller listing · Preview checkout only":"Illustrative price only"}</small><button class="add-button" data-add="${p.id}">Add to preview bag <span>＋</span></button></div></article>`};
+ const productHref=p=>"product.html?slug="+encodeURIComponent(p.slug||p.id);
+ const storeHref=p=>"store.html?slug="+encodeURIComponent(p.sellerSlug||p.sellerId||"");
+ const sellerLink=p=>p.sellerSlug?'<a class="seller-inline-link" href="'+storeHref(p)+'">Visit '+safe(p.sellerName||"seller")+' ↗</a>':"";
+ const card=p=>{const saved=wish.includes(p.id),pct=p.was>p.price?Math.round((1-p.price/p.was)*100):0;return '<article class="product-card"><div class="product-visual"><span class="preview-tag">'+(p.isLive?"SELLER LISTING":"PREVIEW · "+pct+"% OFF*")+'</span><button class="wish-button '+(saved?"is-wished":"")+'" data-wish="'+safe(p.id)+'" aria-label="'+(saved?"Remove from":"Add to")+' wishlist">'+(saved?"♥":"♡")+'</button><div class="product-image-3d"><img src="'+safe(p.image)+'" alt="'+safe(p.alt||p.name)+'" loading="lazy"></div><span class="product-category">'+safe(p.tag||"PET ESSENTIALS")+'</span></div><div class="product-info"><h3><a href="'+productHref(p)+'">'+safe(p.name)+'</a></h3><p class="product-subline">'+(p.isLive?"Sold by "+safe(p.sellerName||"Marketplace seller"):"Concept listing · Seller to be confirmed")+'</p>'+sellerLink(p)+'<div class="price-row"><strong>'+money(p.price)+'</strong>'+(p.was>p.price?'<del>'+money(p.was)+'</del>':"")+'</div><small class="price-disclaimer">'+(p.isLive?"Seller listing · Preview checkout only":"Illustrative price only")+'</small><button class="add-button" data-add="'+safe(p.id)+'">Add to preview bag <span>＋</span></button><a class="product-open-link" href="'+productHref(p)+'">View details ↗</a></div></article>'};
  const matches=()=>PRODUCTS.filter(p=>(filter==="all"||p.category===filter)&&(`${p.name} ${p.category} ${p.sellerName||""}`.toLowerCase().includes(term)));
  const render=()=>{document.querySelectorAll("[data-product-grid]").forEach(grid=>{let items=matches();if(grid.dataset.productGrid==="home"){const live=items.filter(p=>p.isLive);items=(live.length?live:items).slice(0,4);}if(grid.dataset.productGrid==="shop"){const s=document.getElementById("sort-products")?.value;if(s==="price-low")items.sort((a,b)=>a.price-b.price);if(s==="price-high")items.sort((a,b)=>b.price-a.price);if(s==="name")items.sort((a,b)=>a.name.localeCompare(b.name))}grid.innerHTML=items.map(card).join("")});const result=document.querySelector("[data-result-count]");if(result)result.textContent=matches().length+" items shown";const empty=document.querySelector("[data-empty-state]");if(empty)empty.hidden=matches().length>0};
  const notice=message=>{let el=document.querySelector(".site-notice");if(!el){el=document.createElement("div");el.className="site-notice";el.setAttribute("role","status");document.body.append(el)}el.textContent=message;el.classList.add("visible");clearTimeout(notice.timer);notice.timer=setTimeout(()=>el.classList.remove("visible"),2600)};
@@ -40,15 +43,55 @@ document.addEventListener("DOMContentLoaded",()=>{
    try{
      const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
      const client=createClient(cfg.url,cfg.anonKey);
-     const {data,error}=await client.from("products").select("id,name,price_usd,compare_at_usd,image_urls,categories(name,slug),sellers(store_name)").eq("status","active").order("created_at",{ascending:false}).limit(60);
+     const {data,error}=await client.from("products").select("id,slug,name,description,price_usd,compare_at_usd,image_urls,inventory_quantity,categories(name,slug),sellers(id,store_name,slug)").eq("status","active").order("created_at",{ascending:false}).limit(60);
      if(error){console.warn("Live marketplace catalogue unavailable:",error.message);return;}
      const categoryMap={"food-treats":"food","accessories-toys":"accessories","beds-comfort":"comfort","habitats-aquatics":"habitats","grooming-care":"care"};
      for(const item of data||[]){
        if(PRODUCTS.some(existing=>existing.id===item.id))continue;
-       PRODUCTS.push({id:item.id,name:item.name,category:categoryMap[item.categories?.slug]||"all",price:Number(item.price_usd),was:Number(item.compare_at_usd||item.price_usd),image:item.image_urls?.[0]||"assets/beths-mark.svg",alt:item.name,tag:item.categories?.name||"PET ESSENTIALS",sellerName:item.sellers?.store_name||"Marketplace seller",isLive:true});
+       PRODUCTS.push({id:item.id,name:item.name,category:categoryMap[item.categories?.slug]||"all",price:Number(item.price_usd),was:Number(item.compare_at_usd||item.price_usd),image:item.image_urls?.[0]||"assets/beths-mark.svg",alt:item.name,tag:item.categories?.name||"PET ESSENTIALS",sellerName:item.sellers?.store_name||"Marketplace seller",sellerId:item.sellers?.id,sellerSlug:item.sellers?.slug,slug:item.slug,description:item.description,images:item.image_urls||[],inventory:Number(item.inventory_quantity||0),isLive:true});
      }
      render();
    }catch(error){console.warn("Live marketplace catalogue could not be loaded.",error);}
  };
  loadLiveProducts();
+
+ const detailRoot=document.querySelector("[data-product-detail]");
+ if(detailRoot){
+  const slug=new URLSearchParams(location.search).get("slug");
+  const sample=PRODUCTS.find(p=>p.id===slug||p.slug===slug);
+  const drawDetail=p=>{
+   if(!p){detailRoot.innerHTML='<section class="detail-empty"><h1>Product not found</h1><p>This listing may be unavailable or not yet published.</p><a class="btn btn-primary" href="shop.html">Back to marketplace</a></section>';return;}
+   const photos=(p.images&&p.images.length?p.images:[p.image]).filter(Boolean);
+   detailRoot.innerHTML='<div class="detail-breadcrumb"><a href="index.html">Home</a> / <a href="shop.html">Marketplace</a> / '+safe(p.name)+'</div><div class="product-detail-layout"><div><div class="detail-main-image"><img data-detail-main src="'+safe(photos[0])+'" alt="'+safe(p.alt||p.name)+'"></div><div class="detail-thumbnails">'+photos.map((src,i)=>'<button type="button" data-detail-photo="'+i+'" class="'+(i===0?'active':'')+'" aria-label="Show photo '+(i+1)+'"><img src="'+safe(src)+'" alt=""></button>').join("")+'</div></div><article class="detail-copy"><p class="eyebrow">'+(p.isLive?'APPROVED SELLER LISTING':'CONCEPT PRODUCT PREVIEW')+'</p><h1>'+safe(p.name)+'</h1><div class="detail-price">'+money(p.price)+(p.was>p.price?' <del>'+money(p.was)+'</del>':'')+'</div><p class="detail-disclaimer">'+(p.isLive?'Seller-submitted listing. Checkout is not enabled.':'Illustrative product and price only — not an active offer or confirmed stock.')+'</p><p class="detail-description">'+safe(p.description||'A sample product description for this marketplace preview. Confirm specifications and suitability before purchase.')+'</p><div class="detail-meta"><span>Category</span><b>'+safe(p.tag||p.category||'Pet essentials')+'</b><span>Availability</span><b>'+(p.isLive?'Availability to confirm':'Preview only')+'</b></div>'+sellerLink(p)+'<button class="btn btn-primary detail-add" data-add="'+safe(p.id)+'">Add to preview bag</button><p class="checkout-note">The preview bag does not place an order or collect payment.</p></article></div><section class="detail-related"><div class="section-heading"><div><p class="eyebrow">MORE TO EXPLORE</p><h2>Related finds.</h2></div><a class="under-link" href="shop.html">Browse all ↗</a></div><div class="product-grid" data-related-grid></div></section>';
+   detailRoot.querySelectorAll("[data-detail-photo]").forEach(btn=>btn.addEventListener("click",()=>{detailRoot.querySelector("[data-detail-main]").src=photos[Number(btn.dataset.detailPhoto)];detailRoot.querySelectorAll("[data-detail-photo]").forEach(x=>x.classList.toggle("active",x===btn));}));
+   detailRoot.querySelector("[data-related-grid]").innerHTML=PRODUCTS.filter(x=>x.id!==p.id&&x.category===p.category).slice(0,4).map(card).join("");
+  };
+  if(sample)drawDetail(sample);
+  else{
+   const cfg=window.BETHS_SUPABASE_CONFIG||{};
+   if(!slug||!cfg.url||!cfg.anonKey)drawDetail(null);
+   else import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm").then(({createClient})=>createClient(cfg.url,cfg.anonKey).from("products").select("id,slug,name,description,price_usd,compare_at_usd,image_urls,inventory_quantity,categories(name,slug),sellers(id,store_name,slug)").eq("slug",slug).eq("status","active").maybeSingle()).then(({data,error})=>{
+    if(error||!data){drawDetail(null);return;}
+    drawDetail({id:data.id,slug:data.slug,name:data.name,description:data.description,price:Number(data.price_usd),was:Number(data.compare_at_usd||data.price_usd),images:data.image_urls||[],image:data.image_urls?.[0]||"assets/beths-mark.svg",alt:data.name,category:data.categories?.slug||"all",tag:data.categories?.name||"PET ESSENTIALS",sellerName:data.sellers?.store_name,sellerId:data.sellers?.id,sellerSlug:data.sellers?.slug,isLive:true,inventory:Number(data.inventory_quantity||0)});
+   }).catch(()=>drawDetail(null));
+  }
+ }
+ const storeRoot=document.querySelector("[data-store-detail]");
+ if(storeRoot){
+  const slug=new URLSearchParams(location.search).get("slug"),cfg=window.BETHS_SUPABASE_CONFIG||{};
+  const showStore=(seller,items)=>{
+   if(!seller){storeRoot.innerHTML='<section class="detail-empty"><h1>Storefront unavailable</h1><p>Approved seller storefronts will appear when the live marketplace is configured.</p><a class="btn btn-primary" href="shop.html">Browse marketplace</a></section>';return;}
+   const mapped=items.map(x=>({id:x.id,slug:x.slug,name:x.name,description:x.description,price:Number(x.price_usd),was:Number(x.compare_at_usd||x.price_usd),images:x.image_urls||[],image:x.image_urls?.[0]||"assets/beths-mark.svg",alt:x.name,category:x.categories?.slug||"all",tag:x.categories?.name||"PET ESSENTIALS",sellerName:seller.store_name,sellerId:seller.id,sellerSlug:seller.slug,isLive:true}));
+   storeRoot.innerHTML='<section class="store-hero"><p class="eyebrow">APPROVED MARKETPLACE SELLER</p><h1>'+safe(seller.store_name)+'</h1><p>'+safe(seller.description||'An independent pet business on Beth’s Pet Store.')+'</p><span>'+safe(seller.country_code||'NG')+' · Approved storefront</span></section><section class="store-products"><div class="section-heading"><div><p class="eyebrow">SHOP THIS SELLER</p><h2>Available listings.</h2></div><span>'+mapped.length+' approved products</span></div><div class="product-grid">'+(mapped.length?mapped.map(card).join(""):'<p>No approved products are listed yet.</p>')+'</div></section>';
+  };
+  if(!slug||!cfg.url||!cfg.anonKey)showStore(null,[]);
+  else import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm").then(async({createClient})=>{
+   const client=createClient(cfg.url,cfg.anonKey);
+   const {data:seller,error}=await client.from("sellers").select("id,store_name,slug,description,logo_url,country_code").eq("slug",slug).eq("status","active").maybeSingle();
+   if(error||!seller){showStore(null,[]);return;}
+   const {data,error:productError}=await client.from("products").select("id,slug,name,description,price_usd,compare_at_usd,image_urls,categories(name,slug)").eq("seller_id",seller.id).eq("status","active").order("created_at",{ascending:false});
+   if(productError)throw productError;showStore(seller,data||[]);
+  }).catch(()=>showStore(null,[]));
+ }
+
 });
