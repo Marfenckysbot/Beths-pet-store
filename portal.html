@@ -78,8 +78,18 @@
               <button class="btn btn-primary" type="submit">Submit for review</button>
             </form>
           </article>
+          <article class="portal-card" id="product-edit-card" hidden>
+            <div class="portal-card-heading"><p class="eyebrow">LISTING MANAGEMENT</p><h3>Edit product details</h3><p>Saving name, description, price or category sends the listing back for moderation. Stock can be updated separately without unpublishing it.</p></div>
+            <form id="product-edit-form">
+              <input id="edit-product-id" type="hidden">
+              <label>Product name<input id="edit-product-name" required maxlength="120"></label>
+              <label>Description<textarea id="edit-product-description" rows="4" required maxlength="3000"></textarea></label>
+              <div class="portal-form-row"><label>Price (USD)<input id="edit-product-price" type="number" min="0" step="0.01" required></label><label>Category<select id="edit-product-category"><option value="">No category selected</option></select></label></div>
+              <div class="auth-actions"><button class="btn btn-primary" type="submit">Save changes for review</button><button class="btn btn-secondary" type="button" id="cancel-product-edit" onclick="document.getElementById('product-edit-card').hidden=true">Cancel</button></div>
+            </form>
+          </article>
         </div>
-        <article class="portal-card table-card"><div class="portal-card-heading"><p class="eyebrow">YOUR CATALOGUE</p><h3>Products</h3></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead><tbody id="seller-products"><tr><td colspan="4">Sign in to load your products.</td></tr></tbody></table></div></article>
+        <article class="portal-card table-card"><div class="portal-card-heading"><p class="eyebrow">YOUR CATALOGUE</p><h3>Products</h3></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Price</th><th>Stock control</th><th>Status</th><th>Actions</th></tr></thead><tbody id="seller-products"><tr><td colspan="5">Sign in to load your products.</td></tr></tbody></table></div></article>
         <article class="portal-card table-card"><div class="portal-card-heading"><p class="eyebrow">FULFILMENT</p><h3>Order items</h3><p>Order management is read-only at this stage. Payment and payout actions are not enabled.</p></div><div class="table-wrap"><table><thead><tr><th>Order item</th><th>Quantity</th><th>Order</th></tr></thead><tbody id="seller-orders"><tr><td colspan="3">No order items loaded.</td></tr></tbody></table></div></article>
       </section>
 
