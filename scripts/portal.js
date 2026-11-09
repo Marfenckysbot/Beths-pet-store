@@ -107,7 +107,7 @@ async function boot(){
   async function submitApplication(event){
     event.preventDefault();
     const user=(await supabase.auth.getUser()).data.user;
-    if(!user?.email){message("#workspace-message","A verified account email is required to apply.",true);return;}
+    if(!user?.email || !user.email_confirmed_at){message("#workspace-message","Confirm your account email before submitting a seller application.",true);return;}
     const website=$("#application-website").value.trim();
     if(website){try{if(!["http:","https:"].includes(new URL(website).protocol))throw new Error();}catch{message("#workspace-message","Enter a valid http or https website or social link.",true);return;}}
     const payload={
