@@ -25,6 +25,7 @@ The portal is available at `portal.html`. It is a browser client for the Supabas
 - Seller catalogue management: edit product details, update stock without unpublishing, archive listings without deleting history, and restore archived listings to pending review.
 - Product detail edits automatically return the listing to pending moderation; stock-only changes preserve the current moderation state.
 - Seller catalogue and read-only order-item visibility.
+- Customer accounts at `account.html` use the existing owner-scoped profile, favorites and order policies; see `docs/CUSTOMER-ACCOUNT.md`.
 - Approved seller products are fetched into the public marketplace and homepage highlights when Supabase is configured. The preview bag remains local-only and checkout is still disabled.
 
 ## Current limitations
