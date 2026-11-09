@@ -1,16 +1,25 @@
 [build]
   publish = "."
 
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
+[functions]
+  node_bundler = "esbuild"
 
-[[plugins]]
-  package = "@netlify/plugin-sitemap"
+[[redirects]]
+  from = "/marketplace"
+  to = "/shop.html"
+  status = 301
+
+[[redirects]]
+  from = "/seller"
+  to = "/sell.html"
+  status = 301
+
+[[redirects]]
+  from = "/care"
+  to = "/care.html"
+  status = 301
 
 [[redirects]]
   from = "/contact"
   to = "/contact.html"
   status = 200
-
-[functions]
-  node_bundler = "esbuild"
