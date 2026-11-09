@@ -4,10 +4,11 @@ const migrationPath = "supabase/migrations/20261109_admin_and_seller_workflows.s
 const storagePath = "supabase/migrations/20261109_product_image_storage.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
+const cataloguePath = "scripts/marketplace.js";
 const configPath = "scripts/portal-config.js";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, schemaPath, portalPath, configPath, "portal.html"]) {
+for (const path of [migrationPath, storagePath, schemaPath, portalPath, cataloguePath, configPath, "portal.html"]) {
   if (!existsSync(path)) errors.push("Missing required SQL file: " + path);
 }
 
@@ -15,6 +16,7 @@ if (!errors.length) {
   const migration = readFileSync(migrationPath, "utf8");
   const schema = readFileSync(schemaPath, "utf8");
   const portal = readFileSync(portalPath, "utf8");
+  const catalogue = readFileSync(cataloguePath, "utf8");
   const storage = readFileSync(storagePath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
   const requiredFunctions = [
@@ -41,6 +43,7 @@ if (!errors.length) {
   }
   if (!storage.includes("5242880") || !storage.includes("image/webp")) errors.push("Product image bucket must enforce size and image MIME limits");
   if (!storage.includes("storage.foldername(name)") || !storage.includes("s.owner_user_id = auth.uid()")) errors.push("Product image uploads must be scoped to the owning seller");
+  if (!catalogue.includes('eq("status","active")') || !catalogue.includes("loadLiveProducts")) errors.push("Public catalogue must load approved seller products only");
   if (/service_role\s*[:=]\s*["']|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(portalConfig + portal)) errors.push("Do not expose privileged or payment credentials in browser files");
 }
 
