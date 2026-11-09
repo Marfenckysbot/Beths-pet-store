@@ -50,8 +50,20 @@
       <section id="seller-workspace" hidden>
         <div class="stat-grid" id="seller-stats"></div>
         <div class="portal-grid">
-          <article class="portal-card">
-            <div class="portal-card-heading"><p class="eyebrow">APPROVED APPLICATION</p><h3>Claim your shop</h3><p>If your application has been approved, sign in with the same email address and enter its application ID.</p></div>
+          <article class="portal-card" id="application-card">
+            <div class="portal-card-heading"><p class="eyebrow">SELLER APPLICATION</p><h3>Tell us about your business</h3><p>Applications are reviewed by a person. You can apply using the email address on this account.</p></div>
+            <form id="application-form">
+              <label>Business or brand name<input id="application-business" required maxlength="100"></label>
+              <label>Your name<input id="application-contact" required maxlength="100"></label>
+              <label>Country<select id="application-country" required><option value="">Choose a country</option><option value="NG">Nigeria</option><option value="GH">Ghana</option><option value="KE">Kenya</option><option value="ZA">South Africa</option><option value="GB">United Kingdom</option><option value="US">United States</option><option value="CA">Canada</option></select></label>
+              <label>Website or social link<input id="application-website" type="url" placeholder="https://..."></label>
+              <label>Business category<select id="application-category" required><option value="">Choose a category</option><option>Pet food and treats</option><option>Accessories and toys</option><option>Grooming and care products</option><option>Habitats and aquarium supplies</option><option>Pet services</option><option>Other pet-related products</option></select></label>
+              <label>About your business<textarea id="application-description" rows="3" required maxlength="1200"></textarea></label>
+              <button class="btn btn-primary" type="submit">Submit for review</button>
+            </form>
+          </article>
+          <article class="portal-card" id="claim-card" hidden>
+            <div class="portal-card-heading"><p class="eyebrow">APPROVED APPLICATION</p><h3>Claim your shop</h3><p>Your application is approved. Enter its ID to create your pending seller profile.</p></div>
             <form id="claim-form"><label>Application ID<input id="claim-application" required placeholder="Paste the application UUID"></label><label>Store URL name<input id="claim-slug" required minlength="3" maxlength="70" pattern="[A-Za-z0-9-]+" placeholder="my-pet-business"></label><button class="btn btn-primary" type="submit">Claim approved shop</button></form>
           </article>
           <article class="portal-card" id="product-form-card" hidden>
