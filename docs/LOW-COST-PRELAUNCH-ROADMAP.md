@@ -39,10 +39,10 @@ For the initial pilot, use manual confirmation and a secure business-owned workf
 
 ## Stage 4 — Website backend and payments
 
-**Already implemented in the preview branch:** Supabase schema blueprint, email/password customer and seller authentication flows, seller applications and claiming, admin moderation, approved seller catalogue, seller inventory editing/stock/archive controls, customer profile/wishlist/read-only order history, and documented server-side integration slots. These are code-complete foundations only; no live Supabase project is configured and no migration has been applied to a production database.
+**Already implemented in the preview branch:** Supabase schema blueprint, email/password customer and seller authentication flows, seller applications and claiming, admin moderation, approved seller catalogue, seller inventory editing/stock/archive controls, customer profile/wishlist/read-only order history, and documented server-side integration slots. These are code-complete foundations only; the connected Supabase project is initialized, but Auth and browser role tests are still pending.
 
 **Still required before activation:**
-- Create and secure Supabase; review and apply the base schema and migrations in the order documented in `docs/PORTAL-SETUP.md`.
+- The connected Supabase project is initialized, with eight recorded migrations, 14 RLS-enabled public tables, five seeded categories and a product image bucket. The development branch has the public URL and publishable key configured.
 - Configure Auth redirect URLs and bootstrap the founder admin through trusted SQL. Test separate customer, seller and admin accounts, including cross-account denial and row-level security.
 - Review audit-log and data-retention needs before accepting real customer data.
 - Agree commissions, settlement timing, refunds, disputes, chargebacks, taxes, shipping and seller responsibilities.
