@@ -1,18 +1,36 @@
 # Seller, administrator and customer account setup
 
-The seller/admin workspace is `portal.html`; the customer account area is `account.html`. Both are browser clients for the Supabase schema and are not live services until a Supabase project is configured and the SQL is applied.
+The seller/admin workspace is `portal.html`; the customer account area is `account.html`. Both now point to the connected Beth's Pet Store Supabase project from the `marketplace-foundation` branch. The project is initialized, but account, seller, admin and live-catalogue workflows still require end-to-end testing.
 
-## Configure Supabase
+## Connected Supabase project
 
-1. Create a Supabase project in the business owner's control.
-2. Review `supabase/schema.sql` and apply it in the Supabase SQL Editor.
-3. Apply `supabase/migrations/20261109_admin_and_seller_workflows.sql`.
-4. Apply `supabase/migrations/20261109_product_image_storage.sql`.
-5. Apply `supabase/migrations/20261109_seller_inventory_management.sql`.
-6. In Supabase Authentication, enable email/password sign-in, keep email confirmation enabled, and set the Site URL and redirect URLs to the preview/deployed account and portal routes.
-7. Add the Supabase Project URL and anon/publishable key to `scripts/portal-config.js`. The anon/publishable key is public by design; never add a service-role key.
-8. Sign up with the founder email and confirm it. Add the founder's Auth user UUID to `public.admin_users` through the trusted SQL Editor. Do not expose admin bootstrap through a public browser form.
-9. Test with separate administrator, seller and ordinary customer accounts before inviting applicants.
+- Project: `Marfenckysbot's Project`
+- Project ref: `moqbnaotzveoljeidsez`
+- Region: `us-east-1`
+- Project URL: `https://moqbnaotzveoljeidsez.supabase.co`
+- Browser config: `scripts/portal-config.js` (public URL and publishable key only)
+- Applied migrations are recorded in the connected Supabase database.
+
+## Applied database migrations
+
+The following have been applied successfully to the connected project:
+
+1. `supabase/schema.sql` (recorded as `beths_marketplace_base_schema`)
+2. `supabase/migrations/20261109_admin_and_seller_workflows.sql`
+3. `supabase/migrations/20261109_product_image_storage.sql`
+4. `supabase/migrations/20261109_seller_inventory_management.sql`
+5. `supabase/migrations/20261110_api_grants_indexes_and_function_hardening.sql`
+6. `supabase/migrations/20261110_seller_and_application_admin_update_grants.sql`
+
+All 14 public tables have RLS enabled. The initial category seed contains five categories. The database is otherwise empty: no users, seller profiles, products, orders or payment records have been created.
+
+## Remaining Supabase setup
+
+1. In Supabase Authentication, enable email/password sign-in, keep email confirmation enabled, and set the Site URL and redirect URLs to the actual preview/deployed account and portal routes.
+2. Confirm the public project URL and publishable key in `scripts/portal-config.js`; never add a service-role key.
+3. Create the founder account through the account/portal sign-up flow and confirm its email.
+4. Add the founder's Auth user UUID to `public.admin_users` through the trusted Supabase SQL Editor. Do not expose admin bootstrap through a public browser form.
+5. Test with separate administrator, seller and ordinary customer accounts before inviting applicants.
 
 ## Portal capabilities
 
@@ -41,13 +59,16 @@ The seller/admin workspace is `portal.html`; the customer account area is `accou
 
 ## Important limitations
 
+- The Supabase schema and migrations are live in the connected project, but user sign-up, email delivery, Auth redirects and all role-based workflows have not yet been browser-tested.
+- The founder administrator has not yet been bootstrapped in `admin_users`.
+- No verified production seller accounts or real product catalogue exist.
 - Netlify seller-form submissions are not automatically imported into Supabase. Existing submissions require a controlled manual review/import process.
 - Product images are public-read. Never upload private documents, identity records or customer information.
 - Orders are read-only. There is no checkout, payment collection, refund, payout, shipping action or order creation.
-- This portal has not been connected to a live Supabase project or production domain. These steps are a setup plan, not evidence of a completed live integration.
+- The draft PR is not merged and no production deployment has been triggered.
 
 ## Security boundaries
 
-UI visibility is not the security boundary. Row-level security and SQL functions enforce access. Do not weaken policies to make the dashboard appear to work. Browser code must use only the anon/publishable key. Seller stock and archive actions use narrowly scoped ownership-checking RPCs. Sellers cannot self-publish. All payment, refund, order creation, settlement and payout writes must be implemented in trusted server-side code with verified provider webhooks.
+UI visibility is not the security boundary. Row-level security and SQL functions enforce access. The Data API grants have been narrowed so anonymous users can read only public catalogue/review data; authenticated access is still row-filtered by RLS. Do not weaken policies to make the dashboard appear to work. Browser code must use only the anon/publishable key. Seller stock and archive actions use narrowly scoped ownership-checking RPCs. Sellers cannot self-publish. All payment, refund, order creation, settlement and payout writes must run in trusted server-side code with verified provider webhooks.
 
 See `docs/INTEGRATION-REGISTRY.md` for the safe handoff of later provider details and `docs/FOUNDER-HANDOFF-CHECKLIST.md` for the complete pre-launch checklist.
