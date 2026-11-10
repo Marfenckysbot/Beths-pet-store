@@ -6,11 +6,11 @@ Use [the founder handoff checklist](FOUNDER-HANDOFF-CHECKLIST.md) as the master 
 
 | Item to provide later | Intended location | Handling |
 | --- | --- | --- |
-| Supabase project URL | `scripts/portal-config.js` | Public project URL |
-| Supabase anon/publishable key | `scripts/portal-config.js` | Public browser key only |
-| Base schema and migrations | Supabase SQL Editor / migration workflow | Review and apply in documented order |
-| Founder admin Auth user UUID | Supabase `admin_users` table | Add through trusted SQL editor; never through public UI |
-| Preview/production site URL and auth redirects | Supabase Auth URL configuration | Must match the actual site origin |
+| Supabase project URL | `scripts/portal-config.js` | Public project URL; configured on the development branch |
+| Supabase anon/publishable key | `scripts/portal-config.js` | Public browser key only; configured on the development branch |
+| Base schema and migrations | Supabase database | Applied to project ref `moqbnaotzveoljeidsez`; migration history verified |
+| Founder admin Auth user UUID | Supabase `admin_users` table | Still to be added through trusted SQL editor after founder account confirmation |
+| Preview/production site URL and auth redirects | Supabase Auth URL configuration | Still to be configured against the actual preview/deployed site origin |
 
 Never send or commit a Supabase service-role key, database password, recovery code or private credential in chat or repository files.
 
@@ -52,7 +52,7 @@ Checkout, order creation, refunds and payouts remain disabled until server-side 
 
 ## 5. Communications and support
 
-| Item to provide later | Integration area | Handling |
+| Item to provide later | Intended location | Handling |
 | --- | --- | --- |
 | Official support email | Site contact and transactional email sender | Verify mailbox ownership |
 | Business phone / WhatsApp contact | Contact page and support links | Publish only after confirming ownership |
@@ -104,7 +104,8 @@ No supplier is considered a partner until the founder has contacted them and obt
 
 ## Current status
 
-- The repository contains integration slots and documentation, not live provider connections.
-- No production Supabase project, merchant account, delivery account, email provider, analytics property or verified social account is configured.
-- No production deployment or live payment processing has been activated.
+- The connected Supabase project is initialized and its schema/migrations are applied.
+- Public browser configuration is committed to the development branch only.
+- Auth redirects and founder admin bootstrap remain pending.
+- No production deployment, payment merchant account, delivery account, email provider, analytics property or verified social account is configured.
 - Do not accept real orders or payments based on these placeholders.
