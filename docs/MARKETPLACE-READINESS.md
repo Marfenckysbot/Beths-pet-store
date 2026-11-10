@@ -8,7 +8,10 @@
 - Customer account page with email/password authentication, private profile, account wishlist and read-only order history.
 - Seller/admin portal with application review, seller activation/suspension, product moderation, product creation and image uploads.
 - Seller inventory controls: edit listing details (returns the listing to moderation), update stock without unpublishing, archive without deleting history and restore to pending review.
-- Supabase/PostgreSQL schema and migrations for account, seller, admin, product-image and inventory workflows.
+- Supabase/PostgreSQL schema and six recorded migrations in the connected project.
+- Fourteen public tables with RLS enabled, five seeded categories, seller/admin workflow functions and product-image storage policies.
+- Narrowed Data API grants and supporting indexes for marketplace access paths.
+- The website's public Supabase URL and publishable key are configured on the development branch.
 - Netlify Forms markup for seller interest, contact, support and feedback.
 - Server-side integration workspace reserved under `netlify/functions/`; no payment, order, delivery or email handlers are active.
 - Founder handoff materials, including the integration registry and low-cost pre-launch roadmap.
@@ -18,7 +21,7 @@
 
 This repository is a pre-launch implementation, not a live operating marketplace.
 
-- No production Supabase project is configured and no migration has been applied to a live database.
+- Supabase is initialized, but Auth email/redirect settings, founder admin bootstrap and browser-based role tests remain outstanding.
 - No verified production seller accounts, suppliers, product catalogue, live stock or customer orders exist.
 - No payment merchant account, settlement destination, delivery provider, transactional email provider or analytics property is connected.
 - The preview bag does not create orders. Checkout, payment collection, refunds, settlement and payouts are disabled.
@@ -33,22 +36,19 @@ Illustrative catalogue content, sample prices, discounts and imagery are design 
 Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` as the master handoff record and `docs/INTEGRATION-REGISTRY.md` as the provider-specific destination map.
 
 1. **Founder-owned basics:** confirm business/contact details, brand assets, policies and intended operating model. Do not publish personal home-address or identity information by default.
-2. **Supply validation:** obtain written supplier permission, real product data, current prices, stock ownership/update process and fulfilment/returns terms.
-3. **Database and identity:** create a Supabase project, review and apply migrations in the documented order, configure Auth redirects, add the founder admin UUID through trusted SQL, and test separate customer/seller/admin accounts.
+2. **Database and identity:** Supabase project is initialized. Configure Auth email/redirect settings, create the founder Auth account, add the founder admin UUID through trusted SQL, and test separate customer/seller/admin accounts.
+3. **Supply validation:** obtain written supplier permission, real product data, current prices, stock ownership/update process and fulfilment/returns terms.
 4. **Preview hosting:** configure the hosting project and domain, deploy only to a preview environment, verify Netlify Forms and all routes, and complete mobile/accessibility/browser QA.
 5. **Order operations:** agree who confirms stock, invoices, dispatches, handles customer support, returns, refunds and disputes. Keep the first workflow manual if that is safer.
 6. **Payments:** only after business and merchant onboarding are approved, implement server-side order creation, payment initiation, signed webhooks, idempotency, refunds and reconciliation. Use sandbox credentials first.
 7. **Delivery and communications:** connect providers only after coverage, rates, service levels, sender-domain ownership and support responsibilities are confirmed.
 8. **Launch review:** complete security, privacy, consumer, tax, animal-welfare and category-specific compliance checks before any real transaction.
 
-## Supabase setup order
+## Supabase setup and migration record
 
-1. `supabase/schema.sql`
-2. `supabase/migrations/20261109_admin_and_seller_workflows.sql`
-3. `supabase/migrations/20261109_product_image_storage.sql`
-4. `supabase/migrations/20261109_seller_inventory_management.sql`
+The base schema and six migrations have been applied to the connected Supabase project. The source of truth and exact order are documented in `docs/PORTAL-SETUP.md`. The project has 14 RLS-enabled public tables and five initial categories. Continue to review security/performance advisor findings and test access with separate accounts.
 
-Review the SQL and policies before applying them. Follow `docs/PORTAL-SETUP.md` for Auth, admin bootstrap and account testing. Never put a service-role key in browser code or Git.
+Never put a service-role key in browser code or Git. The website uses only the public publishable key.
 
 ## Definition of ready to accept real orders
 
@@ -56,7 +56,7 @@ Review the SQL and policies before applying them. Follow `docs/PORTAL-SETUP.md` 
 - Supplier identities, written listing permissions and commercial/fulfilment terms recorded.
 - Product data, images, prices and stock verified and kept current.
 - Customer-facing privacy, delivery, cancellation, returns, refund and complaint policies approved.
-- Supabase RLS and RPC permissions reviewed and tested with separate accounts.
+- Supabase Auth, founder admin bootstrap, RLS and RPC permissions reviewed and tested with separate accounts.
 - Server-side order/payment workflows implemented; webhook signatures, replay protection, idempotency and reconciliation tested.
 - Merchant account and settlement route approved by the provider.
 - Delivery coverage, rates, tracking and failed-delivery process tested.
