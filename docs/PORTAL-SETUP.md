@@ -21,6 +21,7 @@ The following have been applied successfully to the connected project:
 4. `supabase/migrations/20261109_seller_inventory_management.sql`
 5. `supabase/migrations/20261110_api_grants_indexes_and_function_hardening.sql`
 6. `supabase/migrations/20261110_seller_and_application_admin_update_grants.sql`
+7. `supabase/migrations/20261110_rls_auth_uid_initplan_optimization.sql`
 
 All 14 public tables have RLS enabled. The initial category seed contains five categories. The database is otherwise empty: no users, seller profiles, products, orders or payment records have been created.
 
