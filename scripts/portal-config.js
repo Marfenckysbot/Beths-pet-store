@@ -1,7 +1,7 @@
 // Public Supabase project settings only.
-// Add your Project URL and anon/publishable key here after creating the project.
-// Never put a service_role key, payment secret, or private credential in this file.
+// This is the Beth's Pet Store project; the publishable key is safe for browser use.
+// Never put a service_role key, database password, payment secret, or private credential here.
 window.BETHS_SUPABASE_CONFIG = {
-  url: "",
-  anonKey: ""
+  url: "https://moqbnaotzveoljeidsez.supabase.co",
+  anonKey: "sb_publishable_uxn_nE8o4sXLGvEC68UPHg_vyXvOdkv"
 };
