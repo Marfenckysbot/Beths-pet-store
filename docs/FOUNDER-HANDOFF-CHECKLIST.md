@@ -53,10 +53,10 @@ Integration destination: seller portal/product records and the catalogue. Do not
 
 ## D. Database and customer identity
 
-- [ ] Supabase project URL — `scripts/portal-config.js` (public).
-- [ ] Supabase anon/publishable key — `scripts/portal-config.js` (public).
-- [ ] Base schema and migrations reviewed/applied — Supabase SQL Editor/migration workflow.
-- [ ] Founder Auth user UUID — inserted into `public.admin_users` using trusted SQL.
+- [x] Supabase project URL — configured in `scripts/portal-config.js` on the development branch.
+- [x] Supabase publishable key — configured in `scripts/portal-config.js` on the development branch.
+- [x] Base schema and eight recorded migrations applied to the connected Supabase project; all 14 public tables have RLS enabled.
+- [ ] Founder Auth user UUID — still to be inserted into `public.admin_users` using trusted SQL after the founder account is created.
 - [ ] Site URL and redirect allowlist — Supabase Auth settings.
 - [ ] Separate admin, seller and customer test accounts — security test plan.
 
@@ -116,4 +116,4 @@ Destination: server-side email adapter, consent-aware analytics configuration an
 
 ## Current project boundary
 
-The repository is a feature-rich pre-launch preview in an open draft pull request. The Supabase project is not configured, migrations are not applied to a live database, no suppliers or payment/delivery/email providers are confirmed, and checkout is disabled. Completing a checklist item does not automatically authorize deployment, spending, account creation, payment activation or public disclosure.
+The repository is a feature-rich pre-launch preview in an open draft pull request. The connected Supabase project is initialized and its schema/migrations are applied, but Auth redirects, founder admin bootstrap and browser role tests remain pending. No suppliers or payment/delivery/email providers are confirmed, and checkout is disabled. Completing a checklist item does not automatically authorize deployment, spending, account creation, payment activation or public disclosure.
