@@ -4,7 +4,7 @@ A Nigeria-focused pet marketplace preview with public storefront pages, seller/a
 
 ## Project status
 
-This repository is a pre-launch implementation, not a live checkout marketplace. The Supabase project is not configured, SQL migrations have not been applied to a live database, and no payment, delivery, transactional email or analytics provider is connected. The preview bag is local-only; order creation and payment collection are disabled.
+This repository is a pre-launch implementation, not a live checkout marketplace. The connected Supabase project is initialized and the marketplace schema plus six migrations are applied. Auth redirects, founder admin bootstrap and browser-based role testing remain to be completed. No payment, delivery, transactional email or analytics provider is connected. The preview bag is local-only; order creation and payment collection are disabled.
 
 The current work is maintained on the `marketplace-foundation` branch and proposed through an open draft pull request. It has not been merged or deployed to production.
 
@@ -24,7 +24,7 @@ The current work is maintained on the `marketplace-foundation` branch and propos
 
 ## Supabase setup
 
-Read [Portal setup](docs/PORTAL-SETUP.md) and [Seller inventory management](docs/SELLER-INVENTORY-MANAGEMENT.md) before configuring a project. Apply the base schema followed by the migrations in the documented order. Browser code must use only the public anon/publishable key. Never commit a service-role key, database password or payment secret.
+Read [Portal setup](docs/PORTAL-SETUP.md) and [Seller inventory management](docs/SELLER-INVENTORY-MANAGEMENT.md). The connected project ref is `moqbnaotzveoljeidsez`, and the browser configuration is `scripts/portal-config.js`. The database has 14 RLS-enabled public tables, five seeded categories, seller/admin functions and the product image bucket. Finish Auth redirects and founder admin bootstrap before role-based testing. Browser code uses only the public publishable key. Never commit a service-role key, database password or payment secret.
 
 ## Server-side integration boundary
 
