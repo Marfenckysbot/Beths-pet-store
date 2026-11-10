@@ -4,7 +4,7 @@ A Nigeria-focused pet marketplace preview with public storefront pages, seller/a
 
 ## Project status
 
-This repository is a pre-launch implementation, not a live checkout marketplace. The connected Supabase project is initialized and the marketplace schema plus six migrations are applied. Auth redirects, founder admin bootstrap and browser-based role testing remain to be completed. No payment, delivery, transactional email or analytics provider is connected. The preview bag is local-only; order creation and payment collection are disabled.
+This repository is a pre-launch implementation, not a live checkout marketplace. The connected Supabase project is initialized and the marketplace schema plus seven migrations are applied. Auth redirects, founder admin bootstrap and browser-based role testing remain to be completed. No payment, delivery, transactional email or analytics provider is connected. The preview bag is local-only; order creation and payment collection are disabled.
 
 The current work is maintained on the `marketplace-foundation` branch and proposed through an open draft pull request. It has not been merged or deployed to production.
 
