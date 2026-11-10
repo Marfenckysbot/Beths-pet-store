@@ -8,7 +8,7 @@
 - Customer account page with email/password authentication, private profile, account wishlist and read-only order history.
 - Seller/admin portal with application review, seller activation/suspension, product moderation, product creation and image uploads.
 - Seller inventory controls: edit listing details (returns the listing to moderation), update stock without unpublishing, archive without deleting history and restore to pending review.
-- Supabase/PostgreSQL schema and seven recorded migrations in the connected project.
+- Supabase/PostgreSQL schema and eight recorded migrations in the connected project.
 - Fourteen public tables with RLS enabled, five seeded categories, seller/admin workflow functions and product-image storage policies.
 - Narrowed Data API grants and supporting indexes for marketplace access paths.
 - The website's public Supabase URL and publishable key are configured on the development branch.
@@ -46,7 +46,7 @@ Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` as the master handoff record and `docs/I
 
 ## Supabase setup and migration record
 
-The base schema and seven migrations have been applied to the connected Supabase project. The source of truth and exact order are documented in `docs/PORTAL-SETUP.md`. The project has 14 RLS-enabled public tables and five initial categories. Continue to review security/performance advisor findings and test access with separate accounts.
+The base schema and eight migrations have been applied to the connected Supabase project. The source of truth and exact order are documented in `docs/PORTAL-SETUP.md`. The project has 14 RLS-enabled public tables and five initial categories. Continue to review security/performance advisor findings and test access with separate accounts.
 
 Never put a service-role key in browser code or Git. The website uses only the public publishable key.
 
