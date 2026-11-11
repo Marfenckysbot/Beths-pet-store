@@ -75,6 +75,7 @@
               <label>Category<select id="product-category"><option value="">No category selected</option></select></label>
               <label>Upload product photos<input id="product-image-files" type="file" accept="image/jpeg,image/png,image/webp" multiple><small>Up to 5 photos · JPG, PNG or WebP · 5 MB maximum each</small></label>
               <label>Or use existing image URLs <textarea id="product-images" rows="2" placeholder="https://... (one URL per line)"></textarea></label>
+              <label>Optional 3D model URL <input id="product-model-url" type="url" inputmode="url" placeholder="https://.../product-model.glb"><small>Optional. Use a public HTTPS link to a model file you own or are licensed to use (.glb or .gltf). Photos remain the fallback.</small></label>
               <button class="btn btn-primary" type="submit">Submit for review</button>
             </form>
           </article>
@@ -84,6 +85,7 @@
               <input id="edit-product-id" type="hidden">
               <label>Product name<input id="edit-product-name" required maxlength="120"></label>
               <label>Description<textarea id="edit-product-description" rows="4" required maxlength="3000"></textarea></label>
+              <label>Optional 3D model URL <input id="edit-product-model-url" type="url" inputmode="url" placeholder="https://.../product-model.glb"><small>Public HTTPS .glb or .gltf link. Leave blank to remove the 3D model.</small></label>
               <div class="portal-form-row"><label>Price (USD)<input id="edit-product-price" type="number" min="0" step="0.01" required></label><label>Category<select id="edit-product-category"><option value="">No category selected</option></select></label></div>
               <div class="auth-actions"><button class="btn btn-primary" type="submit">Save changes for review</button><button class="btn btn-secondary" type="button" id="cancel-product-edit" data-cancel-product-edit>Cancel</button></div>
             </form>
