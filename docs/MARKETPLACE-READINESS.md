@@ -1,5 +1,11 @@
 # Marketplace readiness and launch gates
 
+
+
+### Latest product media and storefront hardening
+- Seller-entered product photo URLs must use HTTPS; the database enforces a maximum of five non-null HTTPS URLs per product.
+- Storefront pages no longer assume an unspecified seller is in Nigeria; a country label is shown only when the seller supplied a country code.
+- Product and seller detail pages update their document title, description, Open Graph metadata and canonical URL after the listing data loads. Search-engine rendering still requires preview/browser verification.
 ## What is already implemented in the preview branch
 
 - Responsive public storefront, category browsing, search, filters, sorting and product detail pages.
