@@ -34,7 +34,7 @@ Only trusted project owners should be able to change `admin_users`. Never expose
 6. An administrator verifies the business and activates the seller using `set_seller_moderation_status`. Paused or suspended sellers can be reactivated by an administrator after a fresh review.
 7. The seller can then submit products. New and edited products remain `pending` until reviewed with `review_marketplace_product`.
 
-Approval of an application is not the same as approval of a public storefront. Both checks are deliberate.
+Approval of an application is not the same as approval of a public storefront. Both checks are deliberate. Internal reviewer notes are not exposed to applicants through the Data API.
 
 ## Before connecting the dashboard
 
