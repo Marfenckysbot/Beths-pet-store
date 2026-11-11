@@ -4,6 +4,7 @@ const migrationPath = "supabase/migrations/20261109_admin_and_seller_workflows.s
 const storagePath = "supabase/migrations/20261109_product_image_storage.sql";
 const inventoryPath = "supabase/migrations/20261109_seller_inventory_management.sql";
 const modelPath = "supabase/migrations/20261111_product_3d_models.sql";
+const sellerClaimPath = "supabase/migrations/20261111_harden_seller_claim_rpc.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const cataloguePath = "scripts/marketplace.js";
@@ -13,7 +14,7 @@ const readinessPath = "docs/MARKETPLACE-READINESS.md";
 const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, modelPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
@@ -25,6 +26,7 @@ if (!errors.length) {
   const storage = readFileSync(storagePath, "utf8");
   const inventory = readFileSync(inventoryPath, "utf8");
   const modelMigration = readFileSync(modelPath, "utf8");
+  const sellerClaimMigration = readFileSync(sellerClaimPath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
   const account = readFileSync("scripts/account.js", "utf8");
   const accountHtml = readFileSync("account.html", "utf8");
@@ -51,7 +53,9 @@ if (!errors.length) {
   if (!migration.includes("security definer")) errors.push("Workflow functions must use controlled security-definer execution");
   if (!migration.includes("revoke all on function")) errors.push("Workflow functions must revoke default public execution");
   if (/service_role\s*[:=]\s*['"]|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(migration)) errors.push("Do not commit service-role or payment secrets");
-  if (!migration.includes("v_application.email") || !migration.includes("auth.users") || !migration.includes("email_confirmed_at")) errors.push("Seller claiming must verify the approved applicant's confirmed email");
+  if (!migration.includes("v_application.email") || !migration.includes("auth.users") || !migration.includes("email_confirmed_at")) errors.push("Legacy seller application bootstrap must verify confirmed email");
+  if (!sellerClaimMigration.includes("security invoker") || !sellerClaimMigration.includes("applicant claim approved seller") || !sellerClaimMigration.includes("a.applicant_id = (select auth.uid())") || !sellerClaimMigration.includes("a.status = 'approved'")) errors.push("Seller claiming must use an invoker RPC and an RLS policy restricted to the applicant's own approved application");
+  if (!sellerClaimMigration.includes("revoke all on function public.claim_approved_seller") || !sellerClaimMigration.includes("grant execute on function public.claim_approved_seller")) errors.push("Seller claim RPC must revoke public execution and grant authenticated execution only");
   if (!migration.includes("auth.uid(), v_application.id") || !migration.includes("'pending'")) errors.push("New seller accounts must remain pending until manually activated");
   for (const fn of ["review_seller_application", "claim_approved_seller", "set_seller_moderation_status", "review_marketplace_product"]) {
     if (!portal.includes(`rpc("${fn}"`)) errors.push("Portal is missing moderation integration: " + fn);
@@ -85,4 +89,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log("✓ Supabase schema and moderation workflow guardrails passed.");
+console.log("✓ Supabase schema, seller-claim RLS, and moderation workflow guardrails passed.");
