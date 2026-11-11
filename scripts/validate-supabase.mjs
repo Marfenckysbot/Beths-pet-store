@@ -13,6 +13,7 @@ const productInsertPath = "supabase/migrations/20261111171018_restrict_product_i
 const adminModerationGrantsPath = "supabase/migrations/20261111171234_restore_admin_moderation_column_grants.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
+const sellerPagePath = "sell.html";
 const cataloguePath = "scripts/marketplace.js";
 const configPath = "scripts/portal-config.js";
 const handoffPath = "docs/FOUNDER-HANDOFF-CHECKLIST.md";
@@ -20,7 +21,7 @@ const readinessPath = "docs/MARKETPLACE-READINESS.md";
 const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, adminModerationGrantsPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, adminModerationGrantsPath, schemaPath, portalPath, sellerPagePath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
@@ -28,6 +29,7 @@ if (!errors.length) {
   const migration = readFileSync(migrationPath, "utf8");
   const schema = readFileSync(schemaPath, "utf8");
   const portal = readFileSync(portalPath, "utf8");
+  const sellerPage = readFileSync(sellerPagePath, "utf8");
   const catalogue = readFileSync(cataloguePath, "utf8");
   const storage = readFileSync(storagePath, "utf8");
   const inventory = readFileSync(inventoryPath, "utf8");
@@ -93,6 +95,8 @@ if (!errors.length) {
   if (!inventory.includes("p_inventory_quantity < 0")) errors.push("Seller inventory updates must reject negative stock");
   if (!portal.includes('rpc("seller_update_inventory"') || !portal.includes('rpc("seller_set_product_archived"')) errors.push("Portal is missing seller inventory RPC integration");
   if (!portal.includes('status:"pending"')) errors.push("Product content edits must return listings to moderation");
+  if (!portal.includes('s.status==="active"?') || !portal.includes('"Reactivate"') || !portal.includes('data-status="active"')) errors.push("Admin seller moderation must allow paused and suspended sellers to be reactivated");
+  if (!sellerPage.includes('href="portal.html"') || !sellerPage.includes("Create account or sign in to apply") || /data-netlify=["\']true["\']/.test(sellerPage)) errors.push("Public seller applications must route through the authenticated Supabase portal, not an unlinked Netlify form");
 
   if (!storage.includes("storage.foldername(name)") || !storage.includes("s.owner_user_id = auth.uid()")) errors.push("Product image uploads must be scoped to the owning seller");
   if (!catalogue.includes('eq("status","active")') || !catalogue.includes("loadLiveProducts")) errors.push("Public catalogue must load approved seller products only");
