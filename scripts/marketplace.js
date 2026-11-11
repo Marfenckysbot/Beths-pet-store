@@ -11,6 +11,7 @@ const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}ca
 document.addEventListener("DOMContentLoaded",()=>{
  const year=document.getElementById("year");if(year)year.textContent=new Date().getFullYear();
  document.addEventListener("error",event=>{const img=event.target;if(img instanceof HTMLImageElement&&!img.dataset.fallbackTried&&img.getAttribute("src")?.startsWith("http")){img.dataset.fallbackTried="true";img.src="images/animals/dog_golden.webp";img.alt=img.alt||"Pet image";}},true);
+ document.addEventListener("error",event=>{const img=event.target;if(img instanceof HTMLImageElement&&!img.dataset.fallbackTried&&/^https?:/i.test(img.getAttribute("src")||"")){img.dataset.fallbackTried="true";img.src="images/animals/dog_golden.webp";img.alt=img.alt||"Pet image";}},true);
  const toggle=document.querySelector(".menu-toggle"),nav=document.getElementById("primary-nav");
  if(toggle&&nav)toggle.addEventListener("click",()=>{const open=toggle.getAttribute("aria-expanded")==="true";toggle.setAttribute("aria-expanded",String(!open));nav.classList.toggle("is-open",!open)});
  let cart=read("beths-preview-cart"),wish=read("beths-preview-wishlist"),filter="all",term="",minPrice="",maxPrice="";
