@@ -17,3 +17,6 @@
 .account-favorite a{font-size:12px;font-weight:700}
 .account-favorite strong{font-size:12px;color:#c85d4d;margin-top:4px}
 .account-favorite button{white-space:nowrap}
+
+/* Visible keyboard focus across seller and admin workspaces */
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #d96c58;outline-offset:3px}
