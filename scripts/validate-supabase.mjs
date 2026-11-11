@@ -108,6 +108,7 @@ if (!errors.length) {
   if (!portal.includes('status:"pending"')) errors.push("Product content edits must return listings to moderation");
   if (!portal.includes('s.status==="active"?') || !portal.includes('"Reactivate"') || !portal.includes('data-status="active"')) errors.push("Admin seller moderation must allow paused and suspended sellers to be reactivated");
   if (!sellerPage.includes('href="portal.html"') || !sellerPage.includes("Create account or sign in to apply") || /data-netlify=["\']true["\']/.test(sellerPage)) errors.push("Public seller applications must route through the authenticated Supabase portal, not an unlinked Netlify form");
+  if (!portal.includes('["rejected","withdrawn"].includes(application.status)') || !portal.includes("You may submit a new application")) errors.push("Rejected or withdrawn applicants must have a clear route to submit a fresh seller application");
 
   if (!storage.includes("storage.foldername(name)") || !storage.includes("s.owner_user_id = auth.uid()")) errors.push("Product image uploads must be scoped to the owning seller");
   if (!catalogue.includes('eq("status","active")') || !catalogue.includes("loadLiveProducts")) errors.push("Public catalogue must load approved seller products only");
