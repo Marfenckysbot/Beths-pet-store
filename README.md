@@ -19,7 +19,7 @@ The current work is maintained on the `marketplace-foundation` branch and propos
 
 - Public storefront: `index.html`, `shop.html`, `product.html`, `store.html`
 - Seller and administrator portal: `portal.html`
-- Customer account: `account.html`
+- Customer account: `account.html`\n- Interactive 3D pet-home showroom: `3d-showroom.html`
 - Seller application information: `sell.html`
 
 ## Supabase setup
