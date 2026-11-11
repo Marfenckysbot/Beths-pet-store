@@ -26,12 +26,12 @@ Only trusted project owners should be able to change `admin_users`. Never expose
 
 ## Seller application lifecycle
 
-1. The public seller interest form collects business details only; it does not create a login or activate a shop.
-2. An administrator reviews the application and records `under_review`, `approved` or `rejected` using `review_seller_application`.
-3. An approved applicant creates an Auth account using the same email address submitted in the application.
-4. After sign-in, the applicant claims the approved application using `claim_approved_seller` and a requested store URL slug.
+1. The public Seller Centre page directs applicants to the authenticated seller portal; it does not collect or store a separate Netlify form submission.
+2. The applicant creates an Auth account, confirms the email address, signs in and submits the application inside the portal. The application is linked to that Auth user from the start.
+3. An administrator reviews the application and records `under_review`, `approved` or `rejected` using `review_seller_application`.
+4. An approved applicant claims the linked application using `claim_approved_seller` and a requested store URL slug.
 5. The new seller record starts as `pending`. It is not publicly visible.
-6. An administrator verifies the business and activates the seller using `set_seller_moderation_status`.
+6. An administrator verifies the business and activates the seller using `set_seller_moderation_status`. Paused or suspended sellers can be reactivated by an administrator after a fresh review.
 7. The seller can then submit products. New and edited products remain `pending` until reviewed with `review_marketplace_product`.
 
 Approval of an application is not the same as approval of a public storefront. Both checks are deliberate.
