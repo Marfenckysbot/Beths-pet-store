@@ -91,6 +91,7 @@ if (!errors.length) {
   if (!portal.includes('parsed.protocol!=="https:"')) errors.push("Seller portal must reject insecure HTTP product image URLs before submission");
   if (catalogue.includes("seller.country_code||'NG'")) errors.push("Global seller storefronts must not invent Nigeria as a missing seller location");
   if (!catalogue.includes("setPageMetadata") || !catalogue.includes('meta[property="og:title"]') || !catalogue.includes('link[rel="canonical"]')) errors.push("Product and seller storefront pages must receive specific metadata and canonical URLs after data loads");
+  if (!catalogue.includes('aria-pressed="') || !readFileSync("styles/marketplace.css", "utf8").includes(":focus-visible") || !readFileSync("styles/portal.css", "utf8").includes(":focus-visible")) errors.push("Marketplace wishlist controls and seller/admin workspaces must expose accessible toggle state and visible keyboard focus");
   if (!migration.includes("auth.uid(), v_application.id") || !migration.includes("'pending'")) errors.push("New seller accounts must remain pending until manually activated");
   for (const fn of ["review_seller_application", "claim_approved_seller", "set_seller_moderation_status", "review_marketplace_product"]) {
     if (!portal.includes(`rpc("${fn}"`)) errors.push("Portal is missing moderation integration: " + fn);
