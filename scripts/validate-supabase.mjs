@@ -12,6 +12,7 @@ const defaultPrivilegesPath = "supabase/migrations/20261111170917_restrict_futur
 const productInsertPath = "supabase/migrations/20261111171018_restrict_product_insert_columns.sql";
 const adminModerationGrantsPath = "supabase/migrations/20261111171234_restore_admin_moderation_column_grants.sql";
 const reviewerNotesPath = "supabase/migrations/20261111191224_protect_seller_reviewer_notes.sql";
+const productImagesPath = "supabase/migrations/20261111193000_validate_product_image_urls.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const sellerPagePath = "sell.html";
@@ -22,7 +23,7 @@ const readinessPath = "docs/MARKETPLACE-READINESS.md";
 const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, adminModerationGrantsPath, reviewerNotesPath, schemaPath, portalPath, sellerPagePath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, adminModerationGrantsPath, reviewerNotesPath, productImagesPath, schemaPath, portalPath, sellerPagePath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
@@ -43,6 +44,7 @@ if (!errors.length) {
   const productInsertMigration = readFileSync(productInsertPath, "utf8");
   const adminModerationGrantsMigration = readFileSync(adminModerationGrantsPath, "utf8");
   const reviewerNotesMigration = readFileSync(reviewerNotesPath, "utf8");
+  const productImagesMigration = readFileSync(productImagesPath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
   const account = readFileSync("scripts/account.js", "utf8");
   const accountHtml = readFileSync("account.html", "utf8");
@@ -85,6 +87,9 @@ if (!errors.length) {
   if (!adminModerationGrantsMigration.includes("grant update (status, reviewer_notes, reviewed_at)") || !adminModerationGrantsMigration.includes("grant update (status)") || adminModerationGrantsMigration.includes("grant update on table")) errors.push("Admin moderation must use only the specific column grants required by its SECURITY INVOKER RPCs");
   if (!reviewerNotesMigration.includes("revoke select on table public.seller_applications from authenticated") || !reviewerNotesMigration.includes("grant select (") || !reviewerNotesMigration.includes("returns void") || reviewerNotesMigration.includes("returning *")) errors.push("Seller application reviewer notes must be private and the review RPC must not return the private row");
   if (!reviewerNotesMigration.includes("select id, business_name, description, country_code, status") || !reviewerNotesMigration.includes("security invoker")) errors.push("Seller claim RPC must select only the approved application fields it needs under caller RLS");
+  if (!productImagesMigration.includes("cardinality(image_urls) <= 5") || !productImagesMigration.includes("array_to_string(image_urls") || !productImagesMigration.includes("^https://")) errors.push("Product image URLs must be HTTPS-only and limited to five per listing");
+  if (!portal.includes('parsed.protocol!=="https:"')) errors.push("Seller portal must reject insecure HTTP product image URLs before submission");
+  if (catalogue.includes("seller.country_code||'NG'")) errors.push("Global seller storefronts must not invent Nigeria as a missing seller location");
   if (!migration.includes("auth.uid(), v_application.id") || !migration.includes("'pending'")) errors.push("New seller accounts must remain pending until manually activated");
   for (const fn of ["review_seller_application", "claim_approved_seller", "set_seller_moderation_status", "review_marketplace_product"]) {
     if (!portal.includes(`rpc("${fn}"`)) errors.push("Portal is missing moderation integration: " + fn);
