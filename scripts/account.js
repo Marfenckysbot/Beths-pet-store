@@ -24,6 +24,9 @@ async function boot(){
     message("#account-auth-message",error?.message||"Signed in.",Boolean(error));
   });
   $("#account-signup").addEventListener("click",async()=>{
+    const form=$("#account-auth-form");
+    $("#account-password").setAttribute("autocomplete","new-password");
+    if(!form.reportValidity())return;
     message("#account-auth-message","Creating account…");
     const {data,error}=await supabase.auth.signUp({email:$("#account-email").value.trim(),password:$("#account-password").value,options:{emailRedirectTo:location.origin+"/account.html"}});
     message("#account-auth-message",error?.message||(data.session?"Account created and signed in.":"Account created. Check your email to confirm it before signing in."),Boolean(error));
@@ -34,7 +37,7 @@ async function boot(){
     const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/account.html"});
     message("#account-auth-message",error?.message||"If an account exists for that address, a reset email has been sent.",Boolean(error));
   });
-  $("#account-signout").addEventListener("click",()=>supabase.auth.signOut());
+  $("#account-signout").addEventListener("click",async()=>{\n    const {error}=await supabase.auth.signOut();\n    if(error)message("#customer-message",error.message,true);\n  });
   $("#customer-profile-form").addEventListener("submit",saveProfile);
   supabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>render(session),0);});
   await render((await supabase.auth.getSession()).data.session);
@@ -59,7 +62,7 @@ async function boot(){
     event.preventDefault();
     const user=(await supabase.auth.getUser()).data.user;
     if(!user){message("#customer-message","Please sign in again.",true);return;}
-    const payload={id:user.id,display_name:$("#customer-display-name").value.trim()||null,country_code:$("#customer-country").value||null};
+    const countryCode=$("#customer-country").value.trim().toUpperCase();\n    if(countryCode&&!/^[A-Z]{2}$/.test(countryCode)){message("#customer-message","Enter a valid two-letter country code, such as US, NG or GB.",true);return;}\n    $("#customer-country").value=countryCode;\n    const payload={id:user.id,display_name:$("#customer-display-name").value.trim()||null,country_code:countryCode||null};
     const {error}=await supabase.from("profiles").upsert(payload,{onConflict:"id"});
     message("#customer-message",error?.message||"Profile saved.",Boolean(error));
   }
