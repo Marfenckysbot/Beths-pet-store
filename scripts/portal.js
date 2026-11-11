@@ -174,7 +174,7 @@ async function boot(){
     event.preventDefault();if(!window.currentSellerId){message("#workspace-message","No active seller profile found.",true);return;}
     const manualImages=$("#product-images").value.split(/\n/).map(x=>x.trim()).filter(Boolean);
     const files=Array.from($("#product-image-files").files||[]);
-    if(manualImages.some(url=>{try{return !["http:","https:"].includes(new URL(url).protocol)}catch{return true}})){message("#workspace-message","Every image URL must use http or https.",true);return;}
+    if(manualImages.some(url=>{try{const parsed=new URL(url);return parsed.protocol!=="https:"||!parsed.hostname}catch{return true}})){message("#workspace-message","Every image URL must use a secure HTTPS address.",true);return;}
     if(files.length+manualImages.length>5){message("#workspace-message","Use no more than five images in total.",true);return;}
     const allowedTypes=["image/jpeg","image/png","image/webp"];
     if(files.some(file=>!allowedTypes.includes(file.type)||file.size>5*1024*1024)){message("#workspace-message","Photos must be JPG, PNG or WebP and no larger than 5 MB each.",true);return;}
