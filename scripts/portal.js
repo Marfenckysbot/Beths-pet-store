@@ -104,7 +104,7 @@ async function boot(){
     const name=$("#edit-product-name").value.trim();
     const price=Number($("#edit-product-price").value);
     const modelUrl=$("#edit-product-model-url").value.trim();
-    if(modelUrl&&!/^https:\/\//i.test(modelUrl)){message("#workspace-message","3D model links must use HTTPS.",true);return;}
+    if(modelUrl&&!/^https:\/\/.+\.(?:glb|gltf)(?:[?#].*)?$/i.test(modelUrl)){message("#workspace-message","3D model links must use HTTPS.",true);return;}
     if(!name||!Number.isFinite(price)||price<0){message("#workspace-message","Enter a product name and a valid non-negative price.",true);return;}
     message("#workspace-message","Saving product details for review…");
     const {error}=await supabase.from("products").update({name,slug:slugify(name),description:$("#edit-product-description").value.trim(),price_usd:price,model_url:modelUrl||null,category_id:$("#edit-product-category").value||null,status:"pending"}).eq("id",id).eq("seller_id",window.currentSellerId);
