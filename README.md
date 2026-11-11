@@ -1,10 +1,10 @@
 # Beth's Pet Store
 
-A Nigeria-focused pet marketplace preview with public storefront pages, seller/admin workspace, customer accounts and a documented path to future integrations.
+A global pet marketplace foundation with an international storefront, independent seller tools, customer accounts and a documented path to future integrations. The founder is operating from Nigeria, but the product is not restricted to Nigeria; launch markets, currencies, shipping coverage and legal requirements will be configured deliberately rather than assumed.
 
 ## Project status
 
-This repository is a pre-launch implementation, not a live checkout marketplace. The connected Supabase project is initialized and the marketplace schema plus eight migrations are applied. Auth redirects, founder admin bootstrap and browser-based role testing remain to be completed. No payment, delivery, transactional email or analytics provider is connected. The preview bag is local-only; order creation and payment collection are disabled.
+This repository is a pre-launch implementation, not a live checkout marketplace. The connected Supabase project is initialized and the base schema plus nine migrations are applied. The founder Auth account and administrator membership are provisioned. Auth redirect configuration and browser-based role testing remain to be completed. No payment, delivery, transactional email or analytics provider is connected. The preview bag is local-only; order creation and payment collection are disabled.
 
 The current work is maintained on the `marketplace-foundation` branch and proposed through an open draft pull request. It has not been merged or deployed to production.
 
@@ -24,7 +24,7 @@ The current work is maintained on the `marketplace-foundation` branch and propos
 
 ## Supabase setup
 
-Read [Portal setup](docs/PORTAL-SETUP.md) and [Seller inventory management](docs/SELLER-INVENTORY-MANAGEMENT.md). The connected project ref is `moqbnaotzveoljeidsez`, and the browser configuration is `scripts/portal-config.js`. The database has 14 RLS-enabled public tables, five seeded categories, seller/admin functions and the product image bucket. Finish Auth redirects and founder admin bootstrap before role-based testing. Browser code uses only the public publishable key. Never commit a service-role key, database password or payment secret.
+Read [Portal setup](docs/PORTAL-SETUP.md) and [Seller inventory management](docs/SELLER-INVENTORY-MANAGEMENT.md). The connected Supabase project ref is `moqbnaotzveoljeidsez`, and the browser configuration is `scripts/portal-config.js`. The database has 14 RLS-enabled public tables, five seeded categories, seller/admin workflows and the product image bucket. The founder administrator membership is already provisioned; do not create a second founder account. Finish Auth Site URL/redirect configuration and browser role testing before inviting users. Browser code uses only the public publishable key. Never commit a service-role key, database password or payment secret.
 
 ## Server-side integration boundary
 
