@@ -30,4 +30,4 @@ Test using two separate seller accounts:
 6. Archive hides the product; restore returns it to pending.
 7. Existing order items remain intact after archive.
 
-These workflows are implemented in the repository but are not live-tested until a Supabase project is configured and migrations are applied.
+The connected Supabase project has the relevant tables, RLS and seller inventory RPCs installed. Ownership checks were reviewed, but full browser end-to-end tests with two separate seller accounts have not yet been completed.
