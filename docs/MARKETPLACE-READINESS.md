@@ -14,7 +14,7 @@
 - The website's public Supabase URL and publishable key are configured on the development branch.
 - Email/password Auth is enabled and email confirmation is ON; the founder administrator membership is provisioned. The public Site URL and allowed redirect URLs still need to be saved and browser-tested.
 - Founder admin membership is provisioned for the existing founder account; the account sign-in and role checks still require end-to-end browser verification.
-- Optional 3D model URL support is available for seller listings. The product detail page loads an interactive model-viewer for seller-supplied HTTPS GLB/glTF files. No sample 3D model assets are bundled yet, so the viewer appears only when a seller supplies a properly licensed model.
+- Optional 3D model URL support is available for seller listings. The product detail page loads an interactive model-viewer for seller-supplied HTTPS GLB/glTF files. A dedicated `3d-showroom.html` page now demonstrates a CC0 pet-home scene hosted by 3DAssets.dev; it is loaded remotely and is not bundled locally.
 - Netlify Forms markup for seller interest, contact, support and feedback.
 - Server-side integration workspace reserved under `netlify/functions/`; no payment, order, delivery or email handlers are active.
 - Founder handoff materials, including the integration registry and low-cost pre-launch roadmap.
@@ -32,14 +32,14 @@ This repository is a pre-launch implementation, not a live operating marketplace
 - No production deployment has been triggered by this work.
 - Passing CI checks syntax and repository guardrails; it does not replace browser QA, database security review, provider sandbox tests or legal/compliance review.
 
-Illustrative catalogue content, sample prices, discounts and imagery are design previews. A product 3D viewer is infrastructure only; no seller model files are currently guaranteed. They are not offers, verified stock, seller endorsements, customer reviews or delivery promises.
+Illustrative catalogue content, sample prices, discounts and imagery are design previews. The 3D showroom is an illustrative third-party CC0 model and depends on that provider's CDN; seller model files are not guaranteed. They are not offers, verified stock, seller endorsements, customer reviews or delivery promises.
 
 ## Integration order
 
 Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` as the master handoff record and `docs/INTEGRATION-REGISTRY.md` as the provider-specific destination map.
 
 1. **Founder-owned basics:** confirm business/contact details, brand assets, policies and intended operating model. Do not publish personal home-address or identity information by default.
-2. **Database and identity:** Supabase project is initialized. Configure Auth email/redirect settings, create the founder Auth account, add the founder admin UUID through trusted SQL, and test separate customer/seller/admin accounts.
+2. **Database and identity:** Supabase project is initialized. Configure Auth email/redirect settings, use the existing founder Auth account and provisioned admin membership; do not create a duplicate. Configure the Site URL/redirect allowlist only after verifying the preview origin, then test separate customer/seller accounts and the existing admin account.
 3. **Supply validation:** obtain written supplier permission, real product data, current prices, stock ownership/update process and fulfilment/returns terms.
 4. **Preview hosting:** configure the hosting project and domain, deploy only to a preview environment, verify Netlify Forms and all routes, and complete mobile/accessibility/browser QA.
 5. **Order operations:** agree who confirms stock, invoices, dispatches, handles customer support, returns, refunds and disputes. Keep the first workflow manual if that is safer.
