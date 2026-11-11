@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, existsSync } from "node:fs";
+import { readdirSync, readFileSync, existsSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
 const root = process.cwd();
@@ -16,6 +16,7 @@ for (const file of htmlFiles) {
       ? resolve(root, "." + clean)
       : resolve(root, dirname(file), clean);
     if (!target.startsWith(root) || !existsSync(target)) errors.push(file + " -> missing local reference: " + ref);
+    else if (statSync(target).isFile() && statSync(target).size === 0) errors.push(file + " -> referenced file is empty: " + ref);
   }
 
   for (const match of html.matchAll(/<form\b([^>]*)>/gi)) {
@@ -36,6 +37,25 @@ const publicConfig = readFileSync(join(root, "scripts/site.config.js"), "utf8");
 const activeFiles = htmlFiles.map(file => readFileSync(join(root, file), "utf8")).join("\n") + publicConfig;
 for (const pattern of [/123 Pet Avenue/i, /G-XXXXXXXXXX/i, /6\.5244\s*,?\s*\/\//, /3\.3792\s*,?\s*\/\//, /\+1\s*\(555\)\s*123-4567/]) {
   if (pattern.test(activeFiles)) errors.push("Potential placeholder analytics, contact or private location data found: " + pattern);
+}
+
+
+const legacyDeployScripts = [
+  "auto_deploy.sh",
+  "deploy_all.sh",
+  "deploy_all_in_one.sh",
+  "deploy_all_in_one.sho",
+  "auto_full.sh"
+];
+for (const path of legacyDeployScripts) {
+  if (!existsSync(join(root, path))) continue;
+  const script = readFileSync(join(root, path), "utf8");
+  if (/^\\s*git\\s+push\\b[^\\n]*\\bmain\\b/gim.test(script)) {
+    errors.push(path + " -> direct push to main is prohibited; use a reviewed pull request");
+  }
+  if (/^\\s*netlify\\s+deploy\\b[^\\n]*--prod/gim.test(script)) {
+    errors.push(path + " -> production deployment must not be triggered by legacy scripts");
+  }
 }
 
 if (errors.length) {
