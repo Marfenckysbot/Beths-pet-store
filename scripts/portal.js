@@ -70,11 +70,13 @@ async function boot(){
       const {data:applications,error:applicationError}=await supabase.from("seller_applications").select("id,business_name,status,created_at").eq("applicant_id",user.id).order("created_at",{ascending:false}).limit(1);
       if(applicationError){message("#workspace-message",applicationError.message,true);return;}
       const application=applications?.[0];
-      show("#application-card",!application);
+      show("#application-card",!application||["rejected","withdrawn"].includes(application.status));
       show("#claim-card",application?.status==="approved");
       if(application){
         $("#seller-stats").innerHTML=stat("Shop status","Not claimed")+stat("Application",application.status)+stat("Listings","—")+stat("Orders","—");
-        if(application.status==="approved"){
+        if(application.status==="rejected"||application.status==="withdrawn"){
+          message("#workspace-message",application.status==="rejected"?"Your previous application was not approved. You may submit a new application with updated business details.":"Your previous application was withdrawn. You may submit a new application when ready.");
+        }else if(application.status==="approved"){
           $("#claim-application").value=application.id;
           message("#workspace-message",`Good news — ${application.business_name} has been approved. Claim your shop below.`);
         }else{
