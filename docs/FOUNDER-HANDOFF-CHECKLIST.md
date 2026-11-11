@@ -56,8 +56,8 @@ Integration destination: seller portal/product records and the catalogue. Do not
 - [x] Supabase project URL — configured in `scripts/portal-config.js` on the development branch.
 - [x] Supabase publishable key — configured in `scripts/portal-config.js` on the development branch.
 - [x] Base schema and eight recorded migrations applied to the connected Supabase project; all 14 public tables have RLS enabled.
-- [ ] Founder Auth user UUID — still to be inserted into `public.admin_users` using trusted SQL after the founder account is created.
-- [ ] Site URL and redirect allowlist — Supabase Auth settings.
+- [x] Founder Auth account and administrator membership — provisioned for the founder account; no password or secret is stored in the repository.
+- [ ] Site URL and redirect allowlist — Supabase Auth settings; confirm the actual preview URL before saving and browser-testing redirects.
 - [ ] Separate admin, seller and customer test accounts — security test plan.
 
 Never put the Supabase service-role key or database password in browser configuration or repository files.
@@ -116,4 +116,4 @@ Destination: server-side email adapter, consent-aware analytics configuration an
 
 ## Current project boundary
 
-The repository is a feature-rich pre-launch preview in an open draft pull request. The connected Supabase project is initialized and its schema/migrations are applied, but Auth redirects, founder admin bootstrap and browser role tests remain pending. No suppliers or payment/delivery/email providers are confirmed, and checkout is disabled. Completing a checklist item does not automatically authorize deployment, spending, account creation, payment activation or public disclosure.
+The repository is a feature-rich pre-launch preview in an open draft pull request. The connected Supabase project is initialized, nine migrations are applied, and the founder administrator membership is provisioned. Auth Site URL/redirect settings and browser role tests remain pending. No suppliers or payment/delivery/email providers are confirmed, and checkout is disabled. Completing a checklist item does not automatically authorize deployment, spending, account creation, payment activation or public disclosure.
