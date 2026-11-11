@@ -5,6 +5,8 @@ const storagePath = "supabase/migrations/20261109_product_image_storage.sql";
 const inventoryPath = "supabase/migrations/20261109_seller_inventory_management.sql";
 const modelPath = "supabase/migrations/20261111_product_3d_models.sql";
 const sellerClaimPath = "supabase/migrations/20261111_harden_seller_claim_rpc.sql";
+const productGuardPath = "supabase/migrations/20261111_lock_down_product_update_permissions.sql";
+const inventoryFixPath = "supabase/migrations/20261111_fix_invoker_inventory_rpc_columns.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const cataloguePath = "scripts/marketplace.js";
@@ -14,7 +16,7 @@ const readinessPath = "docs/MARKETPLACE-READINESS.md";
 const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
@@ -27,6 +29,8 @@ if (!errors.length) {
   const inventory = readFileSync(inventoryPath, "utf8");
   const modelMigration = readFileSync(modelPath, "utf8");
   const sellerClaimMigration = readFileSync(sellerClaimPath, "utf8");
+  const productGuardMigration = readFileSync(productGuardPath, "utf8");
+  const inventoryFixMigration = readFileSync(inventoryFixPath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
   const account = readFileSync("scripts/account.js", "utf8");
   const accountHtml = readFileSync("account.html", "utf8");
@@ -56,6 +60,11 @@ if (!errors.length) {
   if (!migration.includes("v_application.email") || !migration.includes("auth.users") || !migration.includes("email_confirmed_at")) errors.push("Legacy seller application bootstrap must verify confirmed email");
   if (!sellerClaimMigration.includes("security invoker") || !sellerClaimMigration.includes("applicant claim approved seller") || !sellerClaimMigration.includes("a.applicant_id = (select auth.uid())") || !sellerClaimMigration.includes("a.status = 'approved'")) errors.push("Seller claiming must use an invoker RPC and an RLS policy restricted to the applicant's own approved application");
   if (!sellerClaimMigration.includes("revoke all on function public.claim_approved_seller") || !sellerClaimMigration.includes("grant execute on function public.claim_approved_seller")) errors.push("Seller claim RPC must revoke public execution and grant authenticated execution only");
+  if (!productGuardMigration.includes("revoke update on table public.products from authenticated") || !productGuardMigration.includes("grant update (category_id, name, slug, description, price_usd, model_url, status, inventory_quantity)")) errors.push("Product updates must use a restricted column-level grant");
+  if (/grant update on public\\.products to authenticated/i.test(productGuardMigration)) errors.push("Product guard migration must not restore table-wide UPDATE privileges");
+  if (!productGuardMigration.includes("guard_product_seller_status_change") || !productGuardMigration.includes("new.status not in ('pending', 'archived')")) errors.push("Seller product status changes must be guarded against self-publication");
+  if (!productGuardMigration.includes("security invoker") || !inventoryFixMigration.includes("security invoker")) errors.push("Seller inventory/archive RPCs must run as SECURITY INVOKER");
+  if (inventoryFixMigration.includes("updated_at = now()")) errors.push("Invoker inventory RPCs must rely on the updated_at trigger rather than writing a protected column");
   if (!migration.includes("auth.uid(), v_application.id") || !migration.includes("'pending'")) errors.push("New seller accounts must remain pending until manually activated");
   for (const fn of ["review_seller_application", "claim_approved_seller", "set_seller_moderation_status", "review_marketplace_product"]) {
     if (!portal.includes(`rpc("${fn}"`)) errors.push("Portal is missing moderation integration: " + fn);
