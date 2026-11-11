@@ -41,7 +41,7 @@ for (const pattern of [/123 Pet Avenue/i, /G-XXXXXXXXXX/i, /6\.5244\s*,?\s*\/\//
 
 
 
-const publicBackupArtifacts = readdirSync(root).filter(file => /\\.(?:bak|log)$/i.test(file));
+const publicBackupArtifacts = readdirSync(root).filter(file => /\.(?:bak|log)$/i.test(file));
 for (const file of publicBackupArtifacts) {
   errors.push(file + " -> backup/log files must not be published from the site root");
 }
@@ -56,10 +56,10 @@ const legacyDeployScripts = [
 for (const path of legacyDeployScripts) {
   if (!existsSync(join(root, path))) continue;
   const script = readFileSync(join(root, path), "utf8");
-  if (/^\\s*git\\s+push\\b[^\\n]*\\bmain\\b/gim.test(script)) {
+  if (/^\s*git\s+push\b[^\n]*\bmain\b/gim.test(script)) {
     errors.push(path + " -> direct push to main is prohibited; use a reviewed pull request");
   }
-  if (/^\\s*netlify\\s+deploy\\b[^\\n]*--prod/gim.test(script)) {
+  if (/^\s*netlify\s+deploy\b[^\n]*--prod/gim.test(script)) {
     errors.push(path + " -> production deployment must not be triggered by legacy scripts");
   }
 }
