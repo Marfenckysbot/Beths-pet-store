@@ -55,7 +55,7 @@ Integration destination: seller portal/product records and the catalogue. Do not
 
 - [x] Supabase project URL — configured in `scripts/portal-config.js` on the development branch.
 - [x] Supabase publishable key — configured in `scripts/portal-config.js` on the development branch.
-- [x] Base schema and nine recorded migrations applied to the connected Supabase project; all 14 public tables have RLS enabled.
+- [x] Base schema and fourteen recorded migrations applied to the connected Supabase project; all 14 public tables have RLS enabled. New public-schema tables, sequences and functions created by `postgres` are not exposed to Data API roles by default; future migrations must add explicit least-privilege grants.
 - [x] Founder Auth account and administrator membership — already provisioned; no password or secret is stored in the repository.
 - [ ] Site URL and redirect allowlist — Supabase Auth settings; confirm the actual preview URL before saving and browser-testing redirects.
 - [ ] Separate admin, seller and customer test accounts — security test plan.
