@@ -9,6 +9,7 @@ This checklist is for the development branch. It does not authorize production d
 - Seller workspace data is requested using the signed-in user's own seller record; product and order-item requests are additionally filtered by the seller ID.
 - Database row-level security (RLS) remains the actual authorization boundary. Client-side filters and hidden buttons are usability measures, not security controls.
 - Seller applications are created for the authenticated user's own account and start in `pending`.
+- Applicants can read only the application fields needed for status tracking; internal `reviewer_notes` are excluded by column-level SELECT privileges. The review RPC returns no application row, and the claim RPC selects only the safe fields it needs.
 - An approved application can be claimed only by its applicant. The resulting seller profile starts in `pending`; approval does not activate the shop.
 - Product submissions start in `pending`. Only administrator moderation may publish a listing, and database logic must require an active seller.
 - Stock and archive operations use `SECURITY INVOKER` database functions, RLS, and explicit column grants. Administrator moderation RPCs receive only the status/review columns they need; RLS and administrator checks still deny ordinary sellers and customers. The database denies authenticated users UPDATE access to `seller_id`; product INSERT and UPDATE grants are column-scoped; a trigger blocks sellers from changing status to `active` or `rejected`.
