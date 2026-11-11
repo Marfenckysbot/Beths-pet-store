@@ -40,8 +40,8 @@ Approval of an application is not the same as approval of a public storefront. B
 
 - Configure Supabase URL and publishable/anon key as public site configuration; these are not secrets, but access is constrained by RLS.
 - Implement sign-in, sign-out, password reset and session expiry handling.
-- Build seller dashboard views using only the signed-in seller's RLS-visible records.
-- Build an admin moderation screen that calls the four database functions; do not expose admin controls to unauthorised users.
+- The seller and admin dashboards are connected to the existing portal; keep all queries limited to the signed-in user's RLS-visible records.
+- The admin portal calls the four moderation functions; do not expose admin controls to unauthorised users.
 - Test with separate customer, seller and administrator accounts.
 - Verify that a seller cannot read another seller's applications, products, ledger or payout references.
 - Verify that an unauthorised user cannot call moderation functions successfully.
