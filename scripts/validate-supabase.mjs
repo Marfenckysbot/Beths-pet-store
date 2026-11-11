@@ -8,6 +8,7 @@ const sellerClaimPath = "supabase/migrations/20261111_harden_seller_claim_rpc.sq
 const productGuardPath = "supabase/migrations/20261111_lock_down_product_update_permissions.sql";
 const inventoryFixPath = "supabase/migrations/20261111_fix_invoker_inventory_rpc_columns.sql";
 const writeGrantsPath = "supabase/migrations/20261111170539_tighten_customer_and_seller_write_grants.sql";
+const defaultPrivilegesPath = "supabase/migrations/20261111183000_restrict_future_public_object_defaults.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const cataloguePath = "scripts/marketplace.js";
@@ -17,7 +18,7 @@ const readinessPath = "docs/MARKETPLACE-READINESS.md";
 const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
@@ -33,6 +34,7 @@ if (!errors.length) {
   const productGuardMigration = readFileSync(productGuardPath, "utf8");
   const inventoryFixMigration = readFileSync(inventoryFixPath, "utf8");
   const writeGrantsMigration = readFileSync(writeGrantsPath, "utf8");
+  const defaultPrivilegesMigration = readFileSync(defaultPrivilegesPath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
   const account = readFileSync("scripts/account.js", "utf8");
   const accountHtml = readFileSync("account.html", "utf8");
