@@ -40,7 +40,7 @@
           <div class="portal-card-heading"><p class="eyebrow">YOUR DETAILS</p><h3>Profile information</h3><p>Only your signed-in account can read or update these details.</p></div>
           <form id="customer-profile-form">
             <label>Display name<input id="customer-display-name" maxlength="100" autocomplete="name"></label>
-            <label>Country<select id="customer-country"><option value="">Choose a country</option><option value="NG">Nigeria</option><option value="GH">Ghana</option><option value="KE">Kenya</option><option value="ZA">South Africa</option><option value="GB">United Kingdom</option><option value="US">United States</option><option value="CA">Canada</option></select></label>
+            <label>Country code (2 letters)<input id="customer-country" type="text" inputmode="text" autocomplete="country" maxlength="2" pattern="[A-Za-z]{2}" placeholder="e.g. US, NG, GB" aria-describedby="country-code-help"></label><small id="country-code-help">Use your country’s standard two-letter code. This accepts countries worldwide.</small>
             <button class="btn btn-primary" type="submit">Save profile</button>
           </form>
         </article>
