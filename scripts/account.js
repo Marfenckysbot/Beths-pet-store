@@ -69,7 +69,11 @@ async function boot(){
     if(countryCode&&!/^[A-Z]{2}$/.test(countryCode)){message("#customer-message","Enter a valid two-letter country code, such as US, NG or GB.",true);return;}
     $("#customer-country").value=countryCode;
     const payload={id:user.id,display_name:$("#customer-display-name").value.trim()||null,country_code:countryCode||null};
-    const {error}=await supabase.from("profiles").upsert(payload,{onConflict:"id"});
+    const {data:existing,error:lookupError}=await supabase.from("profiles").select("id").eq("id",user.id).maybeSingle();
+    if(lookupError){message("#customer-message",lookupError.message,true);return;}
+    const {error}=existing
+      ?await supabase.from("profiles").update({display_name:payload.display_name,country_code:payload.country_code}).eq("id",user.id)
+      :await supabase.from("profiles").insert(payload);
     message("#customer-message",error?.message||"Profile saved.",Boolean(error));
   }
 
