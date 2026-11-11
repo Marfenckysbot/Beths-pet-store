@@ -3,6 +3,7 @@ import { readFileSync, existsSync } from "node:fs";
 const migrationPath = "supabase/migrations/20261109_admin_and_seller_workflows.sql";
 const storagePath = "supabase/migrations/20261109_product_image_storage.sql";
 const inventoryPath = "supabase/migrations/20261109_seller_inventory_management.sql";
+const modelPath = "supabase/migrations/20261111_product_3d_models.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const cataloguePath = "scripts/marketplace.js";
@@ -12,7 +13,7 @@ const readinessPath = "docs/MARKETPLACE-READINESS.md";
 const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
@@ -23,6 +24,7 @@ if (!errors.length) {
   const catalogue = readFileSync(cataloguePath, "utf8");
   const storage = readFileSync(storagePath, "utf8");
   const inventory = readFileSync(inventoryPath, "utf8");
+  const modelMigration = readFileSync(modelPath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
   const account = readFileSync("scripts/account.js", "utf8");
   const accountHtml = readFileSync("account.html", "utf8");
@@ -42,6 +44,9 @@ if (!errors.length) {
   }
 
   if (!schema.includes("enable row level security")) errors.push("Base schema must enable row-level security");
+  if (!schema.includes("model_url text") || !modelMigration.includes("products_model_url_https_check")) errors.push("Optional 3D model URLs must be represented in schema and HTTPS-constrained migration");
+  if (!portal.includes("product-model-url") || !portal.includes("edit-product-model-url")) errors.push("Seller portal must expose optional 3D model URL fields");
+  if (!catalogue.includes("model-viewer") || !catalogue.includes("model_url")) errors.push("Product details must support optional interactive 3D model viewing");
   if (!migration.includes("public.is_marketplace_admin()")) errors.push("Moderation migration must enforce administrator checks");
   if (!migration.includes("security definer")) errors.push("Workflow functions must use controlled security-definer execution");
   if (!migration.includes("revoke all on function")) errors.push("Workflow functions must revoke default public execution");
