@@ -170,7 +170,7 @@ async function boot(){
     if(files.some(file=>!allowedTypes.includes(file.type)||file.size>5*1024*1024)){message("#workspace-message","Photos must be JPG, PNG or WebP and no larger than 5 MB each.",true);return;}
     const name=$("#product-name").value.trim();
     const modelUrl=$("#product-model-url").value.trim();
-    if(modelUrl&&!/^https:\/\//i.test(modelUrl)){message("#workspace-message","3D model links must use HTTPS.",true);return;}
+    if(modelUrl&&!/^https:\/\/.+\.(?:glb|gltf)(?:[?#].*)?$/i.test(modelUrl)){message("#workspace-message","3D model links must use HTTPS.",true);return;}
     const uploadedPaths=[];
     const images=[...manualImages];
     message("#workspace-message","Uploading photos and submitting product for review…");
