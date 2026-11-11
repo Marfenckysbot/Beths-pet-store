@@ -12,6 +12,9 @@
 - Fourteen public tables with RLS enabled, five seeded categories, seller/admin workflow functions and product-image storage policies.
 - Narrowed Data API grants and supporting indexes for marketplace access paths.
 - The website's public Supabase URL and publishable key are configured on the development branch.
+- Email/password Auth is enabled and email confirmation is reported ON by the founder; the public Site URL and allowed redirect URLs still need to be saved and browser-tested.
+- Founder admin membership was bootstrapped for the founder account; the account sign-in and role checks still require end-to-end browser verification.
+- Optional 3D model URL support is available for seller listings. The database accepts public HTTPS model URLs; a real 3D viewer appears only when a seller supplies a licensed GLB/glTF model.
 - Netlify Forms markup for seller interest, contact, support and feedback.
 - Server-side integration workspace reserved under `netlify/functions/`; no payment, order, delivery or email handlers are active.
 - Founder handoff materials, including the integration registry and low-cost pre-launch roadmap.
@@ -21,7 +24,7 @@
 
 This repository is a pre-launch implementation, not a live operating marketplace.
 
-- Supabase is initialized, but Auth email/redirect settings, founder admin bootstrap and browser-based role tests remain outstanding.
+- Supabase is initialized. Email/password and email-confirmation settings were confirmed by the founder; the Site URL/redirect configuration and browser-based role tests remain outstanding.
 - No verified production seller accounts, suppliers, product catalogue, live stock or customer orders exist.
 - No payment merchant account, settlement destination, delivery provider, transactional email provider or analytics property is connected.
 - The preview bag does not create orders. Checkout, payment collection, refunds, settlement and payouts are disabled.
@@ -29,7 +32,7 @@ This repository is a pre-launch implementation, not a live operating marketplace
 - No production deployment has been triggered by this work.
 - Passing CI checks syntax and repository guardrails; it does not replace browser QA, database security review, provider sandbox tests or legal/compliance review.
 
-Illustrative catalogue content, sample prices, discounts and imagery are design previews. They are not offers, verified stock, seller endorsements, customer reviews or delivery promises.
+Illustrative catalogue content, sample prices, discounts and imagery are design previews. A product 3D viewer is infrastructure only; no seller model files are currently guaranteed. They are not offers, verified stock, seller endorsements, customer reviews or delivery promises.
 
 ## Integration order
 
