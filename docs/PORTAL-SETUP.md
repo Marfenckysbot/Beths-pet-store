@@ -23,16 +23,17 @@ The following have been applied successfully to the connected project:
 6. `supabase/migrations/20261110_seller_and_application_admin_update_grants.sql`
 7. `supabase/migrations/20261110_rls_auth_uid_initplan_optimization.sql`
 8. `supabase/migrations/20261110_invoker_admin_moderation_functions.sql`
+9. `supabase/migrations/20261111_product_3d_models.sql`
+10. `supabase/migrations/20261111_harden_seller_claim_rpc.sql`
 
-All 14 public tables have RLS enabled. The initial category seed contains five categories. The database was initially empty. The founder account and administrator membership have since been created; no production sellers, verified products, customer orders or payment records are established.
+All 14 public tables have RLS enabled. The initial category seed contains five categories. The database was initially empty. The founder account and administrator membership have been provisioned; no production sellers, verified products, customer orders or payment records are established.
 
 ## Remaining Supabase setup
 
-1. Email/password sign-in is enabled and email confirmation is ON, as confirmed by the founder. Set the Site URL and redirect URLs to the verified preview/deployed account and portal routes before browser testing.
+1. Email/password sign-in is enabled and email confirmation is ON, as confirmed by the founder. The founder administrator account is already provisioned. Set the Site URL and redirect URLs to the verified preview/deployed account and portal routes before browser testing.
 2. Confirm the public project URL and publishable key in `scripts/portal-config.js`; never add a service-role key.
-3. Create the founder account through the account/portal sign-up flow and confirm its email.
-4. Add the founder's Auth user UUID to `public.admin_users` through the trusted Supabase SQL Editor. Do not expose admin bootstrap through a public browser form.
-5. Test with separate administrator, seller and ordinary customer accounts before inviting applicants.
+3. Sign in with the existing founder account and verify that the administrator dashboard opens.
+4. Test with separate seller and ordinary customer accounts before inviting applicants. Do not create a second founder account.
 
 ## Portal capabilities
 
@@ -61,7 +62,7 @@ All 14 public tables have RLS enabled. The initial category seed contains five c
 
 ## Important limitations
 
-- The Supabase schema and migrations are live in the connected project, but user sign-up, email delivery, Auth redirects and all role-based workflows have not yet been browser-tested.
+- The Supabase schema and migrations are live in the connected project. Email confirmation is enabled and the founder admin membership exists, but Auth redirects, email delivery and role-based workflows have not yet been browser-tested.
 - The founder administrator membership has been bootstrapped; sign-in and permission checks still need browser verification.
 - No verified production seller accounts or real product catalogue exist.
 - Netlify seller-form submissions are not automatically imported into Supabase. Existing submissions require a controlled manual review/import process.
@@ -71,6 +72,6 @@ All 14 public tables have RLS enabled. The initial category seed contains five c
 
 ## Security boundaries
 
-UI visibility is not the security boundary. Row-level security and SQL functions enforce access. The Data API grants have been narrowed so anonymous users can read only public catalogue/review data; authenticated access is still row-filtered by RLS. Do not weaken policies to make the dashboard appear to work. Browser code must use only the anon/publishable key. Seller stock and archive actions use narrowly scoped ownership-checking RPCs. Sellers cannot self-publish. All payment, refund, order creation, settlement and payout writes must run in trusted server-side code with verified provider webhooks.
+UI visibility is not the security boundary. Row-level security and SQL functions enforce access. The Data API grants have been narrowed so anonymous users can read only public catalogue/review data; authenticated access is still row-filtered by RLS. Do not weaken policies to make the dashboard appear to work. Browser code must use only the anon/publishable key. Seller stock and archive actions use narrowly scoped ownership-checking RPCs. The seller-claim RPC now runs as SECURITY INVOKER, with an RLS insert policy that only permits a user to claim their own approved application. Sellers cannot self-publish. All payment, refund, order creation, settlement and payout writes must run in trusted server-side code with verified provider webhooks.
 
 See `docs/INTEGRATION-REGISTRY.md` for the safe handoff of later provider details and `docs/FOUNDER-HANDOFF-CHECKLIST.md` for the complete pre-launch checklist.
