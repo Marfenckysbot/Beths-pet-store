@@ -37,7 +37,10 @@ async function boot(){
     const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/account.html"});
     message("#account-auth-message",error?.message||"If an account exists for that address, a reset email has been sent.",Boolean(error));
   });
-  $("#account-signout").addEventListener("click",async()=>{\n    const {error}=await supabase.auth.signOut();\n    if(error)message("#customer-message",error.message,true);\n  });
+  $("#account-signout").addEventListener("click",async()=>{
+    const {error}=await supabase.auth.signOut();
+    if(error)message("#customer-message",error.message,true);
+  });
   $("#customer-profile-form").addEventListener("submit",saveProfile);
   supabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>render(session),0);});
   await render((await supabase.auth.getSession()).data.session);
@@ -62,7 +65,10 @@ async function boot(){
     event.preventDefault();
     const user=(await supabase.auth.getUser()).data.user;
     if(!user){message("#customer-message","Please sign in again.",true);return;}
-    const countryCode=$("#customer-country").value.trim().toUpperCase();\n    if(countryCode&&!/^[A-Z]{2}$/.test(countryCode)){message("#customer-message","Enter a valid two-letter country code, such as US, NG or GB.",true);return;}\n    $("#customer-country").value=countryCode;\n    const payload={id:user.id,display_name:$("#customer-display-name").value.trim()||null,country_code:countryCode||null};
+    const countryCode=$("#customer-country").value.trim().toUpperCase();
+    if(countryCode&&!/^[A-Z]{2}$/.test(countryCode)){message("#customer-message","Enter a valid two-letter country code, such as US, NG or GB.",true);return;}
+    $("#customer-country").value=countryCode;
+    const payload={id:user.id,display_name:$("#customer-display-name").value.trim()||null,country_code:countryCode||null};
     const {error}=await supabase.from("profiles").upsert(payload,{onConflict:"id"});
     message("#customer-message",error?.message||"Profile saved.",Boolean(error));
   }
