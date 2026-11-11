@@ -4,27 +4,17 @@ This is the implementation guide for the moderation migration in `supabase/migra
 
 ## Current status
 
-The migration is committed to the `marketplace-foundation` branch. It is not applied to a Supabase project because Beth's Pet Store does not yet have a connected Supabase project. The website remains a static preview until authentication and server-side services are configured.
+The development branch is connected to the existing Supabase project. The founder account and administrator membership already exist, email confirmation is enabled, and the seller-claim hardening migration has been applied. The project currently has no seller, product or order records. Browser end-to-end testing and final redirect URL configuration are still outstanding. Do not create a second founder account.
 
 ## Apply the database changes
 
-1. Create a Supabase project for Beth's Pet Store.
-2. Open the SQL Editor.
-3. Apply `supabase/schema.sql` first.
-4. Apply `supabase/migrations/20261109_admin_and_seller_workflows.sql` second.
-5. Review the SQL output and confirm both scripts complete without errors.
-6. Enable email authentication and configure the allowed site/redirect URLs before inviting any real users.
+These steps are for a fresh, separate test environment only. The existing connected project is already provisioned; do not re-run the base schema or migrations there blindly. For a fresh environment, open the SQL Editor, apply the base schema first, then apply the migrations in chronological order and verify each completes. Configure email authentication and the real site's allowed redirect URLs before inviting test users.
 
 Do not paste a service-role key into HTML, browser JavaScript, GitHub commits, or public Netlify variables. A Supabase anon/publishable key is designed for browser use only when row-level security is correctly enabled.
 
 ## Bootstrap the first administrator
 
-The schema intentionally does not make the first signed-up user an administrator.
-
-1. Create the founder's account through Supabase Auth.
-2. Confirm the email address.
-3. In the Supabase SQL Editor, retrieve that account's UUID from Authentication > Users.
-4. Insert that UUID into `public.admin_users` using the SQL Editor, for example:
+The schema intentionally does not make the first signed-up user an administrator. The existing founder account and its administrator membership are already provisioned in the connected project. Do not repeat this bootstrap there. For a separate fresh test environment only:
 
 ```sql
 insert into public.admin_users (user_id)
