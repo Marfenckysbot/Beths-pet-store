@@ -24,11 +24,11 @@ The following have been applied successfully to the connected project:
 7. `supabase/migrations/20261110_rls_auth_uid_initplan_optimization.sql`
 8. `supabase/migrations/20261110_invoker_admin_moderation_functions.sql`
 
-All 14 public tables have RLS enabled. The initial category seed contains five categories. The database is otherwise empty: no users, seller profiles, products, orders or payment records have been created.
+All 14 public tables have RLS enabled. The initial category seed contains five categories. The database was initially empty. The founder account and administrator membership have since been created; no production sellers, verified products, customer orders or payment records are established.
 
 ## Remaining Supabase setup
 
-1. In Supabase Authentication, enable email/password sign-in, keep email confirmation enabled, and set the Site URL and redirect URLs to the actual preview/deployed account and portal routes.
+1. Email/password sign-in is enabled and email confirmation is ON, as confirmed by the founder. Set the Site URL and redirect URLs to the verified preview/deployed account and portal routes before browser testing.
 2. Confirm the public project URL and publishable key in `scripts/portal-config.js`; never add a service-role key.
 3. Create the founder account through the account/portal sign-up flow and confirm its email.
 4. Add the founder's Auth user UUID to `public.admin_users` through the trusted Supabase SQL Editor. Do not expose admin bootstrap through a public browser form.
@@ -41,7 +41,7 @@ All 14 public tables have RLS enabled. The initial category seed contains five c
 - Admin application review, seller activation/suspension and product moderation.
 - Seller claiming for an approved application using the same confirmed email address.
 - Active sellers can submit product listings; new and edited listings remain pending until approved.
-- Seller photo uploads accept JPG, PNG and WebP, up to 5 MB each and five images per listing. Storage paths are scoped to the seller UUID; the product image bucket is public-read only.
+- Seller photo uploads accept JPG, PNG and WebP, up to 5 MB each and five images per listing. Sellers may optionally attach a public HTTPS `.glb` or `.gltf` 3D model URL; only models with appropriate usage rights should be submitted. Storage paths are scoped to the seller UUID; the product image bucket is public-read only.
 - Seller catalogue management: edit product details, update stock without unpublishing, archive listings without deleting history and restore archived listings to pending review.
 - Seller product-content edits return the listing to pending moderation. Stock-only changes preserve moderation status.
 - Seller catalogue and read-only order-item visibility.
@@ -62,7 +62,7 @@ All 14 public tables have RLS enabled. The initial category seed contains five c
 ## Important limitations
 
 - The Supabase schema and migrations are live in the connected project, but user sign-up, email delivery, Auth redirects and all role-based workflows have not yet been browser-tested.
-- The founder administrator has not yet been bootstrapped in `admin_users`.
+- The founder administrator membership has been bootstrapped; sign-in and permission checks still need browser verification.
 - No verified production seller accounts or real product catalogue exist.
 - Netlify seller-form submissions are not automatically imported into Supabase. Existing submissions require a controlled manual review/import process.
 - Product images are public-read. Never upload private documents, identity records or customer information.
