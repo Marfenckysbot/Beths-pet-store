@@ -21,6 +21,7 @@ async function boot(){
     message("#auth-message",error?.message||"Signed in.",Boolean(error));
   });
   $("#sign-up-button").addEventListener("click",async()=>{
+    if(!$("#auth-form").reportValidity())return;
     message("#auth-message","Creating account…");
     const {data,error}=await supabase.auth.signUp({email:$("#auth-email").value.trim(),password:$("#auth-password").value,options:{emailRedirectTo:location.origin+"/portal.html"}});
     message("#auth-message",error?.message||(data.session?"Account created and signed in.":"Account created. Check your email to confirm it before signing in."),Boolean(error));
@@ -30,7 +31,14 @@ async function boot(){
     const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/portal.html"});
     message("#auth-message",error?.message||( "If an account exists for that address, a password reset email has been sent."),Boolean(error));
   });
-  $("#sign-out").addEventListener("click",()=>supabase.auth.signOut());
+  $("#sign-out").addEventListener("click",async()=>{
+    const button=$("#sign-out");
+    button.disabled=true;
+    message("#workspace-message","Signing out…");
+    const {error}=await supabase.auth.signOut();
+    button.disabled=false;
+    if(error)message("#workspace-message",error.message,true);
+  });
   $("#claim-form").addEventListener("submit",claimSeller);
   $("#application-form").addEventListener("submit",submitApplication);
   $("#product-form").addEventListener("submit",createProduct);
@@ -133,12 +141,14 @@ async function boot(){
     if(!user?.email || !user.email_confirmed_at){message("#workspace-message","Confirm your account email before submitting a seller application.",true);return;}
     const website=$("#application-website").value.trim();
     if(website){try{if(!["http:","https:"].includes(new URL(website).protocol))throw new Error();}catch{message("#workspace-message","Enter a valid http or https website or social link.",true);return;}}
+    const countryCode=$("#application-country").value.trim().toUpperCase();
+    if(!/^[A-Z]{2}$/.test(countryCode)){message("#workspace-message","Enter a valid two-letter country code, such as US, NG or GB.",true);return;}
     const payload={
       applicant_id:user.id,
       business_name:$("#application-business").value.trim(),
       contact_name:$("#application-contact").value.trim(),
       email:user.email,
-      country_code:$("#application-country").value,
+      country_code:$("#application-country").value.trim().toUpperCase(),
       website_url:website||null,
       category:$("#application-category").value,
       description:$("#application-description").value.trim(),
