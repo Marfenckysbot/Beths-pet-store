@@ -4,7 +4,7 @@ A global pet marketplace foundation with an international storefront, independen
 
 ## Project status
 
-This repository is a pre-launch implementation, not a live checkout marketplace. The connected Supabase project is initialized and the base schema plus twelve migrations are applied. The founder Auth account and administrator membership are provisioned. Auth redirect configuration and browser-based role testing remain to be completed. No payment, delivery, transactional email or analytics provider is connected. The preview bag is local-only; order creation and payment collection are disabled.
+This repository is a pre-launch implementation, not a live checkout marketplace. The connected Supabase project is initialized and the base schema plus thirteen migrations are applied. The founder Auth account and administrator membership are provisioned. Auth redirect configuration and browser-based role testing remain to be completed. No payment, delivery, transactional email or analytics provider is connected. The preview bag is local-only; order creation and payment collection are disabled.
 
 The current work is maintained on the `marketplace-foundation` branch and proposed through an open draft pull request. It has not been merged or deployed to production.
 
