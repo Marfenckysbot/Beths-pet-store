@@ -49,3 +49,6 @@ Use separate test accounts only when the founder chooses to create them. Never s
 ## Current scope
 
 Checkout is preview-only. Payment collection, refunds, seller payouts, and production order creation are not enabled. This guide is a test plan, not evidence that every manual test has passed.
+
+
+Product photo URLs are restricted to HTTPS and a maximum of five per listing in both the portal and database.
