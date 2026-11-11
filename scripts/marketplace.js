@@ -9,6 +9,20 @@ const countryName=code=>{try{return code?new Intl.DisplayNames(["en"],{type:"reg
 const safe=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const read=k=>{try{const value=JSON.parse(localStorage.getItem(k)||"[]");return Array.isArray(value)?value:[]}catch{return []}};
 const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}};
+const setPageMetadata=(title,description)=>{
+ document.title=title;
+ const clean=String(description||"Explore approved independent pet products and sellers at Beth's Pet Store.").replace(/\s+/g," ").trim().slice(0,160);
+ const setMeta=(selector,attributes)=>{
+  let node=document.head.querySelector(selector);
+  if(!node){node=document.createElement("meta");document.head.append(node);}
+  for(const [key,value] of Object.entries(attributes))node.setAttribute(key,value);
+ };
+ setMeta('meta[name="description"]',{name:"description",content:clean});
+ setMeta('meta[property="og:title"]',{"property":"og:title",content:title});
+ setMeta('meta[property="og:description"]',{"property":"og:description",content:clean});
+ const canonical=document.head.querySelector('link[rel="canonical"]');
+ if(canonical)canonical.href=location.origin+location.pathname+location.search;
+};
 document.addEventListener("DOMContentLoaded",()=>{
  const year=document.getElementById("year");if(year)year.textContent=new Date().getFullYear();
  document.addEventListener("error",event=>{const img=event.target;if(img instanceof HTMLImageElement&&!img.dataset.fallbackTried&&/^https?:/i.test(img.getAttribute("src")||"")){img.dataset.fallbackTried="true";img.src="images/animals/dog_golden.webp";img.alt=img.alt||"Pet image";}},true);
@@ -66,7 +80,8 @@ document.addEventListener("DOMContentLoaded",()=>{
   const sample=PRODUCTS.find(p=>p.id===slug||p.slug===slug);
   const drawDetail=p=>{
    if(p&&!PRODUCTS.some(item=>item.id===p.id))PRODUCTS.push(p);
-   if(!p){detailRoot.innerHTML='<section class="detail-empty"><h1>Product not found</h1><p>This listing may be unavailable or not yet published.</p><a class="btn btn-primary" href="shop.html">Back to marketplace</a></section>';return;}
+   if(!p){setPageMetadata("Product unavailable | Beth's Pet Store","This product listing is unavailable or has not been published.");detailRoot.innerHTML='<section class="detail-empty"><h1>Product not found</h1><p>This listing may be unavailable or not yet published.</p><a class="btn btn-primary" href="shop.html">Back to marketplace</a></section>';return;}
+   setPageMetadata(p.name+" | Beth's Pet Store",p.description||("Explore "+p.name+" from an independent seller at Beth's Pet Store."));
    const photos=(p.images&&p.images.length?p.images:[p.image]).filter(Boolean);
    detailRoot.innerHTML='<div class="detail-breadcrumb"><a href="index.html">Home</a> / <a href="shop.html">Marketplace</a> / '+safe(p.name)+'</div><div class="product-detail-layout"><div><div class="detail-main-image"><img data-detail-main src="'+safe(photos[0])+'" alt="'+safe(p.alt||p.name)+'"></div><div class="detail-thumbnails">'+photos.map((src,i)=>'<button type="button" data-detail-photo="'+i+'" class="'+(i===0?'active':'')+'" aria-label="Show photo '+(i+1)+'"><img src="'+safe(src)+'" alt=""></button>').join("")+'</div></div><article class="detail-copy"><p class="eyebrow">'+(p.isLive?'APPROVED SELLER LISTING':'CONCEPT PRODUCT PREVIEW')+'</p><h1>'+safe(p.name)+'</h1><div class="detail-price">'+money(p.price)+(p.was>p.price?' <del>'+money(p.was)+'</del>':'')+'</div><p class="detail-disclaimer">'+(p.isLive?'Seller-submitted listing. Checkout is not enabled.':'Illustrative product and price only — not an active offer or confirmed stock.')+'</p><p class="detail-description">'+safe(p.description||'A sample product description for this marketplace preview. Confirm specifications and suitability before purchase.')+'</p><div class="detail-meta"><span>Category</span><b>'+safe(p.tag||p.category||'Pet essentials')+'</b><span>Availability</span><b>'+(p.isLive?'Availability to confirm':'Preview only')+'</b></div>'+sellerLink(p)+'<button class="btn btn-primary detail-add" data-add="'+safe(p.id)+'">Add to preview bag</button><p class="checkout-note">The preview bag does not place an order or collect payment.</p></article></div><section class="detail-related"><div class="section-heading"><div><p class="eyebrow">MORE TO EXPLORE</p><h2>Related finds.</h2></div><a class="under-link" href="shop.html">Browse all ↗</a></div><div class="product-grid" data-related-grid></div></section>';
    if(p.modelUrl){const media=detailRoot.querySelector(".product-detail-layout > div");const viewer=document.createElement("model-viewer");viewer.setAttribute("src",p.modelUrl);viewer.setAttribute("alt","Interactive 3D model of "+p.name);viewer.setAttribute("camera-controls","");viewer.setAttribute("auto-rotate","");viewer.setAttribute("shadow-intensity","1");viewer.setAttribute("ar","");viewer.setAttribute("ar-modes","webxr scene-viewer quick-look");viewer.className="beth-model-viewer";const panel=document.createElement("section");panel.className="model-viewer-panel";const heading=document.createElement("p");heading.className="eyebrow";heading.textContent="INTERACTIVE 3D MODEL";const note=document.createElement("small");note.textContent="Drag to rotate · Pinch or scroll to zoom · AR on compatible devices";panel.append(heading,viewer,note);media.prepend(panel);const loader=document.createElement("script");loader.type="module";loader.src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer.min.js";document.head.append(loader);}
@@ -89,6 +104,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   const showStore=(seller,items)=>{
    if(!seller){storeRoot.innerHTML='<section class="detail-empty"><h1>Storefront unavailable</h1><p>Approved seller storefronts will appear when the live marketplace is configured.</p><a class="btn btn-primary" href="shop.html">Browse marketplace</a></section>';return;}
    const mapped=items.map(x=>({id:x.id,slug:x.slug,name:x.name,description:x.description,price:Number(x.price_usd),was:Number(x.compare_at_usd||x.price_usd),images:x.image_urls||[],image:x.image_urls?.[0]||"assets/beths-mark.svg",alt:x.name,category:x.categories?.slug||"all",tag:x.categories?.name||"PET ESSENTIALS",sellerName:seller.store_name,sellerId:seller.id,sellerSlug:seller.slug,sellerCountry:seller.country_code,isLive:true}));
+   setPageMetadata(seller.store_name+" | Beth's Pet Store",seller.description||("Shop approved pet products from "+seller.store_name+" on Beth's Pet Store."));
    mapped.forEach(p=>{if(!PRODUCTS.some(item=>item.id===p.id))PRODUCTS.push(p)});
    storeRoot.innerHTML='<section class="store-hero"><p class="eyebrow">APPROVED MARKETPLACE SELLER</p><h1>'+safe(seller.store_name)+'</h1><p>'+safe(seller.description||'An independent pet business on Beth’s Pet Store.')+'</p><span>'+safe(seller.country_code?countryName(seller.country_code):'Location not specified')+' · Approved storefront</span></section><section class="store-products"><div class="section-heading"><div><p class="eyebrow">SHOP THIS SELLER</p><h2>Available listings.</h2></div><span>'+mapped.length+' approved products</span></div><div class="product-grid">'+(mapped.length?mapped.map(card).join(""):'<p>No approved products are listed yet.</p>')+'</div></section>';
   };
