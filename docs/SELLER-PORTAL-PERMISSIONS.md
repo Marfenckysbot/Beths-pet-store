@@ -11,7 +11,7 @@ This checklist is for the development branch. It does not authorize production d
 - Seller applications are created for the authenticated user's own account and start in `pending`.
 - An approved application can be claimed only by its applicant. The resulting seller profile starts in `pending`; approval does not activate the shop.
 - Product submissions start in `pending`. Only administrator moderation may publish a listing, and database logic must require an active seller.
-- Stock and archive operations use `SECURITY INVOKER` database functions, RLS, and explicit column grants. The database denies authenticated users UPDATE access to `seller_id`; product INSERT and UPDATE grants are column-scoped; a trigger blocks sellers from changing status to `active` or `rejected`.
+- Stock and archive operations use `SECURITY INVOKER` database functions, RLS, and explicit column grants. Administrator moderation RPCs receive only the status/review columns they need; RLS and administrator checks still deny ordinary sellers and customers. The database denies authenticated users UPDATE access to `seller_id`; product INSERT and UPDATE grants are column-scoped; a trigger blocks sellers from changing status to `active` or `rejected`.
 - Customer orders, seller order items, favorites, private profiles, payment transactions, and payout references must remain isolated by database policies.
 - New public-schema database objects created by `postgres` receive no Data API table, sequence or function grants by default; add explicit grants to each migration only when a browser role needs them.
 - No browser code may contain a Supabase service-role key, database password, payment secret, or private provider credential.
