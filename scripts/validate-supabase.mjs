@@ -10,6 +10,7 @@ const inventoryFixPath = "supabase/migrations/20261111_fix_invoker_inventory_rpc
 const writeGrantsPath = "supabase/migrations/20261111170539_tighten_customer_and_seller_write_grants.sql";
 const defaultPrivilegesPath = "supabase/migrations/20261111170917_restrict_future_public_object_defaults.sql";
 const productInsertPath = "supabase/migrations/20261111171018_restrict_product_insert_columns.sql";
+const adminModerationGrantsPath = "supabase/migrations/20261111171234_restore_admin_moderation_column_grants.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const cataloguePath = "scripts/marketplace.js";
@@ -19,7 +20,7 @@ const readinessPath = "docs/MARKETPLACE-READINESS.md";
 const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, adminModerationGrantsPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
@@ -37,6 +38,7 @@ if (!errors.length) {
   const writeGrantsMigration = readFileSync(writeGrantsPath, "utf8");
   const defaultPrivilegesMigration = readFileSync(defaultPrivilegesPath, "utf8");
   const productInsertMigration = readFileSync(productInsertPath, "utf8");
+  const adminModerationGrantsMigration = readFileSync(adminModerationGrantsPath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
   const account = readFileSync("scripts/account.js", "utf8");
   const accountHtml = readFileSync("account.html", "utf8");
