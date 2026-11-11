@@ -7,6 +7,7 @@ const modelPath = "supabase/migrations/20261111_product_3d_models.sql";
 const sellerClaimPath = "supabase/migrations/20261111_harden_seller_claim_rpc.sql";
 const productGuardPath = "supabase/migrations/20261111_lock_down_product_update_permissions.sql";
 const inventoryFixPath = "supabase/migrations/20261111_fix_invoker_inventory_rpc_columns.sql";
+const writeGrantsPath = "supabase/migrations/20261111_tighten_customer_and_seller_write_grants.sql";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const cataloguePath = "scripts/marketplace.js";
@@ -16,7 +17,7 @@ const readinessPath = "docs/MARKETPLACE-READINESS.md";
 const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, schemaPath, portalPath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
@@ -31,6 +32,7 @@ if (!errors.length) {
   const sellerClaimMigration = readFileSync(sellerClaimPath, "utf8");
   const productGuardMigration = readFileSync(productGuardPath, "utf8");
   const inventoryFixMigration = readFileSync(inventoryFixPath, "utf8");
+  const writeGrantsMigration = readFileSync(writeGrantsPath, "utf8");
   const portalConfig = readFileSync(configPath, "utf8");
   const account = readFileSync("scripts/account.js", "utf8");
   const accountHtml = readFileSync("account.html", "utf8");
@@ -65,6 +67,9 @@ if (!errors.length) {
   if (!productGuardMigration.includes("guard_product_seller_status_change") || !productGuardMigration.includes("new.status not in ('pending', 'archived')")) errors.push("Seller product status changes must be guarded against self-publication");
   if (!productGuardMigration.includes("security invoker") || !inventoryFixMigration.includes("security invoker")) errors.push("Seller inventory/archive RPCs must run as SECURITY INVOKER");
   if (inventoryFixMigration.includes("updated_at = now()")) errors.push("Invoker inventory RPCs must rely on the updated_at trigger rather than writing a protected column");
+  if (!writeGrantsMigration.includes("revoke insert, update on table public.profiles from authenticated") || !writeGrantsMigration.includes("grant update (display_name, country_code) on table public.profiles to authenticated")) errors.push("Customer profile writes must be restricted to editable profile columns");
+  if (!writeGrantsMigration.includes("revoke insert, update on table public.favorites from authenticated") || !writeGrantsMigration.includes("grant insert (user_id, product_id) on table public.favorites to authenticated")) errors.push("Wishlist writes must not allow UPDATE or caller-supplied timestamps");
+  if (!writeGrantsMigration.includes("revoke insert, update on table public.seller_applications from authenticated") || !writeGrantsMigration.includes("revoke insert, update on table public.sellers from authenticated")) errors.push("Seller application and seller profile moderation fields must not be directly writable by authenticated clients");
   if (!migration.includes("auth.uid(), v_application.id") || !migration.includes("'pending'")) errors.push("New seller accounts must remain pending until manually activated");
   for (const fn of ["review_seller_application", "claim_approved_seller", "set_seller_moderation_status", "review_marketplace_product"]) {
     if (!portal.includes(`rpc("${fn}"`)) errors.push("Portal is missing moderation integration: " + fn);
