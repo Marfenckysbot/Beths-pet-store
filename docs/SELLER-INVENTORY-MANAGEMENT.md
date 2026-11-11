@@ -14,12 +14,12 @@ The seller workspace at `portal.html` now includes a catalogue management table.
 - The browser never chooses a seller ID for these actions; the SQL functions derive ownership from `auth.uid()`.
 - `seller_update_inventory(uuid, integer)` checks the signed-in user owns the product through an active seller profile and rejects negative quantities.
 - `seller_set_product_archived(uuid, boolean)` checks product ownership and retains the product row.
-- Product detail edits use seller-owned row-level security and force status back to `pending`. Sellers cannot self-publish through the portal.
+- Product detail edits use seller-owned RLS and force status back to `pending`. Authenticated users have column-level UPDATE grants only; sellers cannot update `seller_id`. A database trigger blocks seller status escalation to `active` or `rejected`.
 - No service-role key is used in the browser. RPC execution is revoked from `public` and `anon`, then granted to `authenticated`.
 
 ## Apply and test
 
-Apply the base schema, admin/seller workflow migration, product-image storage migration, then `20261109_seller_inventory_management.sql` in a Supabase project.
+On a fresh project, apply the base schema and all migrations in chronological order. The connected project already has the migrations installed; do not reapply them manually. The latest hardening migrations are `20261111_lock_down_product_update_permissions.sql` and `20261111_fix_invoker_inventory_rpc_columns.sql`.
 
 Test using two separate seller accounts:
 1. Seller A can edit, stock-update and archive only Seller A's products.
