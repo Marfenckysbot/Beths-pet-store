@@ -101,7 +101,7 @@ No supplier is considered a partner until the founder has contacted them and obt
 | Product photos | Supabase product-images bucket or approved public image URL | JPG, PNG or WebP; seller confirms image rights |
 | Optional 3D model | `products.model_url` | Public HTTPS `.glb` or `.gltf` URL; seller confirms model rights; photos remain the fallback |
 
-The storefront uses an interactive model viewer only when a valid model URL is present. No 3D model files are currently bundled, so the feature is integration-ready but not yet demonstrated with a real sample model.
+The storefront uses an interactive model viewer when a seller supplies a valid model URL. The dedicated `3d-showroom.html` page also demonstrates a sample pet-home scene loaded from `https://cdn.3dassets.dev/assets/20683/v1/model.glb`, listed by 3DAssets.dev under CC0 1.0 Universal. This demonstration depends on the creator's CDN and is not bundled locally; seller models remain separately supplied and rights-checked.
 
 ## 10. Handoff process
 
