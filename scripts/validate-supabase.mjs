@@ -95,6 +95,7 @@ if (!errors.length) {
   if (!schema.includes("create table if not exists public.favorites") || !schema.includes("favorites owner only")) errors.push("Customer favorites must use owner-only row-level security");
   if (!schema.includes("profiles read own") || !schema.includes("profiles update own")) errors.push("Customer profiles must use owner-only row-level security");
   if (!accountHtml.includes('id="customer-profile-form"') || !accountHtml.includes('id="customer-orders"')) errors.push("Customer account page is missing profile or order-history sections");
+  if (account.includes('.from("profiles").upsert') || !account.includes('.from("profiles").update(') || !account.includes('.from("profiles").insert(payload)')) errors.push("Customer profile saving must use separately scoped INSERT and UPDATE operations, not an upsert requiring broader privileges");
   if (/service_role\s*[:=]\s*["']|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(account)) errors.push("Do not expose privileged or payment credentials in customer account JavaScript");
 
   if (!handoff.includes("Never paste passwords") || !handoff.includes("encrypted server environment")) errors.push("Founder handoff must clearly explain secret handling");
