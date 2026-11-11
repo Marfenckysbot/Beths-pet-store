@@ -40,6 +40,12 @@ for (const pattern of [/123 Pet Avenue/i, /G-XXXXXXXXXX/i, /6\.5244\s*,?\s*\/\//
 }
 
 
+
+const publicBackupArtifacts = readdirSync(root).filter(file => /\\.(?:bak|log)$/i.test(file));
+for (const file of publicBackupArtifacts) {
+  errors.push(file + " -> backup/log files must not be published from the site root");
+}
+
 const legacyDeployScripts = [
   "auto_deploy.sh",
   "deploy_all.sh",
@@ -63,5 +69,5 @@ if (errors.length) {
   for (const error of errors) console.error(" - " + error);
   process.exitCode = 1;
 } else {
-  console.log("Beth's Pet Store checks passed: local links/assets, Netlify form markup and public-config privacy checks.");
+  console.log("Beth's Pet Store checks passed: local links/assets, Netlify form markup and public-config privacy checks, deployment-script guardrails and public-artifact checks.");
 }
