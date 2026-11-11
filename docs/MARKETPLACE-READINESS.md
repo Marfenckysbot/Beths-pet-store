@@ -8,13 +8,13 @@
 - Customer account page with email/password authentication, private profile, account wishlist and read-only order history.
 - Seller/admin portal with application review, seller activation/suspension, product moderation, product creation and image uploads.
 - Seller inventory controls: edit listing details (returns the listing to moderation), update stock without unpublishing, archive without deleting history and restore to pending review.
-- Supabase/PostgreSQL schema and eight recorded migrations in the connected project.
+- Supabase/PostgreSQL schema and ten recorded migrations in the connected project.
 - Fourteen public tables with RLS enabled, five seeded categories, seller/admin workflow functions and product-image storage policies.
 - Narrowed Data API grants and supporting indexes for marketplace access paths.
 - The website's public Supabase URL and publishable key are configured on the development branch.
-- Email/password Auth is enabled and email confirmation is reported ON by the founder; the public Site URL and allowed redirect URLs still need to be saved and browser-tested.
-- Founder admin membership was bootstrapped for the founder account; the account sign-in and role checks still require end-to-end browser verification.
-- Optional 3D model URL support is available for seller listings. The database accepts public HTTPS model URLs; a real 3D viewer appears only when a seller supplies a licensed GLB/glTF model.
+- Email/password Auth is enabled and email confirmation is ON; the founder administrator membership is provisioned. The public Site URL and allowed redirect URLs still need to be saved and browser-tested.
+- Founder admin membership is provisioned for the existing founder account; the account sign-in and role checks still require end-to-end browser verification.
+- Optional 3D model URL support is available for seller listings. The product detail page loads an interactive model-viewer for seller-supplied HTTPS GLB/glTF files. No sample 3D model assets are bundled yet, so the viewer appears only when a seller supplies a properly licensed model.
 - Netlify Forms markup for seller interest, contact, support and feedback.
 - Server-side integration workspace reserved under `netlify/functions/`; no payment, order, delivery or email handlers are active.
 - Founder handoff materials, including the integration registry and low-cost pre-launch roadmap.
@@ -24,7 +24,7 @@
 
 This repository is a pre-launch implementation, not a live operating marketplace.
 
-- Supabase is initialized. Email/password and email-confirmation settings were confirmed by the founder; the Site URL/redirect configuration and browser-based role tests remain outstanding.
+- Supabase is initialized. Email/password and email-confirmation settings were confirmed by the founder; the Site URL/redirect configuration and browser-based role tests remain outstanding. The founder admin membership is provisioned.
 - No verified production seller accounts, suppliers, product catalogue, live stock or customer orders exist.
 - No payment merchant account, settlement destination, delivery provider, transactional email provider or analytics property is connected.
 - The preview bag does not create orders. Checkout, payment collection, refunds, settlement and payouts are disabled.
@@ -49,7 +49,7 @@ Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` as the master handoff record and `docs/I
 
 ## Supabase setup and migration record
 
-The base schema and eight migrations have been applied to the connected Supabase project. The source of truth and exact order are documented in `docs/PORTAL-SETUP.md`. The project has 14 RLS-enabled public tables and five initial categories. Continue to review security/performance advisor findings and test access with separate accounts.
+The base schema and ten migrations have been applied to the connected Supabase project. The source of truth and exact order are documented in `docs/PORTAL-SETUP.md`. The project has 14 RLS-enabled public tables and five initial categories. Continue to review security/performance advisor findings and test access with separate accounts.
 
 Never put a service-role key in browser code or Git. The website uses only the public publishable key.
 
