@@ -116,4 +116,4 @@ Destination: server-side email adapter, consent-aware analytics configuration an
 
 ## Current project boundary
 
-The repository is a feature-rich pre-launch preview in an open draft pull request. The connected Supabase project is initialized, nine migrations are applied, and the founder administrator membership is provisioned. Auth Site URL/redirect settings and browser role tests remain pending. No suppliers or payment/delivery/email providers are confirmed, and checkout is disabled. Completing a checklist item does not automatically authorize deployment, spending, account creation, payment activation or public disclosure.
+The repository is a feature-rich pre-launch preview in an open draft pull request. The connected Supabase project is initialized, the base schema plus nine migrations are applied, and the founder administrator membership is provisioned. Auth Site URL/redirect settings and browser role tests remain pending. No suppliers or payment/delivery/email providers are confirmed, and checkout is disabled. Completing a checklist item does not automatically authorize deployment, spending, account creation, payment activation or public disclosure.
