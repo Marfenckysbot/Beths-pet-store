@@ -94,7 +94,7 @@ For every supplier/listing, collect:
 
 No supplier is considered a partner until the founder has contacted them and obtained clear agreement.
 
-## 9. Handoff process
+## 9. Product imagery and optional 3D models\n\n| Item | Intended location | Handling |\n| --- | --- | --- |\n| Product photos | Supabase product-images bucket or approved public image URL | JPG, PNG or WebP; seller confirms image rights |\n| Optional 3D model | `products.model_url` | Public HTTPS `.glb` or `.gltf` URL; seller confirms model rights; photos remain the fallback |\n\nThe storefront uses an interactive model viewer only when a valid model URL is present. No model files are bundled or assumed.\n\n## 10. Handoff process
 
 1. Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` to track what is ready.
 2. Share non-secret details and identify the provider/account area.
@@ -106,6 +106,6 @@ No supplier is considered a partner until the founder has contacted them and obt
 
 - The connected Supabase project is initialized and its schema/migrations are applied.
 - Public browser configuration is committed to the development branch only.
-- Auth redirects and founder admin bootstrap remain pending.
+- Auth redirects remain pending; founder admin membership has been bootstrapped.
 - No production deployment, payment merchant account, delivery account, email provider, analytics property or verified social account is configured.
 - Do not accept real orders or payments based on these placeholders.
