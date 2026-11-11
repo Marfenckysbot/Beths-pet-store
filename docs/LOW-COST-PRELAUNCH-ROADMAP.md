@@ -42,8 +42,8 @@ For the initial pilot, use manual confirmation and a secure business-owned workf
 **Already implemented in the preview branch:** Supabase schema blueprint, email/password customer and seller authentication flows, seller applications and claiming, admin moderation, approved seller catalogue, seller inventory editing/stock/archive controls, customer profile/wishlist/read-only order history, and documented server-side integration slots. These are code-complete foundations only; the connected Supabase project is initialized, but Auth and browser role tests are still pending.
 
 **Still required before activation:**
-- The connected Supabase project is initialized, with eight recorded migrations, 14 RLS-enabled public tables, five seeded categories and a product image bucket. The development branch has the public URL and publishable key configured.
-- Configure Auth redirect URLs and bootstrap the founder admin through trusted SQL. Test separate customer, seller and admin accounts, including cross-account denial and row-level security.
+- The connected Supabase project is initialized, with nine recorded migrations, 14 RLS-enabled public tables, five seeded categories and a product image bucket. The development branch has the public URL and publishable key configured.
+- Configure Auth Site URL/redirect URLs after verifying the actual preview origin. The founder administrator membership is already provisioned; do not create a duplicate founder account. Test separate customer and seller accounts plus the existing founder admin, including cross-account denial and row-level security.
 - Review audit-log and data-retention needs before accepting real customer data.
 - Agree commissions, settlement timing, refunds, disputes, chargebacks, taxes, shipping and seller responsibilities.
 - Implement trusted server-side order creation, payment initiation and signed/idempotent payment webhooks only after merchant onboarding and legal/operational approval.
