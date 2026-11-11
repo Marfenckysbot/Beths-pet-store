@@ -89,7 +89,7 @@ async function boot(){
   }
 
   async function loadSellerProducts(sellerId,sellerStatus=window.currentSellerStatus){
-    const {data,error}=await supabase.from("products").select("id,name,slug,description,category_id,price_usd,inventory_quantity,status").eq("seller_id",sellerId).order("created_at",{ascending:false});
+    const {data,error}=await supabase.from("products").select("id,name,slug,description,category_id,price_usd,inventory_quantity,status,model_url").eq("seller_id",sellerId).order("created_at",{ascending:false});
     if(error){$("#seller-products").innerHTML=row(5,error.message);return;}
     window.currentSellerProducts=new Map((data||[]).map(product=>[product.id,product]));
     $("#seller-products").innerHTML=data.length?data.map(p=>'<tr><td><strong>'+escapeHtml(p.name)+'</strong><small class="table-sub">'+escapeHtml(p.slug)+'</small></td><td>'+money(p.price_usd)+'</td><td><div class="stock-control"><input aria-label="Stock quantity for '+escapeHtml(p.name)+'" type="number" min="0" step="1" value="'+p.inventory_quantity+'" data-stock-input="'+p.id+'"><button class="table-action" type="button" data-save-stock="'+p.id+'">Save</button></div></td><td>'+pill(p.status)+'</td><td><button class="table-action" type="button" data-edit-product="'+p.id+'">Edit</button>'+(p.status==="archived"?'<button class="table-action primary" type="button" data-archive-product="'+p.id+'" data-archived="false">Restore</button>':'<button class="table-action danger" type="button" data-archive-product="'+p.id+'" data-archived="true">Archive</button>')+'</td></tr>').join(""):row(5,"No products yet.");
@@ -103,9 +103,11 @@ async function boot(){
     if(!current){message("#workspace-message","That product is no longer available. Refresh the page and try again.",true);return;}
     const name=$("#edit-product-name").value.trim();
     const price=Number($("#edit-product-price").value);
+    const modelUrl=$("#edit-product-model-url").value.trim();
+    if(modelUrl&&!/^https:\/\//i.test(modelUrl)){message("#workspace-message","3D model links must use HTTPS.",true);return;}
     if(!name||!Number.isFinite(price)||price<0){message("#workspace-message","Enter a product name and a valid non-negative price.",true);return;}
     message("#workspace-message","Saving product details for review…");
-    const {error}=await supabase.from("products").update({name,slug:slugify(name),description:$("#edit-product-description").value.trim(),price_usd:price,category_id:$("#edit-product-category").value||null,status:"pending"}).eq("id",id).eq("seller_id",window.currentSellerId);
+    const {error}=await supabase.from("products").update({name,slug:slugify(name),description:$("#edit-product-description").value.trim(),price_usd:price,model_url:modelUrl||null,category_id:$("#edit-product-category").value||null,status:"pending"}).eq("id",id).eq("seller_id",window.currentSellerId);
     if(error){message("#workspace-message",error.message,true);return;}
     $("#product-edit-card").hidden=true;
     message("#workspace-message","Product details saved and sent back to moderation. The listing stays hidden until an administrator approves the changes.");
@@ -167,6 +169,8 @@ async function boot(){
     const allowedTypes=["image/jpeg","image/png","image/webp"];
     if(files.some(file=>!allowedTypes.includes(file.type)||file.size>5*1024*1024)){message("#workspace-message","Photos must be JPG, PNG or WebP and no larger than 5 MB each.",true);return;}
     const name=$("#product-name").value.trim();
+    const modelUrl=$("#product-model-url").value.trim();
+    if(modelUrl&&!/^https:\/\//i.test(modelUrl)){message("#workspace-message","3D model links must use HTTPS.",true);return;}
     const uploadedPaths=[];
     const images=[...manualImages];
     message("#workspace-message","Uploading photos and submitting product for review…");
@@ -182,7 +186,7 @@ async function boot(){
       uploadedPaths.push(path);
       images.push(supabase.storage.from("product-images").getPublicUrl(path).data.publicUrl);
     }
-    const payload={seller_id:window.currentSellerId,name,slug:slugify(name),description:$("#product-description").value.trim(),price_usd:Number($("#product-price").value),inventory_quantity:Number($("#product-stock").value),image_urls:images,status:"pending",category_id:$("#product-category").value||null};
+    const payload={seller_id:window.currentSellerId,name,slug:slugify(name),description:$("#product-description").value.trim(),price_usd:Number($("#product-price").value),inventory_quantity:Number($("#product-stock").value),image_urls:images,model_url:modelUrl||null,status:"pending",category_id:$("#product-category").value||null};
     const {error}=await supabase.from("products").insert(payload);
     if(error){
       if(uploadedPaths.length)await supabase.storage.from("product-images").remove(uploadedPaths);
@@ -223,6 +227,7 @@ async function boot(){
       $("#edit-product-description").value=product.description||"";
       $("#edit-product-price").value=product.price_usd;
       $("#edit-product-category").value=product.category_id||"";
+      $("#edit-product-model-url").value=product.model_url||"";
       $("#product-edit-card").hidden=false;
       $("#product-edit-card").scrollIntoView({behavior:"smooth",block:"start"});
       return;
