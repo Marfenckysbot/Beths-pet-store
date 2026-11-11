@@ -11,7 +11,7 @@ This checklist is for the development branch. It does not authorize production d
 - Seller applications are created for the authenticated user's own account and start in `pending`.
 - An approved application can be claimed only by its applicant. The resulting seller profile starts in `pending`; approval does not activate the shop.
 - Product submissions start in `pending`. Only administrator moderation may publish a listing, and database logic must require an active seller.
-- Stock and archive operations use narrowly scoped database functions. The functions must check the authenticated seller's ownership of the product.
+- Stock and archive operations use `SECURITY INVOKER` database functions, RLS, and explicit column grants. The database denies authenticated users UPDATE access to `seller_id`; a trigger blocks sellers from changing status to `active` or `rejected`.
 - Customer orders, seller order items, favorites, private profiles, payment transactions, and payout references must remain isolated by database policies.
 - No browser code may contain a Supabase service-role key, database password, payment secret, or private provider credential.
 
@@ -39,6 +39,7 @@ Use separate test accounts only when the founder chooses to create them. Never s
 - [ ] Confirm a non-active seller cannot create or publish products.
 - [ ] Confirm product moderation cannot publish a product for a paused or suspended seller.
 - [ ] Confirm stock/archive RPCs reject product IDs owned by another seller.
+- [ ] Confirm authenticated users cannot UPDATE the `products.seller_id` column or use direct API calls to self-publish a listing.
 - [ ] Confirm email confirmation, password reset, and redirect URLs on the actual deployed origin.
 - [ ] Review Supabase security advisor findings and enable leaked-password protection.
 - [ ] Run the repository validation workflow and test mobile and desktop browsers.
