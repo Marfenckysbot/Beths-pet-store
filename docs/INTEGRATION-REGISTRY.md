@@ -9,8 +9,8 @@ Use [the founder handoff checklist](FOUNDER-HANDOFF-CHECKLIST.md) as the master 
 | Supabase project URL | `scripts/portal-config.js` | Public project URL; configured on the development branch |
 | Supabase anon/publishable key | `scripts/portal-config.js` | Public browser key only; configured on the development branch |
 | Base schema and migrations | Supabase database | Applied to project ref `moqbnaotzveoljeidsez`; migration history verified |
-| Founder admin Auth user UUID | Supabase `admin_users` table | Still to be added through trusted SQL editor after founder account confirmation |
-| Preview/production site URL and auth redirects | Supabase Auth URL configuration | Still to be configured against the actual preview/deployed site origin |
+| Founder admin Auth user UUID | Supabase `admin_users` table | Founder account and administrator membership are already provisioned; do not create a duplicate |
+| Preview/production site URL and auth redirects | Supabase Auth URL configuration | Pending until the real hosting preview URL is verified; add the account and portal callback paths after confirming the origin |
 
 Never send or commit a Supabase service-role key, database password, recovery code or private credential in chat or repository files.
 
@@ -94,7 +94,16 @@ For every supplier/listing, collect:
 
 No supplier is considered a partner until the founder has contacted them and obtained clear agreement.
 
-## 9. Product imagery and optional 3D models\n\n| Item | Intended location | Handling |\n| --- | --- | --- |\n| Product photos | Supabase product-images bucket or approved public image URL | JPG, PNG or WebP; seller confirms image rights |\n| Optional 3D model | `products.model_url` | Public HTTPS `.glb` or `.gltf` URL; seller confirms model rights; photos remain the fallback |\n\nThe storefront uses an interactive model viewer only when a valid model URL is present. No model files are bundled or assumed.\n\n## 10. Handoff process
+## 9. Product imagery and optional 3D models
+
+| Item | Intended location | Handling |
+| --- | --- | --- |
+| Product photos | Supabase product-images bucket or approved public image URL | JPG, PNG or WebP; seller confirms image rights |
+| Optional 3D model | `products.model_url` | Public HTTPS `.glb` or `.gltf` URL; seller confirms model rights; photos remain the fallback |
+
+The storefront uses an interactive model viewer only when a valid model URL is present. No 3D model files are currently bundled, so the feature is integration-ready but not yet demonstrated with a real sample model.
+
+## 10. Handoff process
 
 1. Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` to track what is ready.
 2. Share non-secret details and identify the provider/account area.
