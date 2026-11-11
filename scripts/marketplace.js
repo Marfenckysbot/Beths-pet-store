@@ -5,6 +5,7 @@ const PRODUCTS=[
 {id:"preview-aquarium-01",name:"Starter Aquarium Set",category:"habitats",price:59.99,was:79.99,image:"images/products/fishtankstarter.jpeg",alt:"Aquarium starter kit",tag:"DISCOVER"}
 ];
 const money=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(n);
+const countryName=code=>{try{return code?new Intl.DisplayNames(["en"],{type:"region"}).of(String(code).toUpperCase()):""}catch{return ""}};
 const safe=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const read=k=>{try{const value=JSON.parse(localStorage.getItem(k)||"[]");return Array.isArray(value)?value:[]}catch{return []}};
 const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch{return false}};
@@ -17,7 +18,7 @@ document.addEventListener("DOMContentLoaded",()=>{
  const count=()=>document.querySelectorAll("[data-cart-count]").forEach(el=>el.textContent=cart.reduce((n,x)=>n+x.qty,0));
  const productHref=p=>"product.html?slug="+encodeURIComponent(p.slug||p.id);
  const storeHref=p=>"store.html?slug="+encodeURIComponent(p.sellerSlug||p.sellerId||"");
- const sellerLink=p=>p.sellerSlug?'<a class="seller-inline-link" href="'+storeHref(p)+'">Visit '+safe(p.sellerName||"seller")+' ↗</a>':"";
+ const sellerLink=p=>p.sellerSlug?'<a class="seller-inline-link" href="'+storeHref(p)+'">Visit '+safe(p.sellerName||"seller")+(p.sellerCountry?' · Seller in '+safe(countryName(p.sellerCountry)):"")+' ↗</a>':"";
  const card=p=>{const saved=wish.includes(p.id),pct=p.was>p.price?Math.round((1-p.price/p.was)*100):0;return '<article class="product-card"><div class="product-visual"><span class="preview-tag">'+(p.isLive?"SELLER LISTING":"PREVIEW · "+pct+"% OFF*")+'</span><button class="wish-button '+(saved?"is-wished":"")+'" data-wish="'+safe(p.id)+'" aria-label="'+(saved?"Remove from":"Add to")+' wishlist">'+(saved?"♥":"♡")+'</button><div class="product-image-3d"><img src="'+safe(p.image)+'" alt="'+safe(p.alt||p.name)+'" loading="lazy"></div><span class="product-category">'+safe(p.tag||"PET ESSENTIALS")+'</span></div><div class="product-info"><h3><a href="'+productHref(p)+'">'+safe(p.name)+'</a></h3><p class="product-subline">'+(p.isLive?"Sold by "+safe(p.sellerName||"Marketplace seller"):"Concept listing · Seller to be confirmed")+'</p>'+sellerLink(p)+'<div class="price-row"><strong>'+money(p.price)+'</strong>'+(p.was>p.price?'<del>'+money(p.was)+'</del>':"")+'</div><small class="price-disclaimer">'+(p.isLive?"Seller listing · Preview checkout only":"Illustrative price only")+'</small><button class="add-button" data-add="'+safe(p.id)+'">Add to preview bag <span>＋</span></button><a class="product-open-link" href="'+productHref(p)+'">View details ↗</a></div></article>'};
  const matches=()=>PRODUCTS.filter(p=>(filter==="all"||p.category===filter)&&(`${p.name} ${p.category} ${p.sellerName||""}`.toLowerCase().includes(term))&&(!minPrice||p.price>=Number(minPrice))&&(!maxPrice||p.price<=Number(maxPrice)));
  const render=()=>{document.querySelectorAll("[data-product-grid]").forEach(grid=>{let items=matches();if(grid.dataset.productGrid==="home"){const live=items.filter(p=>p.isLive);items=(live.length?live:items).slice(0,4);}if(grid.dataset.productGrid==="shop"){const s=document.getElementById("sort-products")?.value;if(s==="price-low")items.sort((a,b)=>a.price-b.price);if(s==="price-high")items.sort((a,b)=>b.price-a.price);if(s==="name")items.sort((a,b)=>a.name.localeCompare(b.name))}grid.innerHTML=items.map(card).join("")});const result=document.querySelector("[data-result-count]");if(result)result.textContent=matches().length+" items shown";const empty=document.querySelector("[data-empty-state]");if(empty)empty.hidden=matches().length>0};
@@ -46,12 +47,12 @@ document.addEventListener("DOMContentLoaded",()=>{
    try{
      const {createClient}=await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
      const client=createClient(cfg.url,cfg.anonKey);
-     const {data,error}=await client.from("products").select("id,slug,name,description,price_usd,compare_at_usd,image_urls,model_url,inventory_quantity,categories(name,slug),sellers(id,store_name,slug)").eq("status","active").order("created_at",{ascending:false}).limit(60);
+     const {data,error}=await client.from("products").select("id,slug,name,description,price_usd,compare_at_usd,image_urls,model_url,inventory_quantity,categories(name,slug),sellers(id,store_name,slug,country_code)").eq("status","active").order("created_at",{ascending:false}).limit(60);
      if(error){console.warn("Live marketplace catalogue unavailable:",error.message);return;}
      const categoryMap={"food-treats":"food","accessories-toys":"accessories","beds-comfort":"comfort","habitats-aquatics":"habitats","grooming-care":"care"};
      for(const item of data||[]){
        if(PRODUCTS.some(existing=>existing.id===item.id))continue;
-       PRODUCTS.push({id:item.id,name:item.name,category:categoryMap[item.categories?.slug]||"all",price:Number(item.price_usd),was:Number(item.compare_at_usd||item.price_usd),image:item.image_urls?.[0]||"assets/beths-mark.svg",alt:item.name,tag:item.categories?.name||"PET ESSENTIALS",sellerName:item.sellers?.store_name||"Marketplace seller",sellerId:item.sellers?.id,sellerSlug:item.sellers?.slug,slug:item.slug,description:item.description,images:item.image_urls||[],modelUrl:item.model_url||"",inventory:Number(item.inventory_quantity||0),isLive:true});
+       PRODUCTS.push({id:item.id,name:item.name,category:categoryMap[item.categories?.slug]||"all",price:Number(item.price_usd),was:Number(item.compare_at_usd||item.price_usd),image:item.image_urls?.[0]||"assets/beths-mark.svg",alt:item.name,tag:item.categories?.name||"PET ESSENTIALS",sellerName:item.sellers?.store_name||"Marketplace seller",sellerId:item.sellers?.id,sellerSlug:item.sellers?.slug,sellerCountry:item.sellers?.country_code,slug:item.slug,description:item.description,images:item.image_urls||[],modelUrl:item.model_url||"",inventory:Number(item.inventory_quantity||0),isLive:true});
      }
      render();
    }catch(error){console.warn("Live marketplace catalogue could not be loaded.",error);}
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded",()=>{
    if(!slug||!cfg.url||!cfg.anonKey)drawDetail(null);
    else import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm").then(({createClient})=>createClient(cfg.url,cfg.anonKey).from("products").select("id,slug,name,description,price_usd,compare_at_usd,image_urls,inventory_quantity,categories(name,slug),sellers(id,store_name,slug)").eq("slug",slug).eq("status","active").maybeSingle()).then(({data,error})=>{
     if(error||!data){drawDetail(null);return;}
-    drawDetail({id:data.id,slug:data.slug,name:data.name,description:data.description,price:Number(data.price_usd),was:Number(data.compare_at_usd||data.price_usd),images:data.image_urls||[],modelUrl:data.model_url||"",image:data.image_urls?.[0]||"assets/beths-mark.svg",alt:data.name,category:data.categories?.slug||"all",tag:data.categories?.name||"PET ESSENTIALS",sellerName:data.sellers?.store_name,sellerId:data.sellers?.id,sellerSlug:data.sellers?.slug,isLive:true,inventory:Number(data.inventory_quantity||0)});
+    drawDetail({id:data.id,slug:data.slug,name:data.name,description:data.description,price:Number(data.price_usd),was:Number(data.compare_at_usd||data.price_usd),images:data.image_urls||[],modelUrl:data.model_url||"",image:data.image_urls?.[0]||"assets/beths-mark.svg",alt:data.name,category:data.categories?.slug||"all",tag:data.categories?.name||"PET ESSENTIALS",sellerName:data.sellers?.store_name,sellerId:data.sellers?.id,sellerSlug:data.sellers?.slug,sellerCountry:data.sellers?.country_code,isLive:true,inventory:Number(data.inventory_quantity||0)});
    }).catch(()=>drawDetail(null));
   }
  }
@@ -86,7 +87,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   const slug=new URLSearchParams(location.search).get("slug"),cfg=window.BETHS_SUPABASE_CONFIG||{};
   const showStore=(seller,items)=>{
    if(!seller){storeRoot.innerHTML='<section class="detail-empty"><h1>Storefront unavailable</h1><p>Approved seller storefronts will appear when the live marketplace is configured.</p><a class="btn btn-primary" href="shop.html">Browse marketplace</a></section>';return;}
-   const mapped=items.map(x=>({id:x.id,slug:x.slug,name:x.name,description:x.description,price:Number(x.price_usd),was:Number(x.compare_at_usd||x.price_usd),images:x.image_urls||[],image:x.image_urls?.[0]||"assets/beths-mark.svg",alt:x.name,category:x.categories?.slug||"all",tag:x.categories?.name||"PET ESSENTIALS",sellerName:seller.store_name,sellerId:seller.id,sellerSlug:seller.slug,isLive:true}));
+   const mapped=items.map(x=>({id:x.id,slug:x.slug,name:x.name,description:x.description,price:Number(x.price_usd),was:Number(x.compare_at_usd||x.price_usd),images:x.image_urls||[],image:x.image_urls?.[0]||"assets/beths-mark.svg",alt:x.name,category:x.categories?.slug||"all",tag:x.categories?.name||"PET ESSENTIALS",sellerName:seller.store_name,sellerId:seller.id,sellerSlug:seller.slug,sellerCountry:seller.country_code,isLive:true}));
    mapped.forEach(p=>{if(!PRODUCTS.some(item=>item.id===p.id))PRODUCTS.push(p)});
    storeRoot.innerHTML='<section class="store-hero"><p class="eyebrow">APPROVED MARKETPLACE SELLER</p><h1>'+safe(seller.store_name)+'</h1><p>'+safe(seller.description||'An independent pet business on Beth’s Pet Store.')+'</p><span>'+safe(seller.country_code||'NG')+' · Approved storefront</span></section><section class="store-products"><div class="section-heading"><div><p class="eyebrow">SHOP THIS SELLER</p><h2>Available listings.</h2></div><span>'+mapped.length+' approved products</span></div><div class="product-grid">'+(mapped.length?mapped.map(card).join(""):'<p>No approved products are listed yet.</p>')+'</div></section>';
   };
