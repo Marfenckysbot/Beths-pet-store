@@ -41,7 +41,7 @@ All 14 public tables have RLS enabled. The initial category seed contains five c
 1. Email/password sign-in is enabled and email confirmation is ON, as confirmed by the founder. The founder administrator account is already provisioned. Open [Supabase Auth URL Configuration](https://supabase.com/dashboard/project/moqbnaotzveoljeidsez/auth/url-configuration), set Site URL to `https://beths-pet-store.vercel.app`, and add these exact Redirect URLs:
    - `https://beths-pet-store.vercel.app/account.html`
    - `https://beths-pet-store.vercel.app/portal.html`
-   This dashboard change is still outstanding.
+   This dashboard change is still outstanding. Until it is saved and verified, new sign-ups and password resets are deliberately paused in the website; existing account sign-in remains available. After successful configuration and testing, set `authRedirectsConfigured: true` in `scripts/portal-config.js`.
 2. Open [Supabase Email Auth settings](https://supabase.com/dashboard/project/moqbnaotzveoljeidsez/auth/providers?provider=Email), find Password Security, and enable leaked-password protection (HaveIBeenPwned check). The current security advisor reports it is disabled.
 3. Confirm the public project URL and publishable key in `scripts/portal-config.js`; never add a service-role key.
 4. Sign in with the existing founder account and verify that the administrator dashboard opens.
