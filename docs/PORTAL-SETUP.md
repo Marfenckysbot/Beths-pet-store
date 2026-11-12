@@ -13,20 +13,28 @@ The seller/admin workspace is `portal.html`; the customer account area is `accou
 
 ## Applied database migrations
 
-The following have been applied successfully to the connected project:
+The connected Supabase project currently records the base schema plus 17 follow-up migrations (18 migration records total). The migration history was read directly from the live project and verified on 12 November 2026.
 
-1. `supabase/schema.sql` (recorded as `beths_marketplace_base_schema`)
-2. `supabase/migrations/20261109_admin_and_seller_workflows.sql`
-3. `supabase/migrations/20261109_product_image_storage.sql`
-4. `supabase/migrations/20261109_seller_inventory_management.sql`
-5. `supabase/migrations/20261110_api_grants_indexes_and_function_hardening.sql`
-6. `supabase/migrations/20261110_seller_and_application_admin_update_grants.sql`
-7. `supabase/migrations/20261110_rls_auth_uid_initplan_optimization.sql`
-8. `supabase/migrations/20261110_invoker_admin_moderation_functions.sql`
-9. `supabase/migrations/20261111_product_3d_models.sql`
-10. `supabase/migrations/20261111_harden_seller_claim_rpc.sql`
+1. `20261110133916` — `beths_marketplace_base_schema`
+2. `20261110134023` — `admin_and_seller_workflows`
+3. `20261110134025` — `product_image_storage`
+4. `20261110134032` — `seller_inventory_management`
+5. `20261110134145` — `api_grants_indexes_and_function_hardening`
+6. `20261110134247` — `seller_and_application_admin_update_grants`
+7. `20261110134700` — `rls_auth_uid_initplan_optimization`
+8. `20261110134850` — `invoker_admin_moderation_functions`
+9. `20261111151217` — `product_3d_models`
+10. `20261111160610` — `harden_seller_claim_rpc`
+11. `20261111170013` — `lock_down_product_update_permissions`
+12. `20261111170042` — `fix_invoker_inventory_rpc_columns`
+13. `20261111170539` — `tighten_customer_and_seller_write_grants`
+14. `20261111170917` — `restrict_future_public_object_defaults`
+15. `20261111171018` — `restrict_product_insert_columns`
+16. `20261111171234` — `restore_admin_moderation_column_grants`
+17. `20261111191224` — `protect_seller_reviewer_notes`
+18. `20261111191633` — `validate_product_image_urls`
 
-All 14 public tables have RLS enabled. The initial category seed contains five categories. The database was initially empty. The founder account and administrator membership have been provisioned; no production sellers, verified products, customer orders or payment records are established.
+All 14 public tables have RLS enabled. The initial category seed contains five categories. The founder account and administrator membership have been provisioned; no production sellers, verified products, customer orders or payment records are established.
 
 ## Remaining Supabase setup
 
