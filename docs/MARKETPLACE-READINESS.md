@@ -17,7 +17,7 @@
 - Fourteen public tables with RLS enabled, five seeded categories, seller/admin workflow functions and product-image storage policies.
 - Narrowed Data API grants and supporting indexes for marketplace access paths. Future public-schema objects created by `postgres` are not exposed to Data API roles by default; migrations must grant only the access they need.
 - The website's public Supabase URL and publishable key are configured on the development branch.
-- Email/password Auth is enabled and email confirmation is ON; the founder administrator membership is provisioned. The public Site URL and allowed redirect URLs still need to be saved and browser-tested.
+- Email/password Auth is enabled and email confirmation is ON; the founder administrator membership is provisioned. The Vercel Site URL and allowed redirect URLs still need to be saved and browser-tested. New sign-ups and password resets are temporarily paused until this is complete; existing accounts can still sign in.
 - Founder admin membership is provisioned for the existing founder account; the account sign-in and role checks still require end-to-end browser verification.
 - Optional 3D model URL support is available for seller listings. The product detail page loads an interactive model-viewer for seller-supplied HTTPS GLB/glTF files. A dedicated `3d-showroom.html` page now demonstrates a CC0 pet-home scene hosted by 3DAssets.dev; it is loaded remotely and is not bundled locally.
 - Legacy Netlify Forms markup remains on some contact/support/feedback pages. Netlify Forms do not process submissions on Vercel; migrate these to a Vercel-compatible endpoint before relying on them.
