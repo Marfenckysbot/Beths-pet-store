@@ -28,6 +28,20 @@ for (const file of htmlFiles) {
   }
 }
 
+const siteOrigin = "https://beths-pet-store.vercel.app";
+for (const file of htmlFiles) {
+  const html = readFileSync(join(root, file), "utf8");
+  if (/data-netlify=["']true["']/i.test(html)) errors.push(file + " -> Netlify Forms are not supported by the Vercel deployment; use a Vercel-compatible endpoint");
+  if (html.includes("https://beths-pet-store.netlify.app")) errors.push(file + " -> stale Netlify canonical/Open Graph URL remains");
+}
+for (const path of ["robots.txt", "sitemap.xml"]) {
+  const content = readFileSync(join(root, path), "utf8");
+  if (!content.includes(siteOrigin)) errors.push(path + " -> must reference the active Vercel origin");
+  if (content.includes("beths-pet-store.netlify.app")) errors.push(path + " -> stale Netlify URL remains");
+}
+const siteConfigText = readFileSync(join(root, "scripts/site.config.js"), "utf8");
+if (!siteConfigText.includes('marketLabel: "Global marketplace"')) errors.push("scripts/site.config.js -> marketplace positioning must remain global");
+
 const marketplace = readFileSync(join(root, "scripts/marketplace.js"), "utf8");
 for (const match of marketplace.matchAll(/image:"([^"]+)"/g)) {
   if (!existsSync(join(root, match[1]))) errors.push("scripts/marketplace.js -> missing product image: " + match[1]);
@@ -69,5 +83,5 @@ if (errors.length) {
   for (const error of errors) console.error(" - " + error);
   process.exitCode = 1;
 } else {
-  console.log("Beth's Pet Store checks passed: local links/assets, Netlify form markup and public-config privacy checks, deployment-script guardrails and public-artifact checks.");
+  console.log("Beth's Pet Store checks passed: local links/assets, Vercel SEO and form-readiness checks, public-config privacy checks, deployment-script guardrails and public-artifact checks.");
 }
