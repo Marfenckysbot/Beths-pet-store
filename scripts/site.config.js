@@ -2,7 +2,7 @@
 export const store = {
   name: "Beth's Pet Store",
   language: "en",
-  marketLabel: "Nigeria and international markets",
+  marketLabel: "Global marketplace",
 };
 
 // Delivery prices and availability must come from a real provider or confirmed business policy.
