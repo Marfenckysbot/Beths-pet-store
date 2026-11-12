@@ -3,5 +3,6 @@
 // Never put a service_role key, database password, payment secret, or private credential here.
 window.BETHS_SUPABASE_CONFIG = {
   url: "https://moqbnaotzveoljeidsez.supabase.co",
-  anonKey: "sb_publishable_uxn_nE8o4sXLGvEC68UPHg_vyXvOdkv"
+  anonKey: "sb_publishable_uxn_nE8o4sXLGvEC68UPHg_vyXvOdkv",
+  authRedirectsConfigured: false
 };
