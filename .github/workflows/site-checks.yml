@@ -22,7 +22,7 @@ jobs:
         run: node --check --input-type=module < scripts/portal.js
       - name: Check customer account ES module syntax
         run: node --check --input-type=module < scripts/account.js
-      - name: Validate local links, assets and form markup
+      - name: Validate local links, assets, Vercel SEO and form readiness
         run: node scripts/validate-site.mjs
       - name: Validate Supabase workflow security guardrails
         run: node scripts/validate-supabase.mjs
