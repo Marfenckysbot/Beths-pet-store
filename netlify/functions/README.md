@@ -1,6 +1,8 @@
-# Server-side integration workspace
+# Planned server-side integration workspace
 
-Netlify Functions are the appointed location for trusted backend adapters. The directory is configured in `netlify.toml`; this README is not an active endpoint and no payment or external API handler is enabled yet.
+This folder is retained as a legacy planning document from the earlier Netlify hosting setup. The live project is now deployed on Vercel, and **Netlify Functions in this folder do not execute on Vercel**.
+
+When integrations are approved, implement the trusted server endpoints as Vercel Functions (for example under `api/`) or Supabase Edge Functions. Keep provider-specific code behind small adapters so vendors can be replaced without rewriting the storefront.
 
 ## Planned function boundaries
 
@@ -12,10 +14,11 @@ Netlify Functions are the appointed location for trusted backend adapters. The d
 | `delivery-quote` | Request delivery options and prices | Validated addresses, provider limits, no secret exposure |
 | `delivery-webhook` | Receive tracking and delivery state changes | Signature verification, event deduplication |
 | `transactional-email` | Send account/order/seller notifications | Verified sender domain, consent and template escaping |
+| `site-inquiry` | Accept contact, support and feedback submissions | Strict schema validation, spam/rate controls, private storage, admin-only reads |
 
 ## Server environment variables (names only)
 
-Configure secrets in the Netlify site environment, never in Git or browser code:
+Configure secrets in the Vercel project's encrypted Environment Variables or Supabase Edge Function secrets, never in Git or browser code:
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY` (server functions only; never expose to clients)
 - `PAYMENT_PROVIDER_SECRET_KEY`
@@ -24,7 +27,7 @@ Configure secrets in the Netlify site environment, never in Git or browser code:
 - `DELIVERY_WEBHOOK_SECRET`
 - `EMAIL_PROVIDER_API_KEY`
 
-Use only the variables needed by the selected provider. Do not send secret values in chat. The founder can configure them directly in the hosting provider's encrypted environment settings and tell us the variable names that are ready.
+Use only the variables needed by the selected provider. Do not send secret values in chat. The founder can configure them directly in the provider's encrypted environment settings and tell us only which variable names are ready.
 
 ## Implementation rules
 
@@ -33,6 +36,10 @@ Use only the variables needed by the selected provider. Do not send secret value
 3. Verify webhook signatures before parsing trusted event data; make handlers idempotent.
 4. Keep provider-specific code behind small adapters so payment, delivery and email vendors can be replaced without rewriting storefront pages.
 5. Log event IDs and safe operational metadata, never passwords, full payment credentials or unnecessary personal data.
-6. Keep checkout disabled until sandbox, failure, refund, duplicate-webhook and low-value live tests pass.
+6. Keep checkout disabled until sandbox, failure, refund, duplicate-webhook and reconciliation tests pass.
 
-No function handlers are intentionally created yet: there is no Supabase project, approved merchant account, delivery provider or email provider to configure. This folder is ready for those integrations when the founder has the required accounts and credentials.
+## Current status
+
+The Supabase project exists and its database schema/migrations are live. No payment, delivery or transactional email provider is connected. No server-side provider handlers are active. Contact, support and feedback forms are temporarily disabled because their old Netlify Forms backend does not work on Vercel. The site inquiry endpoint is a remaining pre-launch task.
+
+Checkout, order creation, payment collection, refunds and payouts remain disabled.
