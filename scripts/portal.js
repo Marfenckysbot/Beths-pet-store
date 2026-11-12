@@ -15,18 +15,26 @@ else boot();
 
 async function boot(){
   const supabase=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const redirectsReady=config.authRedirectsConfigured===true;
+  if(!redirectsReady){
+    $("#sign-up-button").disabled=true;
+    $("#reset-password").disabled=true;
+    message("#auth-message","Existing accounts can sign in. New registrations and password resets are temporarily paused until the secure Supabase email redirect addresses are configured.");
+  }
   $("#auth-form").addEventListener("submit",async event=>{
     event.preventDefault(); message("#auth-message","Signing in…");
     const {error}=await supabase.auth.signInWithPassword({email:$("#auth-email").value.trim(),password:$("#auth-password").value});
     message("#auth-message",error?.message||"Signed in.",Boolean(error));
   });
   $("#sign-up-button").addEventListener("click",async()=>{
+    if(!redirectsReady){message("#auth-message","New registrations are temporarily paused until secure email redirects are configured.");return;}
     if(!$("#auth-form").reportValidity())return;
     message("#auth-message","Creating account…");
     const {data,error}=await supabase.auth.signUp({email:$("#auth-email").value.trim(),password:$("#auth-password").value,options:{emailRedirectTo:location.origin+"/portal.html"}});
     message("#auth-message",error?.message||(data.session?"Account created and signed in.":"Account created. Check your email to confirm it before signing in."),Boolean(error));
   });
   $("#reset-password").addEventListener("click",async()=>{
+    if(!redirectsReady){message("#auth-message","Password resets are temporarily paused until secure email redirects are configured.");return;}
     const email=$("#auth-email").value.trim(); if(!email){message("#auth-message","Enter your email address first.",true);return;}
     const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/portal.html"});
     message("#auth-message",error?.message||( "If an account exists for that address, a password reset email has been sent."),Boolean(error));
