@@ -19,11 +19,9 @@ if(!configured){
 async function boot(){
   const supabase=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   const redirectsReady=config.authRedirectsConfigured===true;
-  if(!redirectsReady){
-    $("#account-signup").disabled=true;
-    $("#account-reset").disabled=true;
-    message("#account-auth-message","Existing accounts can sign in. New registrations and password resets are temporarily paused until the secure Supabase email redirect addresses are configured.");
-  }
+  $("#account-signup").disabled=!redirectsReady;
+  $("#account-reset").disabled=!redirectsReady;
+  if(!redirectsReady)message("#account-auth-message","Existing accounts can sign in. New registrations and password resets are temporarily paused until the secure Supabase email redirect addresses are configured.");
   $("#account-auth-form").addEventListener("submit",async event=>{
     event.preventDefault();message("#account-auth-message","Signing in…");
     const {error}=await supabase.auth.signInWithPassword({email:$("#account-email").value.trim(),password:$("#account-password").value});
