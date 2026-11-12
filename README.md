@@ -4,9 +4,9 @@ A global pet marketplace foundation with an international storefront, independen
 
 ## Project status
 
-This repository is a pre-launch implementation, not a live checkout marketplace. The connected Supabase project is initialized and the base schema plus seventeen migrations are applied. The founder Auth account and administrator membership are provisioned. Auth redirect configuration and browser-based role testing remain to be completed. No payment, delivery, transactional email or analytics provider is connected. The preview bag is local-only; order creation and payment collection are disabled.
+This repository is a pre-launch implementation, not a live checkout marketplace. The connected Supabase project is initialized with the base schema and 17 follow-up migrations (18 migration records total). The founder Auth account and administrator membership are provisioned. Auth redirect configuration and browser-based role testing remain to be completed. A Git-connected Vercel project serves the current marketplace branch at https://beths-pet-store.vercel.app/. No payment, delivery or transactional email provider is connected. The preview bag is local-only; order creation and payment collection are disabled.
 
-The current work is maintained on the `marketplace-foundation` branch and proposed through an open draft pull request. It has not been merged or deployed to production.
+The current work is maintained on the `marketplace-foundation` branch and proposed through open draft PR #1. Vercel deployments are being built from this branch; the PR remains unmerged. Treat the Vercel site as a pre-launch preview, not an approved commercial launch.
 
 ## Start here
 
@@ -29,7 +29,7 @@ Read [Portal setup](docs/PORTAL-SETUP.md) and [Seller inventory management](docs
 
 ## Server-side integration boundary
 
-Future trusted payment, order, delivery and transactional email adapters belong under `netlify/functions/`. See [the server-side integration workspace](netlify/functions/README.md). No active provider handlers are included yet.
+Future trusted payment, order, delivery and transactional email handlers must be implemented using a Vercel-compatible serverless route (for example `api/`) or Supabase Edge Functions. The existing `netlify/functions/` folder is documentation/planning only; Netlify Functions do not execute on Vercel. No active provider handlers are included yet.
 
 ## Local validation
 
