@@ -39,6 +39,14 @@ for (const path of ["robots.txt", "sitemap.xml"]) {
   if (!content.includes(siteOrigin)) errors.push(path + " -> must reference the active Vercel origin");
   if (content.includes("beths-pet-store.netlify.app")) errors.push(path + " -> stale Netlify URL remains");
 }
+const vercelConfig = JSON.parse(readFileSync(join(root, "vercel.json"), "utf8"));
+const configuredHeaders = (vercelConfig.headers || []).flatMap(rule => rule.headers || []).map(header => header.key.toLowerCase());
+for (const key of ["x-content-type-options", "referrer-policy", "permissions-policy", "x-frame-options"]) {
+  if (!configuredHeaders.includes(key)) errors.push("vercel.json -> missing security header: " + key);
+}
+if (!(vercelConfig.redirects || []).some(rule => rule.source === "/marketplace" && rule.destination === "/shop.html")) {
+  errors.push("vercel.json -> marketplace shortcut redirect is missing");
+}
 const siteConfigText = readFileSync(join(root, "scripts/site.config.js"), "utf8");
 if (!siteConfigText.includes('marketLabel: "Global marketplace"')) errors.push("scripts/site.config.js -> marketplace positioning must remain global");
 
