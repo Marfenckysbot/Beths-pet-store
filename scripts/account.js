@@ -18,12 +18,19 @@ if(!configured){
 
 async function boot(){
   const supabase=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  const redirectsReady=config.authRedirectsConfigured===true;
+  if(!redirectsReady){
+    $("#account-signup").disabled=true;
+    $("#account-reset").disabled=true;
+    message("#account-auth-message","Existing accounts can sign in. New registrations and password resets are temporarily paused until the secure Supabase email redirect addresses are configured.");
+  }
   $("#account-auth-form").addEventListener("submit",async event=>{
     event.preventDefault();message("#account-auth-message","Signing in…");
     const {error}=await supabase.auth.signInWithPassword({email:$("#account-email").value.trim(),password:$("#account-password").value});
     message("#account-auth-message",error?.message||"Signed in.",Boolean(error));
   });
   $("#account-signup").addEventListener("click",async()=>{
+    if(!redirectsReady){message("#account-auth-message","New registrations are temporarily paused until secure email redirects are configured.");return;}
     const form=$("#account-auth-form");
     $("#account-password").setAttribute("autocomplete","new-password");
     if(!form.reportValidity())return;
@@ -32,6 +39,7 @@ async function boot(){
     message("#account-auth-message",error?.message||(data.session?"Account created and signed in.":"Account created. Check your email to confirm it before signing in."),Boolean(error));
   });
   $("#account-reset").addEventListener("click",async()=>{
+    if(!redirectsReady){message("#account-auth-message","Password resets are temporarily paused until secure email redirects are configured.");return;}
     const email=$("#account-email").value.trim();
     if(!email){message("#account-auth-message","Enter your email address first.",true);return;}
     const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/account.html"});
