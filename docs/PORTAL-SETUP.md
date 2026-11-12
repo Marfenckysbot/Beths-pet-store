@@ -38,7 +38,7 @@ All 14 public tables have RLS enabled. The initial category seed contains five c
 
 ## Remaining Supabase setup
 
-1. Email/password sign-in is enabled and email confirmation is ON, as confirmed by the founder. The founder administrator account is already provisioned. Set the Site URL and redirect URLs to the verified preview/deployed account and portal routes before browser testing.
+1. Email/password sign-in is enabled and email confirmation is ON, as confirmed by the founder. The founder administrator account is already provisioned. Set the Site URL to `https://beths-pet-store.vercel.app` and add the account/portal redirect destinations before browser testing. This dashboard change is still outstanding.
 2. Enable Supabase Auth leaked-password protection (HaveIBeenPwned check) in the password security settings; the current security advisor reports it is disabled.
 3. Confirm the public project URL and publishable key in `scripts/portal-config.js`; never add a service-role key.
 4. Sign in with the existing founder account and verify that the administrator dashboard opens.
@@ -74,10 +74,10 @@ All 14 public tables have RLS enabled. The initial category seed contains five c
 - The Supabase schema and migrations are live in the connected project. Email confirmation is enabled and the founder admin membership exists, but Auth redirects, email delivery and role-based workflows have not yet been browser-tested.
 - The founder administrator membership has been bootstrapped; sign-in and permission checks still need browser verification.
 - No verified production seller accounts or real product catalogue exist.
-- Netlify seller-form submissions are not automatically imported into Supabase. Existing submissions require a controlled manual review/import process.
+- The legacy Netlify seller form was removed from the seller journey; applicants apply through the authenticated Supabase portal. Other legacy Netlify Forms (contact/support/feedback) do not process on Vercel and still need a Vercel-compatible submission endpoint.
 - Product images are public-read. Never upload private documents, identity records or customer information.
 - Orders are read-only. There is no checkout, payment collection, refund, payout, shipping action or order creation.
-- The draft PR is not merged and no production deployment has been triggered.
+- Draft PR #1 remains unmerged. A Vercel deployment is active at `https://beths-pet-store.vercel.app`, but the site is still a pre-launch preview and checkout is disabled.
 
 ## Security boundaries
 
