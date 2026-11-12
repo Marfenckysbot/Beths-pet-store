@@ -1,6 +1,9 @@
-# Beth's Pet Store
+# Beth's Pet Store — legacy Netlify notes
 
-A mobile-first, marketplace-oriented pet store experience for Nigeria and international discovery.
+> Archived hosting notes. The current site is deployed on Vercel. Netlify Forms and Netlify Functions described below are not active on the Vercel deployment.
+
+
+A mobile-first global pet marketplace experience.
 
 ## Project structure
 - index.html — homepage
@@ -19,8 +22,8 @@ A mobile-first, marketplace-oriented pet store experience for Nigeria and intern
 ## Local preview
 Open index.html in a browser or serve the repository root with a static development server. The current preview is static HTML/CSS/JavaScript and has no build step.
 
-## Netlify
-The publish directory is the repository root. Netlify Forms markup is included for seller applications, contact, support and feedback. Verify form capture in the Netlify dashboard after deployment; a successful page render alone does not prove a form has been received.
+## Legacy Netlify configuration
+This section is retained for historical reference only. The active hosting project is Vercel. Netlify Forms do not process submissions on the Vercel deployment.
 
 ## Important: not a live store yet
 The sample catalogue and its USD prices/discounts are illustrative. The shopping bag and wishlist are stored in the visitor's browser only. Checkout is disabled. There are no live seller accounts, approved product listings, payment collection, order fulfilment, seller payouts or live inventory yet.
