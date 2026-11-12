@@ -10,17 +10,17 @@ Use [the founder handoff checklist](FOUNDER-HANDOFF-CHECKLIST.md) as the master 
 | Supabase anon/publishable key | `scripts/portal-config.js` | Public browser key only; configured on the development branch |
 | Base schema and migrations | Supabase database | Applied to project ref `moqbnaotzveoljeidsez`; migration history verified |
 | Founder admin Auth user UUID | Supabase `admin_users` table | Founder account and administrator membership are already provisioned; do not create a duplicate |
-| Preview/production site URL and auth redirects | Supabase Auth URL configuration | Pending until the real hosting preview URL is verified; add the account and portal callback paths after confirming the origin |
+| Preview/production site URL and auth redirects | Supabase Auth URL configuration | Pending dashboard configuration; Vercel origin is verified as `https://beths-pet-store.vercel.app`; allow `/account.html` and `/portal.html` callback destinations after confirming exact redirect behavior |
 
 Never send or commit a Supabase service-role key, database password, recovery code or private credential in chat or repository files.
 
 ## 2. Hosting and server-side functions
 
-The static site is designed for Netlify hosting. The `netlify/functions/` directory is the reserved trusted-server integration workspace; it currently contains documentation, not active provider handlers.
+The static site is currently deployed on Vercel. The `netlify/functions/` directory is legacy planning documentation only; Netlify Functions do not execute on Vercel. Future trusted endpoints must use Vercel Functions or Supabase Edge Functions.
 
 | Item | Intended location | Handling |
 | --- | --- | --- |
-| Hosting account/site and preview URL | Netlify project settings | Founder-owned account |
+| Hosting account/site and preview URL | Vercel project `beths-pet-store` | Connected to `Marfenckysbot/Beths-pet-store`; deployed at `https://beths-pet-store.vercel.app/` |
 | Custom domain and DNS access | Hosting/domain registrar | Configure only after domain ownership is confirmed |
 | Supabase server URL/key | Encrypted server environment | Service-role key server-side only |
 | Provider secrets | Encrypted server environment | Add only when a provider is selected and approved |
@@ -116,5 +116,5 @@ The storefront uses an interactive model viewer when a seller supplies a valid m
 - The connected Supabase project is initialized and its schema/migrations are applied.
 - Public browser configuration is committed to the development branch only.
 - Auth redirects remain pending; founder admin membership has been bootstrapped.
-- No production deployment, payment merchant account, delivery account, email provider, analytics property or verified social account is configured.
+- The Vercel site is deployed as a pre-launch preview; no payment merchant account, delivery account, transactional email provider, analytics property or verified social account is configured. Legacy Netlify Forms still need a Vercel-compatible replacement.
 - Do not accept real orders or payments based on these placeholders.
