@@ -81,14 +81,15 @@ create policy "Marketplace admins read site inquiries" on public.site_inquiries 
 -- The private limiter stores only a one-way email digest, not the submitted address.
 create schema if not exists private;
 revoke all on schema private from public, anon, authenticated, service_role;
+grant usage on schema private to service_role;
 
 create table if not exists private.site_inquiry_rate_limits (
-  email_hash text primary key check (email_hash ~ '^[0-9a-f]{32}
-),
+  email_hash text primary key check (email_hash ~ '^[0-9a-f]{32}$'),
   window_started_at timestamptz not null,
   request_count integer not null check (request_count >= 1)
 );
 revoke all on table private.site_inquiry_rate_limits from public, anon, authenticated, service_role;
+grant select, insert, update, delete on table private.site_inquiry_rate_limits to service_role;
 
 create or replace function public.submit_site_inquiry(
   p_category text,
@@ -99,7 +100,7 @@ create or replace function public.submit_site_inquiry(
 )
 returns void
 language plpgsql
-security definer
+security invoker
 set search_path = ''
 as $function$
 declare
@@ -150,4 +151,3 @@ revoke all on function public.submit_site_inquiry(text, text, text, text, text)
   from public, anon, authenticated, service_role;
 grant execute on function public.submit_site_inquiry(text, text, text, text, text)
   to service_role;
-
