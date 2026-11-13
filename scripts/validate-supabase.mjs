@@ -1,0 +1,151 @@
+import { readFileSync, existsSync } from "node:fs";
+
+const migrationPath = "supabase/migrations/20261109_admin_and_seller_workflows.sql";
+const storagePath = "supabase/migrations/20261109_product_image_storage.sql";
+const inventoryPath = "supabase/migrations/20261109_seller_inventory_management.sql";
+const modelPath = "supabase/migrations/20261111_product_3d_models.sql";
+const sellerClaimPath = "supabase/migrations/20261111_harden_seller_claim_rpc.sql";
+const productGuardPath = "supabase/migrations/20261111_lock_down_product_update_permissions.sql";
+const inventoryFixPath = "supabase/migrations/20261111_fix_invoker_inventory_rpc_columns.sql";
+const writeGrantsPath = "supabase/migrations/20261111170539_tighten_customer_and_seller_write_grants.sql";
+const defaultPrivilegesPath = "supabase/migrations/20261111170917_restrict_future_public_object_defaults.sql";
+const productInsertPath = "supabase/migrations/20261111171018_restrict_product_insert_columns.sql";
+const adminModerationGrantsPath = "supabase/migrations/20261111171234_restore_admin_moderation_column_grants.sql";
+const reviewerNotesPath = "supabase/migrations/20261111191224_protect_seller_reviewer_notes.sql";
+const productImagesPath = "supabase/migrations/20261111191633_validate_product_image_urls.sql";
+const inquiryMigrationPath = "supabase/migrations/20261113111454_site_inquiries.sql";
+const inquiryHardeningPath = "supabase/migrations/20261113153500_atomic_site_inquiry_rate_limit.sql";
+const inquiryFunctionPath = "supabase/functions/site-inquiry/index.ts";
+const inquiryClientPath = "scripts/inquiries.js";
+const schemaPath = "supabase/schema.sql";
+const portalPath = "scripts/portal.js";
+const sellerPagePath = "sell.html";
+const cataloguePath = "scripts/marketplace.js";
+const configPath = "scripts/portal-config.js";
+const handoffPath = "docs/FOUNDER-HANDOFF-CHECKLIST.md";
+const readinessPath = "docs/MARKETPLACE-READINESS.md";
+const functionsReadmePath = "netlify/functions/README.md";
+const errors = [];
+
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, adminModerationGrantsPath, reviewerNotesPath, productImagesPath, inquiryMigrationPath, inquiryHardeningPath, inquiryFunctionPath, inquiryClientPath, schemaPath, portalPath, sellerPagePath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", "contact.html", "support.html", "feedback.html", "privacy.html", handoffPath, readinessPath, functionsReadmePath]) {
+  if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
+}
+
+if (!errors.length) {
+  const migration = readFileSync(migrationPath, "utf8");
+  const schema = readFileSync(schemaPath, "utf8");
+  const portal = readFileSync(portalPath, "utf8");
+  const sellerPage = readFileSync(sellerPagePath, "utf8");
+  const catalogue = readFileSync(cataloguePath, "utf8");
+  const storage = readFileSync(storagePath, "utf8");
+  const inventory = readFileSync(inventoryPath, "utf8");
+  const modelMigration = readFileSync(modelPath, "utf8");
+  const sellerClaimMigration = readFileSync(sellerClaimPath, "utf8");
+  const productGuardMigration = readFileSync(productGuardPath, "utf8");
+  const inventoryFixMigration = readFileSync(inventoryFixPath, "utf8");
+  const writeGrantsMigration = readFileSync(writeGrantsPath, "utf8");
+  const defaultPrivilegesMigration = readFileSync(defaultPrivilegesPath, "utf8");
+  const productInsertMigration = readFileSync(productInsertPath, "utf8");
+  const adminModerationGrantsMigration = readFileSync(adminModerationGrantsPath, "utf8");
+  const reviewerNotesMigration = readFileSync(reviewerNotesPath, "utf8");
+  const productImagesMigration = readFileSync(productImagesPath, "utf8");
+  const inquiryMigration = readFileSync(inquiryMigrationPath, "utf8");
+  const inquiryHardeningMigration = readFileSync(inquiryHardeningPath, "utf8");
+  const inquiryFunction = readFileSync(inquiryFunctionPath, "utf8");
+  const inquiryClient = readFileSync(inquiryClientPath, "utf8");
+  const privacyNotice = readFileSync("privacy.html", "utf8");
+  const inquiryPages = ["contact.html", "support.html", "feedback.html"].map(path => readFileSync(path, "utf8"));
+  const portalConfig = readFileSync(configPath, "utf8");
+  const portalHtml = readFileSync("portal.html", "utf8");
+  const account = readFileSync("scripts/account.js", "utf8");
+  const accountHtml = readFileSync("account.html", "utf8");
+  const handoff = readFileSync(handoffPath, "utf8");
+  const readiness = readFileSync(readinessPath, "utf8");
+  const functionsReadme = readFileSync(functionsReadmePath, "utf8");
+  const requiredFunctions = [
+    "review_seller_application",
+    "claim_approved_seller",
+    "set_seller_moderation_status",
+    "review_marketplace_product"
+  ];
+
+  for (const name of requiredFunctions) {
+    if (!migration.includes("function public." + name)) errors.push("Missing workflow function: " + name);
+    if (!migration.includes("grant execute on function public." + name)) errors.push("Missing authenticated execute grant: " + name);
+  }
+
+  if (!schema.includes("enable row level security")) errors.push("Base schema must enable row-level security");
+  if (!schema.includes("model_url text") || !modelMigration.includes("products_model_url_https_check")) errors.push("Optional 3D model URLs must be represented in schema and HTTPS-constrained migration");
+  if (!portal.includes("product-model-url") || !portal.includes("edit-product-model-url")) errors.push("Seller portal must expose optional 3D model URL fields");
+  if (!catalogue.includes("model-viewer") || !catalogue.includes("model_url")) errors.push("Product details must support optional interactive 3D model viewing");
+  if (!migration.includes("public.is_marketplace_admin()")) errors.push("Moderation migration must enforce administrator checks");
+  if (!migration.includes("security definer")) errors.push("Workflow functions must use controlled security-definer execution");
+  if (!migration.includes("revoke all on function")) errors.push("Workflow functions must revoke default public execution");
+  if (/service_role\s*[:=]\s*['"]|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(migration)) errors.push("Do not commit service-role or payment secrets");
+  if (!migration.includes("v_application.email") || !migration.includes("auth.users") || !migration.includes("email_confirmed_at")) errors.push("Legacy seller application bootstrap must verify confirmed email");
+  if (!sellerClaimMigration.includes("security invoker") || !sellerClaimMigration.includes("applicant claim approved seller") || !sellerClaimMigration.includes("a.applicant_id = (select auth.uid())") || !sellerClaimMigration.includes("a.status = 'approved'")) errors.push("Seller claiming must use an invoker RPC and an RLS policy restricted to the applicant's own approved application");
+  if (!sellerClaimMigration.includes("revoke all on function public.claim_approved_seller") || !sellerClaimMigration.includes("grant execute on function public.claim_approved_seller")) errors.push("Seller claim RPC must revoke public execution and grant authenticated execution only");
+  if (!productGuardMigration.includes("revoke update on table public.products from authenticated") || !productGuardMigration.includes("grant update (category_id, name, slug, description, price_usd, model_url, status, inventory_quantity)")) errors.push("Product updates must use a restricted column-level grant");
+  if (/grant update on public\.products to authenticated/i.test(productGuardMigration)) errors.push("Product guard migration must not restore table-wide UPDATE privileges");
+  if (!productGuardMigration.includes("guard_product_seller_status_change") || !productGuardMigration.includes("new.status not in ('pending', 'archived')")) errors.push("Seller product status changes must be guarded against self-publication");
+  if (!productGuardMigration.includes("security invoker") || !inventoryFixMigration.includes("security invoker")) errors.push("Seller inventory/archive RPCs must run as SECURITY INVOKER");
+  if (inventoryFixMigration.includes("updated_at = now()")) errors.push("Invoker inventory RPCs must rely on the updated_at trigger rather than writing a protected column");
+  if (!writeGrantsMigration.includes("revoke insert, update on table public.profiles from authenticated") || !writeGrantsMigration.includes("grant update (display_name, country_code) on table public.profiles to authenticated")) errors.push("Customer profile writes must be restricted to editable profile columns");
+  if (!writeGrantsMigration.includes("revoke insert, update on table public.favorites from authenticated") || !writeGrantsMigration.includes("grant insert (user_id, product_id) on table public.favorites to authenticated")) errors.push("Wishlist writes must not allow UPDATE or caller-supplied timestamps");
+  if (!writeGrantsMigration.includes("revoke insert, update on table public.seller_applications from authenticated") || !writeGrantsMigration.includes("revoke insert, update on table public.sellers from authenticated")) errors.push("Seller application and seller profile moderation fields must not be directly writable by authenticated clients");
+  if (!defaultPrivilegesMigration.includes("alter default privileges for role postgres in schema public") || !defaultPrivilegesMigration.includes("revoke all on tables from anon, authenticated, service_role") || !defaultPrivilegesMigration.includes("revoke all on sequences from anon, authenticated, service_role") || !defaultPrivilegesMigration.includes("revoke all on functions from anon, authenticated, service_role") || !defaultPrivilegesMigration.includes("revoke execute on functions from public")) errors.push("Future public-schema objects must not be exposed by default; explicit grants are required");
+  if (!productInsertMigration.includes("revoke insert on table public.products from authenticated") || !productInsertMigration.includes("grant insert (") || productInsertMigration.includes("created_at") || productInsertMigration.includes("updated_at")) errors.push("Seller product creation must use restricted insert columns without client-controlled timestamps");
+  if (!adminModerationGrantsMigration.includes("grant update (status, reviewer_notes, reviewed_at)") || !adminModerationGrantsMigration.includes("grant update (status)") || adminModerationGrantsMigration.includes("grant update on table")) errors.push("Admin moderation must use only the specific column grants required by its SECURITY INVOKER RPCs");
+  if (!reviewerNotesMigration.includes("revoke select on table public.seller_applications from authenticated") || !reviewerNotesMigration.includes("grant select (") || !reviewerNotesMigration.includes("returns void") || reviewerNotesMigration.includes("returning *")) errors.push("Seller application reviewer notes must be private and the review RPC must not return the private row");
+  if (!reviewerNotesMigration.includes("select id, business_name, description, country_code, status") || !reviewerNotesMigration.includes("security invoker")) errors.push("Seller claim RPC must select only the approved application fields it needs under caller RLS");
+  if (!productImagesMigration.includes("cardinality(image_urls) <= 5") || !productImagesMigration.includes("array_to_string(image_urls") || !productImagesMigration.includes("https://") || !productImagesMigration.includes("~ '^(https://")) errors.push("Product image URLs must be HTTPS-only and limited to five per listing");
+  if (!inquiryMigration.includes("create table if not exists public.site_inquiries") || !inquiryMigration.includes("enable row level security") || !inquiryMigration.includes("revoke all on table public.site_inquiries from anon, authenticated, service_role") || !inquiryMigration.includes("grant select, insert on table public.site_inquiries to service_role") || !inquiryMigration.includes("public.is_marketplace_admin()")) errors.push("Public inquiries must be stored in a private RLS-protected table readable only by marketplace admins");
+  if (!inquiryFunction.includes("SUPABASE_SERVICE_ROLE_KEY") || !inquiryFunction.includes("allowedOrigins = new Set") || !inquiryFunction.includes("https://beths-pet-store.vercel.app") || !inquiryFunction.includes("https://beths-pet-store-git-marketplace-foundation-ecohubngs-projects.vercel.app") || !inquiryFunction.includes("company_website") || !inquiryFunction.includes("/rpc/submit_site_inquiry") || inquiryFunction.includes('method: "HEAD"')) errors.push("Public inquiry endpoint must use server-only credentials, strict origin checks, a honeypot and the atomic server-side submission RPC");
+  if (!inquiryHardeningMigration.includes("private.site_inquiry_rate_limits") || !inquiryHardeningMigration.includes("security invoker") || !inquiryHardeningMigration.includes("set search_path = \'\'") || !inquiryHardeningMigration.includes("grant execute on function public.submit_site_inquiry") || !inquiryHardeningMigration.includes("to service_role") || !inquiryHardeningMigration.includes("request_count + 1") || !inquiryHardeningMigration.includes("interval " + "'1 hour'")) errors.push("Inquiry submission must use an atomic private email rate-limit bucket and a service-role-only RPC");
+  if (!inquiryClient.includes('functions.invoke("site-inquiry"')) errors.push("Public inquiry forms must submit through the Supabase site-inquiry Edge Function");
+  if (inquiryPages.some(html => !html.includes("data-inquiry-form") || !html.includes("scripts/inquiries.js") || /data-netlify=["']true/i.test(html))) errors.push("Contact, support and feedback forms must use the secure Vercel-compatible endpoint, not legacy Netlify Forms");
+  if (!privacyNotice.includes("private database table") || !privacyNotice.includes("no automatic email reply")) errors.push("Privacy notice must explain inquiry storage and the absence of automatic email replies");
+  if (!portal.includes('from("site_inquiries")') || !portalHtml.includes('id="admin-inquiries"')) errors.push("Administrator portal must expose the private website inquiry inbox");
+  if (!portal.includes('parsed.protocol!=="https:"')) errors.push("Seller portal must reject insecure HTTP product image URLs before submission");
+  if (catalogue.includes("seller.country_code||'NG'")) errors.push("Global seller storefronts must not invent Nigeria as a missing seller location");
+  if (!catalogue.includes("setPageMetadata") || !catalogue.includes('meta[property="og:title"]') || !catalogue.includes('link[rel="canonical"]')) errors.push("Product and seller storefront pages must receive specific metadata and canonical URLs after data loads");
+  if (!catalogue.includes('aria-pressed="') || !readFileSync("styles/marketplace.css", "utf8").includes(":focus-visible") || !readFileSync("styles/portal.css", "utf8").includes(":focus-visible")) errors.push("Marketplace wishlist controls and seller/admin workspaces must expose accessible toggle state and visible keyboard focus");
+  if (!migration.includes("auth.uid(), v_application.id") || !migration.includes("'pending'")) errors.push("New seller accounts must remain pending until manually activated");
+  for (const fn of ["review_seller_application", "claim_approved_seller", "set_seller_moderation_status", "review_marketplace_product"]) {
+    if (!portal.includes(`rpc("${fn}"`)) errors.push("Portal is missing moderation integration: " + fn);
+  }
+  if (!storage.includes("5242880") || !storage.includes("image/webp")) errors.push("Product image bucket must enforce size and image MIME limits");
+  for (const name of ["seller_update_inventory", "seller_set_product_archived"]) {
+    if (!inventory.includes("function public." + name)) errors.push("Missing seller inventory function: " + name);
+    if (!inventory.includes("grant execute on function public." + name)) errors.push("Missing authenticated inventory grant: " + name);
+    if (!inventory.includes("revoke all on function public." + name)) errors.push("Seller inventory function must revoke public execution: " + name);
+  }
+  if (!inventory.includes("s.owner_user_id = auth.uid()")) errors.push("Seller inventory functions must verify seller ownership");
+  if (!inventory.includes("p_inventory_quantity < 0")) errors.push("Seller inventory updates must reject negative stock");
+  if (!portal.includes('rpc("seller_update_inventory"') || !portal.includes('rpc("seller_set_product_archived"')) errors.push("Portal is missing seller inventory RPC integration");
+  if (!portal.includes('status:"pending"')) errors.push("Product content edits must return listings to moderation");
+  if (!portal.includes('s.status==="active"?') || !portal.includes('"Reactivate"') || !portal.includes('data-status="active"')) errors.push("Admin seller moderation must allow paused and suspended sellers to be reactivated");
+  if (!sellerPage.includes('href="portal.html"') || !sellerPage.includes("Create account or sign in to apply") || /data-netlify=["\']true["\']/.test(sellerPage)) errors.push("Public seller applications must route through the authenticated Supabase portal, not an unlinked Netlify form");
+  if (!portal.includes('["rejected","withdrawn"].includes(application.status)') || !portal.includes("You may submit a new application")) errors.push("Rejected or withdrawn applicants must have a clear route to submit a fresh seller application");
+
+  if (!storage.includes("storage.foldername(name)") || !storage.includes("s.owner_user_id = auth.uid()")) errors.push("Product image uploads must be scoped to the owning seller");
+  if (!catalogue.includes('eq("status","active")') || !catalogue.includes("loadLiveProducts")) errors.push("Public catalogue must load approved seller products only");
+  if (/service_role\s*[:=]\s*["']|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(portalConfig + portal)) errors.push("Do not expose privileged or payment credentials in browser files");
+  if (!schema.includes("create table if not exists public.favorites") || !schema.includes("favorites owner only")) errors.push("Customer favorites must use owner-only row-level security");
+  if (!schema.includes("profiles read own") || !schema.includes("profiles update own")) errors.push("Customer profiles must use owner-only row-level security");
+  if (!accountHtml.includes('id="customer-profile-form"') || !accountHtml.includes('id="customer-orders"')) errors.push("Customer account page is missing profile or order-history sections");
+  if (account.includes('.from("profiles").upsert') || !account.includes('.from("profiles").update(') || !account.includes('.from("profiles").insert(payload)')) errors.push("Customer profile writes must use separate INSERT and UPDATE operations compatible with column-scoped grants");
+  if (account.includes('.from("profiles").upsert') || !account.includes('.from("profiles").update(') || !account.includes('.from("profiles").insert(payload)')) errors.push("Customer profile saving must use separately scoped INSERT and UPDATE operations, not an upsert requiring broader privileges");
+  if (/service_role\s*[:=]\s*["']|sk_live_[A-Za-z0-9]+|sk_test_[A-Za-z0-9]+/i.test(account)) errors.push("Do not expose privileged or payment credentials in customer account JavaScript");
+
+  if (!handoff.includes("Never paste passwords") || !handoff.includes("encrypted server environment")) errors.push("Founder handoff must clearly explain secret handling");
+  if (!readiness.includes("Definition of ready to accept real orders") || !readiness.includes("Checkout, payment collection")) errors.push("Marketplace readiness must document real-order launch gates");
+  if (!functionsReadme.includes("SUPABASE_SERVICE_ROLE_KEY") || !functionsReadme.includes("server functions only")) errors.push("Server integration documentation must keep privileged keys server-side");
+}
+
+if (errors.length) {
+  console.error(errors.map(error => "✖ " + error).join("\n"));
+  process.exit(1);
+}
+
+console.log("✓ Supabase schema, seller-claim RLS, and moderation workflow guardrails passed.");

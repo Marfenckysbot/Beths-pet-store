@@ -1,90 +1,14 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact — Beth Store</title>
-  <link rel="icon" href="assets/icons/favicon.svg" />
-  <link rel="stylesheet" href="css/style.css" />
-
-  <!-- Configs -->
-  <script defer src="js/site.config.js"></script>
-  <script defer src="js/social.config.js"></script>
-
-  <!-- Core -->
-  <script defer src="js/seo.js"></script>
-  <script defer src="js/a11y.js"></script>
-  <script defer src="js/ui.js"></script>
-  <script defer src="js/main.js"></script>
-</head>
-<body>
-  <a class="skip-link" href="#main">Skip to content</a>
-
-  <!-- Header -->
-  <header class="header">
-    <div class="container nav">
-      <a href="index.html" class="logo">
-        <img id="logo" src="" alt="" width="32" height="32" />
-        <span id="brand-name"></span>
-      </a>
-      <nav class="nav-links" aria-label="Primary">
-        <a href="shop.html">Shop</a>
-        <a href="services.html">Services</a>
-        <a href="adoption.html">Adoption</a>
-        <a href="blog.html">Blog</a>
-        <a href="faq.html">FAQ</a>
-        <a href="contact.html" aria-current="page">Contact</a>
-      </nav>
-      <div class="nav-cta">
-        <button id="dark-mode-toggle" class="theme-toggle" aria-pressed="false">🌓</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main content -->
-  <main id="main">
-    <section class="section container">
-      <h1>Get in touch</h1>
-      <p id="contact-address"></p>
-      <p>
-        <a id="social-whatsapp" href="#" rel="noopener">WhatsApp</a> ·
-        <a id="social-facebook" href="#" rel="noopener">Facebook</a>
-      </p>
-
-      <!-- Map placeholder; embed URL set via config -->
-      <div class="map" id="map" aria-label="Store location map">
-        <p>Map placeholder — coordinates from config</p>
-      </div>
-
-      <form id="contact-form" class="contact-form stack">
-        <label>Name
-          <input name="name" required class="input" />
-        </label>
-        <label>Email
-          <input type="email" name="email" required class="input" />
-        </label>
-        <label>Message
-          <textarea name="message" rows="4" required class="textarea"></textarea>
-        </label>
-        <button class="btn btn-primary" type="submit">Send</button>
-        <output id="contact-status" aria-live="polite"></output>
-      </form>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container section">
-      <strong id="footer-store-name"></strong>
-      <p id="footer-address" class="muted"></p>
-      <p>
-        <a id="social-whatsapp-footer" href="#" rel="noopener">WhatsApp</a> ·
-        <a id="social-facebook-footer" href="#" rel="noopener">Facebook</a>
-      </p>
-    </div>
-  </footer>
-
-  <!-- Contact hub (optional) -->
-  <div id="contact-hub" class="contact-hub"></div>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#183d39"><title>Contact Beth's Pet Store | Beth's Pet Store</title><meta name="description" content="Tell us how we can help. This inbox is for general questions, partnerships and marketplace enquiries."><link rel="icon" href="assets/beths-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="styles/marketplace.css"><script defer src="scripts/marketplace.js"></script><script src="scripts/portal-config.js"></script><script type="module" src="scripts/inquiries.js"></script></head>
+<body><div class="topline"><span>🐾 A happier place for pets and the people who love them</span><span class="topline-right">Global pet marketplace · USD display</span></div>
+<header class="main-header"><a class="brand" href="index.html"><span class="brand-mark">b<span>✦</span></span><span>Beth's <strong>Pet Store</strong><small>HAPPY PETS. HAPPIER LIVES.</small></span></a><a class="seller-top" href="shop.html">Explore marketplace ↗</a></header>
+<nav class="main-nav"><a href="index.html">Home</a><a href="shop.html">Marketplace</a><a href="sell.html">Seller centre</a><a href="care.html">Pet care journal</a><a class="active" href="contact.html">Contact</a></nav>
+<main class="editorial-page"><p class="eyebrow">WE'D LOVE TO HEAR FROM YOU</p><h1>Let's talk.</h1><p class="editorial-lede">Tell us how we can help. This inbox is for general questions, partnerships and marketplace enquiries.</p>
+<section class="application-panel inquiry-panel"><form data-inquiry-form data-inquiry-category="contact">
+<div class="inquiry-grid"><label>Your name<input name="name" type="text" autocomplete="name" minlength="2" maxlength="100" required></label><label>Email address<input name="email" type="email" autocomplete="email" maxlength="254" required></label></div>
+<label>Subject<input name="subject" type="text" minlength="3" maxlength="120" required></label>
+<label>Your message<textarea name="message" rows="6" minlength="20" maxlength="3000" required></textarea><small>20–3,000 characters. Please don't include passwords, payment details or other highly sensitive information.</small></label>
+<div class="inquiry-honeypot" aria-hidden="true"><label>Leave this field empty<input name="company_website" type="text" tabindex="-1" autocomplete="off"></label></div>
+<button class="btn btn-primary" type="submit">Send message ↗</button><p id="inquiry-status" class="form-footnote" aria-live="polite">Messages are stored securely for the marketplace team. We do not currently send automatic email replies.</p>
+</form></section></main>
+<footer class="footer"><div class="footer-bottom"><span>© <span id="year"></span> Beth's Pet Store</span><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="index.html">Home</a></div></footer></body></html>

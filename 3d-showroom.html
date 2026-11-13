@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#183d39">
+  <title>Explore a pet home in 3D | Beth's Pet Store</title>
+  <meta name="description" content="Explore an interactive 3D pet-friendly home with dogs, cats and small companions. Rotate, zoom and explore on supported devices.">
+  <link rel="icon" href="assets/beths-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles/marketplace.css">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    .showroom-page{max-width:1200px;margin:auto;padding:42px clamp(18px,5vw,65px) 90px}
+    .showroom-intro{max-width:760px;margin:0 auto 28px;text-align:center}
+    .showroom-intro h1{font:700 clamp(38px,6vw,66px)/1.02 Manrope,sans-serif;letter-spacing:-.075em;margin:0;color:var(--ink)}
+    .showroom-intro h1 em{font:italic 400 1em Georgia,serif;color:var(--coral2)}
+    .showroom-intro>p:not(.eyebrow){max-width:620px;margin:18px auto;color:#718078;font-size:13px;line-height:1.9}
+    .showroom-frame{position:relative;background:linear-gradient(145deg,#e8eee6,#f8f6ef);border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:var(--shadow)}
+    .showroom-model{display:block;width:100%;height:min(68vh,650px);min-height:340px;border-radius:10px;background:radial-gradient(ellipse at center,#fffefa,#e9eee6);--poster-color:transparent;--progress-bar-color:#d96c58;--progress-mask:#e9eee6}
+    .showroom-controls{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;padding:16px 6px 5px}
+    .showroom-controls button{min-height:44px;padding:10px 15px;border:1px solid #cbd6cd;border-radius:5px;background:#fffefa;color:var(--ink);font-size:11px;font-weight:800}
+    .showroom-controls button[aria-pressed="true"]{background:var(--ink);color:white;border-color:var(--ink)}
+    .showroom-hint{text-align:center;color:#7d8b82;font-size:10px;line-height:1.7;margin:12px auto 0}
+    .showroom-note{max-width:780px;margin:24px auto 0;padding:17px 19px;border-left:3px solid var(--mint);background:#fffefa;color:#728078;font-size:10px;line-height:1.8}
+    .showroom-note strong{color:var(--ink)}
+    .showroom-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:24px}
+    @media(max-width:600px){.showroom-page{padding-top:30px}.showroom-frame{padding:7px}.showroom-model{height:55vh;min-height:300px}.showroom-controls button{flex:1 1 42%}}
+    @media(prefers-reduced-motion:reduce){.showroom-model{--poster-color:#f4f2eb}}
+  </style>
+</head>
+<body>
+  <div class="topline"><span>🐾 A happier place for pets and the people who love them</span><span class="topline-right">A global pet marketplace · 3D preview</span></div>
+  <header class="main-header">
+    <a class="brand" href="index.html"><span class="brand-mark">b<span>✦</span></span><span>Beth's <strong>Pet Store</strong><small>HAPPY PETS. HAPPIER LIVES.</small></span></a>
+    <form class="header-search" role="search" action="shop.html"><input name="q" type="search" placeholder="Search products…" aria-label="Search products"><button aria-label="Search">⌕</button></form>
+    <div class="header-actions"><a href="shop.html">Marketplace</a><a href="account.html">My account</a></div>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+  </header>
+  <nav id="primary-nav" class="main-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="shop.html">Shop marketplace</a><a class="active" href="3d-showroom.html" aria-current="page">3D pet home</a><a href="sell.html">Seller centre</a><a href="care.html">Pet care journal</a></nav>
+  <main class="showroom-page">
+    <div class="showroom-intro">
+      <p class="eyebrow">A LITTLE SPACE TO EXPLORE</p>
+      <h1>Step inside our <em>pet home.</em></h1>
+      <p>Meet a few four-legged and small-paw companions in this interactive 3D scene. Drag to look around, pinch or scroll to zoom, and explore the room at your own pace.</p>
+    </div>
+    <section class="showroom-frame" aria-label="Interactive 3D pet home">
+      <model-viewer id="pet-home-model" class="showroom-model"
+        src="https://cdn.3dassets.dev/assets/20683/v1/model.glb"
+        alt="A stylized pet-friendly living room with a dog, cats, a rabbit, pet furniture and toys"
+        camera-controls auto-rotate rotation-per-second="12deg"
+        shadow-intensity="0.8" exposure="1" environment-image="neutral"
+        loading="eager" reveal="auto"
+        ar ar-modes="webxr scene-viewer quick-look"
+        interaction-prompt="auto">
+        <div slot="progress-bar" style="height:4px;background:#e4e9df">
+          <div style="height:4px;width:var(--progress-bar-width);background:#d96c58"></div>
+        </div>
+        <p slot="poster" style="padding:35px;text-align:center;color:#53685d">Loading the 3D pet home…</p>
+      </model-viewer>
+      <div class="showroom-controls" aria-label="3D viewing controls">
+        <button id="rotate-toggle" type="button" aria-pressed="true">Pause rotation</button>
+        <button id="reset-camera" type="button">Reset view</button>
+        <button id="fullscreen-toggle" type="button">Full screen</button>
+      </div>
+      <p class="showroom-hint" id="model-status" role="status" aria-live="polite">Use one finger or a mouse to rotate · Pinch or scroll to zoom · Full-screen view works on supported browsers</p>
+    </section>
+    <p class="showroom-note"><strong>About this demonstration:</strong> This sample scene is provided by 3DAssets.dev under the CC0 1.0 Universal public-domain dedication. It is an illustrative 3D scene, not a product listing, animal adoption offer or representation of a real supplier. The model is loaded from the creator's CDN, so an internet connection is required.</p>
+    <div class="showroom-actions"><a class="btn btn-primary" href="shop.html">Explore the marketplace ↗</a><a class="btn btn-ghost" href="index.html">Back to home</a></div>
+  </main>
+  <footer class="footer"><div class="footer-bottom"><span>© <span id="year"></span> Beth's Pet Store</span><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></div></footer>
+  <script>
+    const model=document.getElementById("pet-home-model");
+    const rotate=document.getElementById("rotate-toggle");
+    const status=document.getElementById("model-status");
+    document.getElementById("year").textContent=new Date().getFullYear();
+    document.querySelector(".menu-toggle").addEventListener("click",event=>{
+      const button=event.currentTarget,open=button.getAttribute("aria-expanded")==="true";
+      button.setAttribute("aria-expanded",String(!open));
+      document.getElementById("primary-nav").classList.toggle("is-open",!open);
+    });
+    rotate.addEventListener("click",()=>{
+      const running=model.hasAttribute("auto-rotate");
+      if(running)model.removeAttribute("auto-rotate");else model.setAttribute("auto-rotate","");
+      rotate.textContent=running?"Start rotation":"Pause rotation";
+      rotate.setAttribute("aria-pressed",String(!running));
+    });
+    document.getElementById("reset-camera").addEventListener("click",()=>model.resetTurntableRotation());
+    document.getElementById("fullscreen-toggle").addEventListener("click",async()=>{
+      try{
+        if(document.fullscreenElement)await document.exitFullscreen();
+        else await model.requestFullscreen();
+      }catch{status.textContent="Full screen is not available in this browser. You can still rotate and zoom the model here.";}
+    });
+    model.addEventListener("load",()=>{status.textContent="3D pet home loaded. Drag to rotate, pinch or scroll to zoom.";});
+    model.addEventListener("error",()=>{status.textContent="The 3D model could not load right now. Check your internet connection or try again later.";});
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+      model.removeAttribute("auto-rotate");rotate.textContent="Start rotation";rotate.setAttribute("aria-pressed","false");
+    }
+  </script>
+</body>
+</html>

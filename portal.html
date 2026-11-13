@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#183d39">
+  <meta name="description" content="Secure seller and administrator workspace for Beth's Pet Store.">
+  <title>Marketplace Portal | Beth's Pet Store</title>
+  <link rel="icon" href="assets/beths-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles/marketplace.css">
+  <link rel="stylesheet" href="styles/portal.css">
+  <script src="scripts/portal-config.js"></script>
+  <script type="module" src="scripts/portal.js"></script>
+</head>
+<body class="portal-page">
+  <div class="topline"><span>🐾 Beth's Pet Store · Marketplace operations</span><span class="topline-right">Private workspace</span></div>
+  <header class="main-header">
+    <a class="brand" href="index.html"><span class="brand-mark">b<span>✦</span></span><span>Beth's <strong>Pet Store</strong><small>HAPPY PETS. HAPPIER LIVES.</small></span></a>
+    <a class="seller-top" href="shop.html">View storefront ↗</a>
+  </header>
+  <nav class="main-nav"><a href="index.html">Home</a><a href="shop.html">Marketplace</a><a href="sell.html">Seller centre</a><a class="active" href="portal.html">Portal</a></nav>
+
+  <main class="portal-shell">
+    <section class="portal-heading">
+      <p class="eyebrow">MARKETPLACE WORKSPACE</p>
+      <h1>Good things grow <em>together.</em></h1>
+      <p>Sign in to manage your seller shop or review marketplace activity. Access is checked against your account permissions.</p>
+    </section>
+
+    <section id="config-notice" class="portal-notice" hidden>
+      <strong>Portal setup is not finished yet.</strong>
+      <p>Add the Supabase Project URL and public anon/publishable key to <code>scripts/portal-config.js</code>, then apply the base schema and moderation migration. This portal will not pretend to save data until the connection is configured.</p>
+    </section>
+
+    <section id="auth-panel" class="portal-card auth-card">
+      <div class="portal-card-heading"><p class="eyebrow">ACCOUNT ACCESS</p><h2>Welcome back.</h2><p>Use the email address associated with your marketplace account.</p></div>
+      <form id="auth-form">
+        <label>Email address<input type="email" id="auth-email" autocomplete="email" required></label>
+        <label>Password<input type="password" id="auth-password" autocomplete="current-password" minlength="8" required></label>
+        <div class="auth-actions"><button class="btn btn-primary" type="submit" id="sign-in-button">Sign in <span>↗</span></button><button class="btn btn-secondary" type="button" id="sign-up-button" disabled>Create account</button></div>
+        <button class="text-button" type="button" id="reset-password" disabled>Forgot password?</button>
+      </form>
+      <p class="portal-message" id="auth-message" role="status" aria-live="polite">New registrations and password resets are temporarily paused while secure email redirects are configured. Existing users can still sign in.</p>
+    </section>
+
+    <section id="workspace" hidden>
+      <div class="workspace-top"><div><p class="eyebrow">YOUR WORKSPACE</p><h2 id="workspace-title">Marketplace dashboard</h2><p id="account-label"></p></div><button class="btn btn-secondary" id="sign-out" type="button">Sign out</button></div>
+      <div id="workspace-message" class="portal-message" role="status" aria-live="polite"></div>
+
+      <section id="seller-workspace" hidden>
+        <div class="stat-grid" id="seller-stats"></div>
+        <div class="portal-grid">
+          <article class="portal-card" id="application-card">
+            <div class="portal-card-heading"><p class="eyebrow">SELLER APPLICATION</p><h3>Tell us about your business</h3><p>Applications are reviewed by a person. You can apply using the email address on this account.</p></div>
+            <form id="application-form">
+              <label>Business or brand name<input id="application-business" required maxlength="100"></label>
+              <label>Your name<input id="application-contact" required maxlength="100"></label>
+              <label>Country code<input id="application-country" type="text" inputmode="text" autocomplete="country" minlength="2" maxlength="2" pattern="[A-Za-z]{2}" placeholder="US, NG, GB…" required><small>Enter your country’s two-letter ISO code. Sellers can apply from any country.</small></label>
+              <label>Website or social link<input id="application-website" type="url" placeholder="https://..."></label>
+              <label>Business category<select id="application-category" required><option value="">Choose a category</option><option>Pet food and treats</option><option>Accessories and toys</option><option>Grooming and care products</option><option>Habitats and aquarium supplies</option><option>Pet services</option><option>Other pet-related products</option></select></label>
+              <label>About your business<textarea id="application-description" rows="3" required maxlength="1200"></textarea></label>
+              <button class="btn btn-primary" type="submit">Submit for review</button>
+            </form>
+          </article>
+          <article class="portal-card" id="claim-card" hidden>
+            <div class="portal-card-heading"><p class="eyebrow">APPROVED APPLICATION</p><h3>Claim your shop</h3><p>Your application is approved. Enter its ID to create your pending seller profile.</p></div>
+            <form id="claim-form"><label>Application ID<input id="claim-application" required placeholder="Paste the application UUID"></label><label>Store URL name<input id="claim-slug" required minlength="3" maxlength="70" pattern="[A-Za-z0-9-]+" placeholder="my-pet-business"></label><button class="btn btn-primary" type="submit">Claim approved shop</button></form>
+          </article>
+          <article class="portal-card" id="product-form-card" hidden>
+            <div class="portal-card-heading"><p class="eyebrow">CATALOGUE</p><h3>Add a product</h3><p>New listings enter review and are not public until approved.</p></div>
+            <form id="product-form">
+              <label>Product name<input id="product-name" required maxlength="120"></label>
+              <label>Description<textarea id="product-description" rows="3" required maxlength="3000"></textarea></label>
+              <div class="portal-form-row"><label>Price (USD)<input id="product-price" type="number" min="0" step="0.01" required></label><label>Stock quantity<input id="product-stock" type="number" min="0" step="1" value="0" required></label></div>
+              <label>Category<select id="product-category"><option value="">No category selected</option></select></label>
+              <label>Upload product photos<input id="product-image-files" type="file" accept="image/jpeg,image/png,image/webp" multiple><small>Up to 5 photos · JPG, PNG or WebP · 5 MB maximum each</small></label>
+              <label>Or use existing image URLs <textarea id="product-images" rows="2" placeholder="https://... (one URL per line)"></textarea></label>
+              <label>Optional 3D model URL <input id="product-model-url" type="url" inputmode="url" placeholder="https://.../product-model.glb"><small>Optional. Use a public HTTPS link to a model file you own or are licensed to use (.glb or .gltf). Photos remain the fallback.</small></label>
+              <button class="btn btn-primary" type="submit">Submit for review</button>
+            </form>
+          </article>
+          <article class="portal-card" id="product-edit-card" hidden>
+            <div class="portal-card-heading"><p class="eyebrow">LISTING MANAGEMENT</p><h3>Edit product details</h3><p>Saving name, description, price or category sends the listing back for moderation. Stock can be updated separately without unpublishing it.</p></div>
+            <form id="product-edit-form">
+              <input id="edit-product-id" type="hidden">
+              <label>Product name<input id="edit-product-name" required maxlength="120"></label>
+              <label>Description<textarea id="edit-product-description" rows="4" required maxlength="3000"></textarea></label>
+              <label>Optional 3D model URL <input id="edit-product-model-url" type="url" inputmode="url" placeholder="https://.../product-model.glb"><small>Public HTTPS .glb or .gltf link. Leave blank to remove the 3D model.</small></label>
+              <div class="portal-form-row"><label>Price (USD)<input id="edit-product-price" type="number" min="0" step="0.01" required></label><label>Category<select id="edit-product-category"><option value="">No category selected</option></select></label></div>
+              <div class="auth-actions"><button class="btn btn-primary" type="submit">Save changes for review</button><button class="btn btn-secondary" type="button" id="cancel-product-edit" data-cancel-product-edit>Cancel</button></div>
+            </form>
+          </article>
+        </div>
+        <article class="portal-card table-card"><div class="portal-card-heading"><p class="eyebrow">YOUR CATALOGUE</p><h3>Products</h3></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Price</th><th>Stock control</th><th>Status</th><th>Actions</th></tr></thead><tbody id="seller-products"><tr><td colspan="5">Sign in to load your products.</td></tr></tbody></table></div></article>
+        <article class="portal-card table-card"><div class="portal-card-heading"><p class="eyebrow">FULFILMENT</p><h3>Order items</h3><p>Order management is read-only at this stage. Payment and payout actions are not enabled.</p></div><div class="table-wrap"><table><thead><tr><th>Order item</th><th>Quantity</th><th>Order</th></tr></thead><tbody id="seller-orders"><tr><td colspan="3">No order items loaded.</td></tr></tbody></table></div></article>
+      </section>
+
+      <section id="admin-workspace" hidden>
+        <div class="stat-grid" id="admin-stats"></div>
+        <article class="portal-card table-card"><div class="portal-card-heading"><p class="eyebrow">INBOX</p><h3>Website enquiries</h3><p>Private messages submitted through the public contact, support and feedback forms. Only marketplace administrators can read this inbox.</p></div><div class="table-wrap"><table><thead><tr><th>Received</th><th>From</th><th>Type</th><th>Subject and message</th></tr></thead><tbody id="admin-inquiries"><tr><td colspan="4">Loading messages…</td></tr></tbody></table></div></article>
+        <article class="portal-card table-card"><div class="portal-card-heading"><p class="eyebrow">SELLER APPLICATIONS</p><h3>Review applications</h3><p>Approving an application does not activate a storefront. Verify the seller separately after they claim their shop.</p></div><div class="table-wrap"><table><thead><tr><th>Business</th><th>Applicant</th><th>Category</th><th>Status</th><th>Review</th></tr></thead><tbody id="admin-applications"><tr><td colspan="5">Loading applications…</td></tr></tbody></table></div></article>
+        <article class="portal-card table-card"><div class="portal-card-heading"><p class="eyebrow">SELLER DIRECTORY</p><h3>Verify storefronts</h3><p>Only activate sellers after appropriate business checks.</p></div><div class="table-wrap"><table><thead><tr><th>Store</th><th>Owner</th><th>Status</th><th>Action</th></tr></thead><tbody id="admin-sellers"><tr><td colspan="4">Loading sellers…</td></tr></tbody></table></div></article>
+        <article class="portal-card table-card"><div class="portal-card-heading"><p class="eyebrow">PRODUCT MODERATION</p><h3>Review listings</h3><p>Products can only be published when their seller is active.</p></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Seller</th><th>Price</th><th>Status</th><th>Action</th></tr></thead><tbody id="admin-products"><tr><td colspan="5">Loading products…</td></tr></tbody></table></div></article>
+      </section>
+    </section>
+  </main>
+  <footer class="footer"><div class="footer-bottom"><span>© <span id="year"></span> Beth's Pet Store</span><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="index.html">Home</a></div></footer>
+</body>
+</html>

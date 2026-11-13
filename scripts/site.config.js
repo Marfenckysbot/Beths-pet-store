@@ -1,29 +1,23 @@
-// EDIT: Core store identity and location
+// Public configuration only. Never place private addresses, coordinates, API keys or credentials here.
 export const store = {
-  name: "Beth Store", // EDIT: Store name
-  address: "123 Pet Avenue, Lagos, Nigeria", // EDIT: Store address
-  lat: 6.5244, // EDIT: Latitude
-  lng: 3.3792, // EDIT: Longitude
-  language: "en", // EDIT: Default language code
+  name: "Beth's Pet Store",
+  language: "en",
+  marketLabel: "Global marketplace",
 };
 
-// EDIT: Service and delivery controls
+// Delivery prices and availability must come from a real provider or confirmed business policy.
 export const delivery = {
-  mode: "distance", // EDIT: "distance" or "flat"
-  baseFeeUSD: 10,   // EDIT: Base fee in USD
-  perMileUSD: 1.5,  // EDIT: Per-mile rate
-  maxMiles: 25,     // EDIT: Max distance
+  mode: "disabled",
 };
 
-// EDIT: Adoption flow settings
+// Adoption applications must be reviewed by a person. Never auto-approve an application.
 export const adoption = {
-  minimalProof: true,  // EDIT: Hide proof upload field if true
-  autoApprove: true,   // EDIT: Auto-approve applications for demo
+  minimalProof: true,
+  autoApprove: false,
 };
 
-// EDIT: UI flags
 export const uiFlags = {
-  darkModeToggle: true, // EDIT: Enable theme toggle
-  faqAccordion: true,   // EDIT: Enable FAQ accordion
-  contactHub: true,     // EDIT: Enable floating contact hub
+  darkModeToggle: true,
+  faqAccordion: true,
+  contactHub: false,
 };

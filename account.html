@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#183d39">
+  <meta name="description" content="Manage your Beth's Pet Store customer profile, saved products and order history.">
+  <title>My Account | Beth's Pet Store</title>
+  <link rel="icon" href="assets/beths-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles/marketplace.css">
+  <link rel="stylesheet" href="styles/portal.css">
+  <script src="scripts/portal-config.js"></script>
+  <script type="module" src="scripts/account.js"></script>
+</head>
+<body class="portal-page">
+  <div class="topline"><span>🐾 Beth's Pet Store · Customer account</span><span class="topline-right">Your saved finds, in one place</span></div>
+  <header class="main-header">
+    <a class="brand" href="index.html"><span class="brand-mark">b<span>✦</span></span><span>Beth's <strong>Pet Store</strong><small>HAPPY PETS. HAPPIER LIVES.</small></span></a>
+    <a class="seller-top" href="shop.html">Back to marketplace ↗</a>
+  </header>
+  <nav class="main-nav"><a href="index.html">Home</a><a href="shop.html">Marketplace</a><a href="sell.html">Seller centre</a><a class="active" href="account.html">My account</a></nav>
+  <main class="portal-shell">
+    <section class="portal-heading"><p class="eyebrow">YOUR LITTLE CORNER</p><h1>Welcome to <em>your account.</em></h1><p>Keep your profile details and saved seller listings together. Orders will appear here when secure checkout is introduced.</p></section>
+    <section id="account-config-notice" class="portal-notice" hidden><strong>Customer accounts are not connected yet.</strong><p>Add the Supabase Project URL and public anon/publishable key to <code>scripts/portal-config.js</code>, then apply the base schema and migrations. Do not add a service-role key to browser files.</p></section>
+    <section id="account-auth" class="portal-card auth-card">
+      <div class="portal-card-heading"><p class="eyebrow">ACCOUNT ACCESS</p><h2>Sign in or join us.</h2><p>Use your email address to access saved listings and profile details.</p></div>
+      <form id="account-auth-form">
+        <label>Email address<input id="account-email" type="email" autocomplete="email" required></label>
+        <label>Password<input id="account-password" type="password" autocomplete="current-password" minlength="8" required></label>
+        <div class="auth-actions"><button class="btn btn-primary" type="submit">Sign in ↗</button><button class="btn btn-secondary" type="button" id="account-signup" disabled>Create account</button></div>
+        <button class="text-button" id="account-reset" disabled type="button">Forgot password?</button>
+      </form>
+      <p class="portal-message" id="account-auth-message" role="status" aria-live="polite">New registrations and password resets are temporarily paused while secure email redirects are configured. Existing users can still sign in.</p>
+    </section>
+    <section id="customer-workspace" hidden>
+      <div class="workspace-top"><div><p class="eyebrow">CUSTOMER PROFILE</p><h2>Your account</h2><p id="customer-email"></p></div><button class="btn btn-secondary" id="account-signout" type="button">Sign out</button></div>
+      <p class="portal-message" id="customer-message" role="status" aria-live="polite"></p>
+      <div class="portal-grid">
+        <article class="portal-card">
+          <div class="portal-card-heading"><p class="eyebrow">YOUR DETAILS</p><h3>Profile information</h3><p>Only your signed-in account can read or update these details.</p></div>
+          <form id="customer-profile-form">
+            <label>Display name<input id="customer-display-name" maxlength="100" autocomplete="name"></label>
+            <label>Country code (2 letters)<input id="customer-country" type="text" inputmode="text" autocomplete="country" maxlength="2" pattern="[A-Za-z]{2}" placeholder="e.g. US, NG, GB" aria-describedby="country-code-help"></label><small id="country-code-help">Use your country’s standard two-letter code. This accepts countries worldwide.</small>
+            <button class="btn btn-primary" type="submit">Save profile</button>
+          </form>
+        </article>
+        <article class="portal-card">
+          <div class="portal-card-heading"><p class="eyebrow">SAVED FINDS</p><h3>Your wishlist</h3><p>Saved live seller products are synced to your account. Preview-only sample items remain on this device.</p></div>
+          <div id="customer-favorites" class="account-favorites"><p>Loading saved products…</p></div>
+        </article>
+      </div>
+      <article class="portal-card table-card">
+        <div class="portal-card-heading"><p class="eyebrow">ORDER HISTORY</p><h3>Your orders</h3><p>Read-only history. Checkout, payment and order creation are not enabled in this preview.</p></div>
+        <div class="table-wrap"><table><thead><tr><th>Order</th><th>Date</th><th>Status</th><th>Total</th></tr></thead><tbody id="customer-orders"><tr><td colspan="4">No order history loaded.</td></tr></tbody></table></div>
+      </article>
+    </section>
+  </main>
+  <footer class="footer"><div class="footer-bottom"><span>© <span id="year"></span> Beth's Pet Store</span><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="contact.html">Support</a></div></footer>
+</body>
+</html>

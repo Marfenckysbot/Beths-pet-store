@@ -1,0 +1,36 @@
+name: Beth's Pet Store checks
+
+on:
+  push:
+    branches: [main, marketplace-foundation]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check marketplace JavaScript syntax
+        run: node --check scripts/marketplace.js
+      - name: Check portal ES module syntax
+        run: node --check --input-type=module < scripts/portal.js
+      - name: Check customer account ES module syntax
+        run: node --check --input-type=module < scripts/account.js
+      - name: Check inquiry form ES module syntax
+        run: node --check --input-type=module < scripts/inquiries.js
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Check Supabase Edge Function types
+        run: deno check supabase/functions/site-inquiry/index.ts
+      - name: Validate local links, assets, Vercel SEO and form readiness
+        run: node scripts/validate-site.mjs
+      - name: Validate Supabase workflow security guardrails
+        run: node scripts/validate-supabase.mjs
