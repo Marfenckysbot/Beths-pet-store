@@ -54,6 +54,7 @@ if (!errors.length) {
   const privacyNotice = readFileSync("privacy.html", "utf8");
   const inquiryPages = ["contact.html", "support.html", "feedback.html"].map(path => readFileSync(path, "utf8"));
   const portalConfig = readFileSync(configPath, "utf8");
+  const portalHtml = readFileSync("portal.html", "utf8");
   const account = readFileSync("scripts/account.js", "utf8");
   const accountHtml = readFileSync("account.html", "utf8");
   const handoff = readFileSync(handoffPath, "utf8");
@@ -101,7 +102,7 @@ if (!errors.length) {
   if (!inquiryClient.includes('functions.invoke("site-inquiry"')) errors.push("Public inquiry forms must submit through the Supabase site-inquiry Edge Function");
   if (inquiryPages.some(html => !html.includes("data-inquiry-form") || !html.includes("scripts/inquiries.js") || /data-netlify=["']true/i.test(html))) errors.push("Contact, support and feedback forms must use the secure Vercel-compatible endpoint, not legacy Netlify Forms");
   if (!privacyNotice.includes("private database table") || !privacyNotice.includes("no automatic email reply")) errors.push("Privacy notice must explain inquiry storage and the absence of automatic email replies");
-  if (!portal.includes('from("site_inquiries")') || !portal.includes('id="admin-inquiries"')) errors.push("Administrator portal must expose the private website inquiry inbox");
+  if (!portal.includes('from("site_inquiries")') || !portalHtml.includes('id="admin-inquiries"')) errors.push("Administrator portal must expose the private website inquiry inbox");
   if (!portal.includes('parsed.protocol!=="https:"')) errors.push("Seller portal must reject insecure HTTP product image URLs before submission");
   if (catalogue.includes("seller.country_code||'NG'")) errors.push("Global seller storefronts must not invent Nigeria as a missing seller location");
   if (!catalogue.includes("setPageMetadata") || !catalogue.includes('meta[property="og:title"]') || !catalogue.includes('link[rel="canonical"]')) errors.push("Product and seller storefront pages must receive specific metadata and canonical URLs after data loads");
