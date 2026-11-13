@@ -216,19 +216,21 @@ async function boot(){
 
   async function loadAdmin(){
     message("#workspace-message","Loading moderation queues…");
-    const [apps,sellers,products,orders]=await Promise.all([
+    const [apps,sellers,products,orders,inquiries]=await Promise.all([
       supabase.from("seller_applications").select("id,business_name,contact_name,email,category,status,created_at").order("created_at",{ascending:false}).limit(100),
       supabase.from("sellers").select("id,store_name,slug,status,owner_user_id").order("created_at",{ascending:false}).limit(100),
       supabase.from("products").select("id,name,price_usd,status,seller_id,sellers(store_name)").order("created_at",{ascending:false}).limit(100),
-      supabase.from("orders").select("id,status,grand_total").limit(100)
+      supabase.from("orders").select("id,status,grand_total").limit(100),
+      supabase.from("site_inquiries").select("id,category,name,email,subject,message,created_at").order("created_at",{ascending:false}).limit(100)
     ]);
     const failed=[apps,sellers,products].find(x=>x.error);
     if(failed){message("#workspace-message",failed.error.message,true);return;}
     $("#admin-applications").innerHTML=apps.data.length?apps.data.map(a=>`<tr><td><strong>${escapeHtml(a.business_name)}</strong><small class="table-sub">${escapeHtml(a.email)}</small></td><td>${escapeHtml(a.contact_name)}</td><td>${escapeHtml(a.category)}</td><td>${pill(a.status)}</td><td>${a.status==="pending"||a.status==="under_review"?`<button class="table-action" data-review-app="${a.id}" data-decision="under_review">Review</button><button class="table-action primary" data-review-app="${a.id}" data-decision="approved">Approve</button><button class="table-action danger" data-review-app="${a.id}" data-decision="rejected">Reject</button>`:"—"}</td></tr>`).join(""):row(5,"No applications in the database.");
     $("#admin-sellers").innerHTML=sellers.data.length?sellers.data.map(s=>`<tr><td><strong>${escapeHtml(s.store_name)}</strong><small class="table-sub">${escapeHtml(s.slug)}</small></td><td>${escapeHtml(s.owner_user_id.slice(0,8))}…</td><td>${pill(s.status)}</td><td>${s.status==="active"?`<button class="table-action" data-seller-status="${s.id}" data-status="paused">Pause</button><button class="table-action danger" data-seller-status="${s.id}" data-status="suspended">Suspend</button>`:`<button class="table-action primary" data-seller-status="${s.id}" data-status="active">${s.status==="pending"?"Activate":"Reactivate"}</button>`}</td></tr>`).join(""):row(4,"No seller profiles yet.");
     $("#admin-products").innerHTML=products.data.length?products.data.map(p=>`<tr><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.sellers?.store_name||"—")}</td><td>${money(p.price_usd)}</td><td>${pill(p.status)}</td><td>${p.status==="pending"?`<button class="table-action primary" data-review-product="${p.id}" data-decision="active">Publish</button><button class="table-action danger" data-review-product="${p.id}" data-decision="rejected">Reject</button>`:"—"}</td></tr>`).join(""):row(5,"No products awaiting review.");
+    $("#admin-inquiries").innerHTML=inquiries.error?row(4,"The private inbox could not be loaded: "+inquiries.error.message):inquiries.data.length?inquiries.data.map(item=>`<tr><td>${escapeHtml(new Date(item.created_at).toLocaleString())}</td><td><strong>${escapeHtml(item.name)}</strong><small class="table-sub">${escapeHtml(item.email)}</small></td><td>${pill(item.category)}</td><td><strong>${escapeHtml(item.subject)}</strong><details><summary>Read message</summary><p class="inquiry-message">${escapeHtml(item.message)}</p></details></td></tr>`).join(""):row(4,"No website enquiries yet.");
     $("#admin-stats").innerHTML=stat("Applications",apps.data.length)+stat("Seller shops",sellers.data.length)+stat("Products",products.data.length)+stat("Orders",orders.error?"—":orders.data.length);
-    message("#workspace-message","Moderation queues loaded. Payment, refunds and payouts are intentionally unavailable in this portal.");
+    message("#workspace-message","Moderation queues and private website inbox loaded. Payment, refunds and payouts are intentionally unavailable in this portal.");
   }
 
   async function handleModeration(event){
