@@ -37,3 +37,18 @@
 
 /* Visible keyboard focus across the public marketplace */
 :where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #d96c58;outline-offset:3px}
+
+
+/* Secure public inquiry forms */
+.inquiry-panel{max-width:760px;margin:32px auto 0;padding:clamp(20px,4vw,36px);background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+.inquiry-panel form{display:grid;gap:17px}
+.inquiry-panel label{display:grid;gap:7px;color:var(--ink);font-size:12px;font-weight:700}
+.inquiry-panel input,.inquiry-panel textarea{width:100%;padding:13px 14px;border:1px solid #d8e0d8;border-radius:5px;background:#fff;color:var(--ink);font:inherit;font-size:14px}
+.inquiry-panel textarea{resize:vertical;min-height:130px}
+.inquiry-panel input:focus-visible,.inquiry-panel textarea:focus-visible{outline:3px solid #ef806b55;outline-offset:2px;border-color:var(--coral2)}
+.inquiry-panel small{color:var(--muted);font-size:11px;font-weight:400}
+.inquiry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.inquiry-honeypot{position:absolute!important;left:-10000px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important}
+#inquiry-status{min-height:1.5em;margin:0;color:var(--muted);font-size:12px}
+#inquiry-status.error{color:#a52f2f}
+@media(max-width:600px){.inquiry-grid{grid-template-columns:1fr}.inquiry-panel{padding:20px}}
