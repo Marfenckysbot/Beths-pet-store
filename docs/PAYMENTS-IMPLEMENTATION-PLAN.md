@@ -16,7 +16,13 @@ Official references:
 - https://flutterwave.com/ng/support/onboarding/onboarding-requirements-for-using-flutterwave-in-nigeria
 - https://www.flutterwave.com/ng/pricing
 
-**Important country gate:** the merchant account must be opened for the actual country and legal entity that owns/operates Beth's Pet Store. If that entity is incorporated outside Nigeria, confirm Flutterwave supports that country, marketplace activity, settlement currencies, and split settlements for that account before committing. If it does not, compare a locally supported alternative (including Paystack only where eligible) before writing provider-specific production code.
+**Initial operating assumption:** Beth's Pet Store is being prepared from Nigeria, and the founder has not yet registered a CAC business. The website itself remains international; this does not make the storefront Nigeria-only. First validate whether a Nigerian unregistered-business Starter account can accept direct payments for products genuinely sold by Beth's Pet Store. The provider must confirm the account category, KYC requirements, supported buyer currencies, settlement currency, product category, and any limits before live use. Do not claim that a Starter account is eligible for marketplace aggregation, split settlement, or third-party seller payouts unless Flutterwave confirms this in writing. If the provider requires registration for the intended activity, keep checkout in test mode until the business is eligible.
+
+## Recommended rollout: first-party sales before marketplace payouts
+
+**Phase A — Beth-owned products only.** The first live checkout, if approved, should cover only products that Beth's Pet Store actually owns or is authorized to sell as the merchant of record. Each item must have a real supplier/ownership basis, confirmed price, stock quantity, shipping origin, delivery coverage, returns terms, and product-safety/compliance checks. Do not publish the current four illustrative products as live stock. The current browser bag is local-only and must be replaced by server-created orders before any payment button is enabled. Start with one approved collection/settlement currency and make currency explicit in the order and payment model; do not assume the current USD-only schema is compatible with a Nigerian settlement account.
+
+**Phase B — independent sellers.** Keep seller applications and storefront preparation separate from checkout. Do not collect customer money on behalf of third-party sellers, promise seller payouts, or activate split settlements until the provider explicitly approves the marketplace model, seller onboarding/KYC, subaccounts, fee allocation, refund/chargeback responsibilities, and payout timing for this exact merchant account. If the provider does not approve this, keep third-party listings as applications/coming-soon until a compliant payment arrangement is established.
 
 ## Recommended payout arrangement
 
@@ -34,8 +40,10 @@ Do not describe this as escrow. Direct split settlement can pay a vendor accordi
 ## Implementation phases
 
 ### Phase 0 — eligibility and commercial decisions (blocking)
-- Confirm the country where the operating legal entity is incorporated/registered, its legal form, and the country of its settlement bank account.
-- Confirm Flutterwave accepts the entity type, pet-product marketplace business model, intended seller categories, and countries of buyer/seller operation.
+- Confirm the founder's exact Nigerian onboarding category and the documents Flutterwave requires for an unregistered business; the owner completes all identity and bank verification directly with the provider.
+- Confirm whether direct first-party pet-product sales are permitted for that account type, including product category, collection currencies, settlement currency, transaction limits, refunds and chargebacks.
+- Separately confirm whether the provider will approve marketplace aggregation, third-party sellers, subaccounts and split settlement. Do not infer this from general split-payment documentation.
+- Confirm the operating legal form and any registration, tax, consumer-protection or other obligations that apply before trading; provider onboarding acceptance is not a legal exemption.
 - Obtain provider approval for split payments and the proposed commission/payout model.
 - Confirm currencies supported for collection, settlement and vendor subaccounts, and the provider's current fees, VAT, settlement timing, refund and chargeback rules.
 - Approve seller onboarding/KYC, seller agreement, customer terms, privacy notice, shipping, cancellation, refund and dispute policies.
@@ -77,6 +85,6 @@ The existing storefront bag is explicitly a local preview and does not create or
 
 When ready, add the provider's secret API key and webhook secret directly to the hosting provider's encrypted environment settings. Do not paste them into chat, GitHub, browser configuration, or source files. The owner must complete identity/business verification and approve the settlement account in the provider dashboard; an assistant cannot lawfully complete KYC or attest to ownership on the owner's behalf.
 
-## Decision required before provider-specific implementation
+## Inputs needed before real first-party checkout
 
-Confirm the actual country of incorporation/registration for the legal entity that will own Beth's Pet Store. The word “other” is not enough to determine provider eligibility, onboarding category, settlement account requirements, or currency rules.
+The founder must supply the first genuine Beth-owned product catalogue: product name, description, confirmed selling price, available quantity, product images they have rights to use, shipping origin/coverage, and return terms. No placeholder product should be converted into live stock. The owner must also complete provider onboarding and enter credentials directly into encrypted hosting environment settings. These are the only owner-dependent gates; implementation and sandbox preparation can proceed without exposing credentials in chat.
