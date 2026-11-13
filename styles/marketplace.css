@@ -52,3 +52,5 @@
 #inquiry-status{min-height:1.5em;margin:0;color:var(--muted);font-size:12px}
 #inquiry-status.error{color:#a52f2f}
 @media(max-width:600px){.inquiry-grid{grid-template-columns:1fr}.inquiry-panel{padding:20px}}
+
+.inquiry-panel details{margin-top:8px;font-size:11px}.inquiry-panel details summary{cursor:pointer;color:var(--ink2);font-weight:700}.inquiry-panel .inquiry-message{max-width:520px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);font-size:12px}
