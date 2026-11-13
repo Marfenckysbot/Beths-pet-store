@@ -3,7 +3,7 @@
 ## Decision status
 
 - Preferred provider to validate: **Flutterwave**.
-- Intended model: marketplace checkout with a platform commission and vendor subaccount settlement (split payment), subject to merchant-category, country, and marketplace approval by Flutterwave.
+- Launch model: first-party Beth-owned product sales only; independent-seller checkout and split settlement are a later phase requiring separate provider approval.
 - Environment: sandbox/test mode only until merchant onboarding, legal/compliance review, and end-to-end tests pass.
 - No live merchant account, payment secret, checkout, real charge, or payout is enabled by this plan.
 
