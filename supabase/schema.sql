@@ -86,7 +86,7 @@ create table if not exists private.site_inquiry_rate_limits (
   email_hash text primary key check (email_hash ~ '^[0-9a-f]{32}
 ),
   window_started_at timestamptz not null,
-  request_count integer not null check (request_count between 1 and 3)
+  request_count integer not null check (request_count >= 1)
 );
 revoke all on table private.site_inquiry_rate_limits from public, anon, authenticated, service_role;
 
