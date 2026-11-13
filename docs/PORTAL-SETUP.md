@@ -80,7 +80,7 @@ All 15 public tables have RLS enabled. The initial category seed contains five c
 - Seller applications use the authenticated Supabase portal. Contact, support and feedback forms use the deployed Supabase `site-inquiry` Edge Function and a private admin-only inbox; automatic email notifications are not configured.
 - Product images are public-read. Never upload private documents, identity records or customer information.
 - Orders are read-only. There is no checkout, payment collection, refund, payout, shipping action or order creation.
-- Draft PR #1 remains unmerged. A Vercel deployment is active at `https://beths-pet-store.vercel.app`, but the site is still a pre-launch preview and checkout is disabled.
+- Draft PR #1 remains unmerged. The earlier Vercel project domain is `https://beths-pet-store.vercel.app`; the latest unpromoted branch preview is `https://beths-pet-store-git-marketplace-foundation-ecohubngs-projects.vercel.app/`. The site is still pre-launch and checkout is disabled.
 
 ## Security boundaries
 
