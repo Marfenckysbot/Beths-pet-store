@@ -14,6 +14,7 @@ const adminModerationGrantsPath = "supabase/migrations/20261111171234_restore_ad
 const reviewerNotesPath = "supabase/migrations/20261111191224_protect_seller_reviewer_notes.sql";
 const productImagesPath = "supabase/migrations/20261111191633_validate_product_image_urls.sql";
 const inquiryMigrationPath = "supabase/migrations/20261113111454_site_inquiries.sql";
+const inquiryHardeningPath = "supabase/migrations/20261113153500_atomic_site_inquiry_rate_limit.sql";
 const inquiryFunctionPath = "supabase/functions/site-inquiry/index.ts";
 const inquiryClientPath = "scripts/inquiries.js";
 const schemaPath = "supabase/schema.sql";
@@ -26,7 +27,7 @@ const readinessPath = "docs/MARKETPLACE-READINESS.md";
 const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, adminModerationGrantsPath, reviewerNotesPath, productImagesPath, inquiryMigrationPath, inquiryFunctionPath, inquiryClientPath, schemaPath, portalPath, sellerPagePath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", "contact.html", "support.html", "feedback.html", "privacy.html", handoffPath, readinessPath, functionsReadmePath]) {
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, adminModerationGrantsPath, reviewerNotesPath, productImagesPath, inquiryMigrationPath, inquiryHardeningPath, inquiryFunctionPath, inquiryClientPath, schemaPath, portalPath, sellerPagePath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", "contact.html", "support.html", "feedback.html", "privacy.html", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
@@ -49,6 +50,7 @@ if (!errors.length) {
   const reviewerNotesMigration = readFileSync(reviewerNotesPath, "utf8");
   const productImagesMigration = readFileSync(productImagesPath, "utf8");
   const inquiryMigration = readFileSync(inquiryMigrationPath, "utf8");
+  const inquiryHardeningMigration = readFileSync(inquiryHardeningPath, "utf8");
   const inquiryFunction = readFileSync(inquiryFunctionPath, "utf8");
   const inquiryClient = readFileSync(inquiryClientPath, "utf8");
   const privacyNotice = readFileSync("privacy.html", "utf8");
@@ -98,7 +100,8 @@ if (!errors.length) {
   if (!reviewerNotesMigration.includes("select id, business_name, description, country_code, status") || !reviewerNotesMigration.includes("security invoker")) errors.push("Seller claim RPC must select only the approved application fields it needs under caller RLS");
   if (!productImagesMigration.includes("cardinality(image_urls) <= 5") || !productImagesMigration.includes("array_to_string(image_urls") || !productImagesMigration.includes("https://") || !productImagesMigration.includes("~ '^(https://")) errors.push("Product image URLs must be HTTPS-only and limited to five per listing");
   if (!inquiryMigration.includes("create table if not exists public.site_inquiries") || !inquiryMigration.includes("enable row level security") || !inquiryMigration.includes("revoke all on table public.site_inquiries from anon, authenticated, service_role") || !inquiryMigration.includes("grant select, insert on table public.site_inquiries to service_role") || !inquiryMigration.includes("public.is_marketplace_admin()")) errors.push("Public inquiries must be stored in a private RLS-protected table readable only by marketplace admins");
-  if (!inquiryFunction.includes("SUPABASE_SERVICE_ROLE_KEY") || !inquiryFunction.includes("allowedOrigins = new Set") || !inquiryFunction.includes("https://beths-pet-store.vercel.app") || !inquiryFunction.includes("https://beths-pet-store-git-marketplace-foundation-ecohubngs-projects.vercel.app") || !inquiryFunction.includes("company_website") || !inquiryFunction.includes("count >= 3")) errors.push("Public inquiry endpoint must use server-only credentials, strict production/preview origin checks, a honeypot and email rate limiting");
+  if (!inquiryFunction.includes("SUPABASE_SERVICE_ROLE_KEY") || !inquiryFunction.includes("allowedOrigins = new Set") || !inquiryFunction.includes("https://beths-pet-store.vercel.app") || !inquiryFunction.includes("https://beths-pet-store-git-marketplace-foundation-ecohubngs-projects.vercel.app") || !inquiryFunction.includes("company_website") || !inquiryFunction.includes("/rpc/submit_site_inquiry") || inquiryFunction.includes('method: "HEAD"')) errors.push("Public inquiry endpoint must use server-only credentials, strict origin checks, a honeypot and the atomic server-side submission RPC");
+  if (!inquiryHardeningMigration.includes("private.site_inquiry_rate_limits") || !inquiryHardeningMigration.includes("security definer") || !inquiryHardeningMigration.includes("set search_path = \'\'") || !inquiryHardeningMigration.includes("grant execute on function public.submit_site_inquiry") || !inquiryHardeningMigration.includes("to service_role") || !inquiryHardeningMigration.includes("request_count + 1") || !inquiryHardeningMigration.includes("interval \'1 hour\'")) errors.push("Inquiry submission must use an atomic private email rate-limit bucket and a service-role-only RPC");
   if (!inquiryClient.includes('functions.invoke("site-inquiry"')) errors.push("Public inquiry forms must submit through the Supabase site-inquiry Edge Function");
   if (inquiryPages.some(html => !html.includes("data-inquiry-form") || !html.includes("scripts/inquiries.js") || /data-netlify=["']true/i.test(html))) errors.push("Contact, support and feedback forms must use the secure Vercel-compatible endpoint, not legacy Netlify Forms");
   if (!privacyNotice.includes("private database table") || !privacyNotice.includes("no automatic email reply")) errors.push("Privacy notice must explain inquiry storage and the absence of automatic email replies");
