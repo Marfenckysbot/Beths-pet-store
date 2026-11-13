@@ -32,7 +32,7 @@ The connected Supabase project currently records the base schema plus 18 follow-
 15. `20261111171018` — `restrict_product_insert_columns`
 16. `20261111171234` — `restore_admin_moderation_column_grants`
 17. `20261111191224` — `protect_seller_reviewer_notes`
-18. `20261111191633` — `validate_product_image_urls`\n19. `20261113111500` — `site_inquiries`
+18. `20261111191633` — `validate_product_image_urls`\n19. `20261113111454` — `site_inquiries`
 
 All 15 public tables have RLS enabled. The initial category seed contains five categories. The founder account and administrator membership have been provisioned; no production sellers, verified products, customer orders or payment records are established.
 
