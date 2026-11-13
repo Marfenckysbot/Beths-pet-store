@@ -22,6 +22,14 @@ jobs:
         run: node --check --input-type=module < scripts/portal.js
       - name: Check customer account ES module syntax
         run: node --check --input-type=module < scripts/account.js
+      - name: Check inquiry form ES module syntax
+        run: node --check --input-type=module < scripts/inquiries.js
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Check Supabase Edge Function types
+        run: deno check supabase/functions/site-inquiry/index.ts
       - name: Validate local links, assets, Vercel SEO and form readiness
         run: node scripts/validate-site.mjs
       - name: Validate Supabase workflow security guardrails
