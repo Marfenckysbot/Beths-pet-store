@@ -55,7 +55,7 @@ Integration destination: seller portal/product records and the catalogue. Do not
 
 - [x] Supabase project URL — configured in `scripts/portal-config.js` on the development branch.
 - [x] Supabase publishable key — configured in `scripts/portal-config.js` on the development branch.
-- [x] Base schema and 17 follow-up migrations (18 migration records total) applied to the connected Supabase project; all 14 public tables have RLS enabled. New public-schema tables, sequences and functions created by `postgres` are not exposed to Data API roles by default; future migrations must add explicit least-privilege grants.
+- [x] Base schema and 18 follow-up migrations (19 migration records total) applied to the connected Supabase project; all 15 public tables have RLS enabled. New public-schema tables, sequences and functions created by `postgres` are not exposed to Data API roles by default; future migrations must add explicit least-privilege grants.
 - [x] Founder Auth account and administrator membership — already provisioned; no password or secret is stored in the repository.
 - [ ] Site URL and redirect allowlist — Supabase Auth settings; Vercel origin verified as `https://beths-pet-store.vercel.app`, but settings still need to be saved and browser-tested.
 - [ ] Separate admin, seller and customer test accounts — security test plan.
@@ -66,7 +66,7 @@ Never put the Supabase service-role key or database password in browser configur
 
 - [ ] Hosting provider account and site identifier — deployment settings.
 - [ ] Vercel project and site URL — `https://beths-pet-store.vercel.app` is deployed; custom domain is optional and remains unconfigured.
-- [ ] Replace legacy Netlify Forms on contact/support/feedback pages with a Vercel-compatible submission endpoint and verify test submissions.
+- [ ] Submit a real browser test from each public inquiry form and confirm the founder admin can read it in the portal inbox; verify rate limits and the privacy request workflow.
 - [ ] Environment variables configured for server functions — hosting encrypted settings.
 - [ ] Mobile, desktop, accessibility and route QA completed — release checklist.
 - [ ] Backup, restore and incident contacts documented — operations notes.
@@ -116,4 +116,4 @@ Destination: server-side email adapter, consent-aware analytics configuration an
 
 ## Current project boundary
 
-The repository is a feature-rich pre-launch implementation in open draft PR #1. It is deployed to Vercel at `https://beths-pet-store.vercel.app/`. The connected Supabase project is initialized, with the base schema plus 17 follow-up migrations (18 migration records total), and the founder administrator membership is provisioned. Auth Site URL/redirect settings and browser role tests remain pending. Legacy Netlify Forms do not process submissions on Vercel and must be migrated. No suppliers or payment/delivery/email providers are confirmed, and checkout is disabled. Completing a checklist item does not automatically authorize spending, account creation, payment activation or public disclosure.
+The repository is a feature-rich pre-launch implementation in open draft PR #1. It is deployed to Vercel at `https://beths-pet-store.vercel.app/`. The connected Supabase project is initialized, with the base schema plus 17 follow-up migrations (18 migration records total), and the founder administrator membership is provisioned. Auth Site URL/redirect settings and browser role tests remain pending. Contact/support/feedback forms now use the deployed Supabase `site-inquiry` Edge Function and private admin inbox; automatic email notifications are not configured. End-to-end browser submission and admin inbox review remain to be verified. No suppliers or payment/delivery/email providers are confirmed, and checkout is disabled. Completing a checklist item does not automatically authorize spending, account creation, payment activation or public disclosure.
