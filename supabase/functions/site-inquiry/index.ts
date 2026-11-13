@@ -24,22 +24,23 @@ Deno.serve(async (request: Request) => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders(origin) });
   if (request.method !== "POST") return json(405, { error: "Method not allowed." }, origin);
 
-  const contentType = request.headers.get("content-type") || "";
-  if (!contentType.toLowerCase().includes("application/json")) {
-    return json(415, { error: "Send the form as JSON." }, origin);
-  }
+  const contentType = (request.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+  if (contentType !== "application/json") return json(415, { error: "Send the form as JSON." }, origin);
 
   const raw = await request.text();
-  if (raw.length > 8000) return json(413, { error: "The message is too large." }, origin);
+  if (new TextEncoder().encode(raw).byteLength > 8000) return json(413, { error: "The message is too large." }, origin);
 
   let body: Record<string, unknown>;
   try {
-    body = JSON.parse(raw);
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return json(400, { error: "The form could not be read. Please try again." }, origin);
+    }
+    body = parsed as Record<string, unknown>;
   } catch {
     return json(400, { error: "The form could not be read. Please try again." }, origin);
   }
 
-  // Quietly accept honeypot submissions without storing them.
   if (clean(body.company_website, 200)) return json(202, { ok: true }, origin);
 
   const category = clean(body.category, 20);
@@ -58,40 +59,34 @@ Deno.serve(async (request: Request) => {
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!supabaseUrl || !serviceKey) {
-    return json(503, { error: "The enquiry service is not configured yet." }, origin);
-  }
-
-  const headers = {
-    apikey: serviceKey,
-    Authorization: `Bearer ${serviceKey}`,
-    "Content-Type": "application/json"
-  };
-  const cutoff = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  const rateUrl = new URL("/rest/v1/site_inquiries", supabaseUrl);
-  rateUrl.searchParams.set("select", "id");
-  rateUrl.searchParams.set("email", `eq.${email}`);
-  rateUrl.searchParams.set("created_at", `gte.${cutoff}`);
+  if (!supabaseUrl || !serviceKey) return json(503, { error: "The enquiry service is not configured yet." }, origin);
 
   try {
-    const rateResponse = await fetch(rateUrl, {
-      method: "HEAD",
-      headers: { ...headers, Prefer: "count=exact", Range: "0-0" }
+    const submitResponse = await fetch(new URL("/rest/v1/rpc/submit_site_inquiry", supabaseUrl), {
+      method: "POST",
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        p_category: category,
+        p_name: name,
+        p_email: email,
+        p_subject: subject,
+        p_message: message
+      })
     });
-    if (!rateResponse.ok) return json(503, { error: "The enquiry service is temporarily unavailable." }, origin);
-    const countHeader = rateResponse.headers.get("content-range") || "";
-    const count = Number(countHeader.split("/").at(-1));
-    if (Number.isFinite(count) && count >= 3) {
+
+    if (submitResponse.status === 429) {
       return json(429, { error: "Too many messages from this email address. Please try again later." }, origin);
     }
+    if (!submitResponse.ok) return json(503, { error: "We couldn't save your message just now. Please try again later." }, origin);
 
-    const insertResponse = await fetch(new URL("/rest/v1/site_inquiries", supabaseUrl), {
-      method: "POST",
-      headers: { ...headers, Prefer: "return=minimal" },
-      body: JSON.stringify({ category, name, email, subject, message })
-    });
-    if (!insertResponse.ok) return json(503, { error: "We couldn't save your message just now. Please try again later." }, origin);
-    return json(201, { ok: true, message: "Thank you. Your message has been securely recorded for the Beth's Pet Store team." }, origin);
+    return json(201, {
+      ok: true,
+      message: "Thank you. Your message has been securely recorded for the Beth's Pet Store team."
+    }, origin);
   } catch {
     return json(503, { error: "The enquiry service is temporarily unavailable. Please try again later." }, origin);
   }
