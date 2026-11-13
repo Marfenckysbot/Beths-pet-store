@@ -40,6 +40,6 @@ Use only the variables needed by the selected provider. Do not send secret value
 
 ## Current status
 
-The Supabase project exists and its database schema/migrations are live. No payment, delivery or transactional email provider is connected. No server-side provider handlers are active. Contact, support and feedback forms are temporarily disabled because their old Netlify Forms backend does not work on Vercel. The site inquiry endpoint is a remaining pre-launch task.
+The Supabase project exists and its database schema/migrations are live. The `site-inquiry` Supabase Edge Function is deployed and accepts contact, support and feedback messages into a private RLS-protected table; the administrator portal includes the private inbox. Automatic email notifications are not configured, and browser submission/admin review still require end-to-end testing. No payment, delivery or transactional email provider is connected. Checkout, order creation, payment collection, refunds and payouts remain disabled.
 
 Checkout, order creation, payment collection, refunds and payouts remain disabled.
