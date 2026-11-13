@@ -8,7 +8,7 @@ Use [the founder handoff checklist](FOUNDER-HANDOFF-CHECKLIST.md) as the master 
 | --- | --- | --- |
 | Supabase project URL | `scripts/portal-config.js` | Public project URL; configured on the development branch |
 | Supabase anon/publishable key | `scripts/portal-config.js` | Public browser key only; configured on the development branch |
-| Base schema and migrations | Supabase database | Applied to project ref `moqbnaotzveoljeidsez`; migration history verified |
+| Base schema and migrations | Supabase database | Applied to project ref `moqbnaotzveoljeidsez`; base schema plus 18 follow-up migrations applied |\n| Public site enquiries | Supabase Edge Function `site-inquiry` | Deployed; private `site_inquiries` table; admin-only reads; no automatic email notifications |
 | Founder admin Auth user UUID | Supabase `admin_users` table | Founder account and administrator membership are already provisioned; do not create a duplicate |
 | Preview/production site URL and auth redirects | Supabase Auth URL configuration | Pending dashboard configuration; Vercel origin is verified as `https://beths-pet-store.vercel.app`; allow `/account.html` and `/portal.html` callback destinations after confirming exact redirect behavior |
 
@@ -116,5 +116,5 @@ The storefront uses an interactive model viewer when a seller supplies a valid m
 - The connected Supabase project is initialized and its schema/migrations are applied.
 - Public browser configuration is committed to the development branch only.
 - Auth redirects remain pending; founder admin membership has been bootstrapped.
-- The Vercel site is deployed as a pre-launch preview; no payment merchant account, delivery account, transactional email provider, analytics property or verified social account is configured. Legacy Netlify Forms still need a Vercel-compatible replacement.
+- The Vercel site is deployed as a pre-launch preview; no payment merchant account, delivery account, transactional email provider, analytics property or verified social account is configured. Contact, support and feedback forms now submit through the Supabase `site-inquiry` Edge Function to a private admin-only inbox. Automatic email replies are not configured.
 - Do not accept real orders or payments based on these placeholders.
