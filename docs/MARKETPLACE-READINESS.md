@@ -13,14 +13,14 @@
 - Customer account page with email/password authentication, private profile, account wishlist and read-only order history.
 - Seller/admin portal with application review, seller activation/suspension, product moderation, product creation and image uploads.
 - Seller inventory controls: edit listing details (returns the listing to moderation), update stock without unpublishing, archive without deleting history and restore to pending review.
-- Supabase/PostgreSQL schema and 17 follow-up migrations (18 migration records including the base schema) in the connected project.
+- Supabase/PostgreSQL schema and 18 follow-up migrations (19 migration records including the base schema) in the connected project.
 - Fourteen public tables with RLS enabled, five seeded categories, seller/admin workflow functions and product-image storage policies.
 - Narrowed Data API grants and supporting indexes for marketplace access paths. Future public-schema objects created by `postgres` are not exposed to Data API roles by default; migrations must grant only the access they need.
 - The website's public Supabase URL and publishable key are configured on the development branch.
 - Email/password Auth is enabled and email confirmation is ON; the founder administrator membership is provisioned. The Vercel Site URL and allowed redirect URLs still need to be saved and browser-tested. New sign-ups and password resets are temporarily paused until this is complete; existing accounts can still sign in.
 - Founder admin membership is provisioned for the existing founder account; the account sign-in and role checks still require end-to-end browser verification.
 - Optional 3D model URL support is available for seller listings. The product detail page loads an interactive model-viewer for seller-supplied HTTPS GLB/glTF files. A dedicated `3d-showroom.html` page now demonstrates a CC0 pet-home scene hosted by 3DAssets.dev; it is loaded remotely and is not bundled locally.
-- Legacy Netlify Forms markup remains on some contact/support/feedback pages. Netlify Forms do not process submissions on Vercel; migrate these to a Vercel-compatible endpoint before relying on them.
+- Contact, support and feedback pages now submit through the Supabase `site-inquiry` Edge Function to a private RLS-protected table. Only marketplace administrators can read submissions; automatic email replies are not configured.
 - Server-side integration workspace reserved under `netlify/functions/`; no payment, order, delivery or email handlers are active.
 - Founder handoff materials, including the integration registry and low-cost pre-launch roadmap.
 - GitHub Actions checks for JavaScript syntax, local links/assets/forms and selected Supabase security guardrails.
@@ -33,7 +33,7 @@ This repository is a pre-launch implementation, not a live operating marketplace
 - No verified production seller accounts, suppliers, product catalogue, live stock or customer orders exist.
 - No payment merchant account, settlement destination, delivery provider, transactional email provider or analytics property is connected.
 - The preview bag does not create orders. Checkout, payment collection, refunds, settlement and payouts are disabled.
-- Contact/support/feedback pages still contain Netlify Forms markup, which is not processed by Vercel. A Vercel-compatible form endpoint and test submissions remain outstanding.
+- Public inquiry intake is implemented and deployed. End-to-end browser submission, admin inbox review and abuse/rate-limit verification remain to be tested.
 - A Git-connected Vercel project and deployment exist at `https://beths-pet-store.vercel.app/`. Treat it as a pre-launch preview; checkout and real transactions remain disabled.
 - Passing CI checks syntax and repository guardrails; it does not replace browser QA, database security review, provider sandbox tests or legal/compliance review.
 
@@ -46,7 +46,7 @@ Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` as the master handoff record and `docs/I
 1. **Founder-owned basics:** confirm business/contact details, brand assets, policies and intended operating model. Do not publish personal home-address or identity information by default.
 2. **Database and identity:** Supabase project is initialized. Configure Auth email/redirect settings, use the existing founder Auth account and provisioned admin membership; do not create a duplicate. Configure the Site URL/redirect allowlist only after verifying the preview origin, then test separate customer/seller accounts and the existing admin account.
 3. **Supply validation:** obtain written supplier permission, real product data, current prices, stock ownership/update process and fulfilment/returns terms.
-4. **Preview hosting:** Vercel project is connected and the Vercel domain responds. Verify every route and complete mobile/accessibility/browser QA. Replace legacy Netlify Forms with a Vercel-compatible submission endpoint; Netlify Forms will not work on Vercel.
+4. **Preview hosting:** Vercel project is connected and the Vercel domain responds. Verify every route and complete mobile/accessibility/browser QA. Public enquiries now use a Supabase Edge Function and private admin inbox; verify a real browser submission before launch.
 5. **Order operations:** agree who confirms stock, invoices, dispatches, handles customer support, returns, refunds and disputes. Keep the first workflow manual if that is safer.
 6. **Payments:** only after business and merchant onboarding are approved, implement server-side order creation, payment initiation, signed webhooks, idempotency, refunds and reconciliation. Use sandbox credentials first.
 7. **Delivery and communications:** connect providers only after coverage, rates, service levels, sender-domain ownership and support responsibilities are confirmed.
@@ -54,7 +54,7 @@ Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` as the master handoff record and `docs/I
 
 ## Supabase setup and migration record
 
-The base schema and 17 follow-up migrations (18 migration records total) have been applied to the connected Supabase project. The source of truth and exact order are documented in `docs/PORTAL-SETUP.md`. The project has 14 RLS-enabled public tables and five initial categories. Continue to review security/performance advisor findings and test access with separate accounts.
+The base schema and 18 follow-up migrations (19 migration records total) have been applied to the connected Supabase project. The source of truth and exact order are documented in `docs/PORTAL-SETUP.md`. The project has 15 RLS-enabled public tables and five initial categories. Continue to review security/performance advisor findings and test access with separate accounts.
 
 Never put a service-role key in browser code or Git. The website uses only the public publishable key.
 
