@@ -13,6 +13,9 @@ const productInsertPath = "supabase/migrations/20261111171018_restrict_product_i
 const adminModerationGrantsPath = "supabase/migrations/20261111171234_restore_admin_moderation_column_grants.sql";
 const reviewerNotesPath = "supabase/migrations/20261111191224_protect_seller_reviewer_notes.sql";
 const productImagesPath = "supabase/migrations/20261111191633_validate_product_image_urls.sql";
+const inquiryMigrationPath = "supabase/migrations/20261113111500_site_inquiries.sql";
+const inquiryFunctionPath = "supabase/functions/site-inquiry/index.ts";
+const inquiryClientPath = "scripts/inquiries.js";
 const schemaPath = "supabase/schema.sql";
 const portalPath = "scripts/portal.js";
 const sellerPagePath = "sell.html";
@@ -23,7 +26,7 @@ const readinessPath = "docs/MARKETPLACE-READINESS.md";
 const functionsReadmePath = "netlify/functions/README.md";
 const errors = [];
 
-for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, adminModerationGrantsPath, reviewerNotesPath, productImagesPath, schemaPath, portalPath, sellerPagePath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", handoffPath, readinessPath, functionsReadmePath]) {
+for (const path of [migrationPath, storagePath, inventoryPath, modelPath, sellerClaimPath, productGuardPath, inventoryFixPath, writeGrantsPath, defaultPrivilegesPath, productInsertPath, adminModerationGrantsPath, reviewerNotesPath, productImagesPath, inquiryMigrationPath, inquiryFunctionPath, inquiryClientPath, schemaPath, portalPath, sellerPagePath, cataloguePath, configPath, "portal.html", "account.html", "scripts/account.js", "contact.html", "support.html", "feedback.html", "privacy.html", handoffPath, readinessPath, functionsReadmePath]) {
   if (!existsSync(path)) errors.push("Missing required workflow or handoff file: " + path);
 }
 
@@ -45,6 +48,11 @@ if (!errors.length) {
   const adminModerationGrantsMigration = readFileSync(adminModerationGrantsPath, "utf8");
   const reviewerNotesMigration = readFileSync(reviewerNotesPath, "utf8");
   const productImagesMigration = readFileSync(productImagesPath, "utf8");
+  const inquiryMigration = readFileSync(inquiryMigrationPath, "utf8");
+  const inquiryFunction = readFileSync(inquiryFunctionPath, "utf8");
+  const inquiryClient = readFileSync(inquiryClientPath, "utf8");
+  const privacyNotice = readFileSync("privacy.html", "utf8");
+  const inquiryPages = ["contact.html", "support.html", "feedback.html"].map(path => readFileSync(path, "utf8"));
   const portalConfig = readFileSync(configPath, "utf8");
   const account = readFileSync("scripts/account.js", "utf8");
   const accountHtml = readFileSync("account.html", "utf8");
@@ -88,6 +96,12 @@ if (!errors.length) {
   if (!reviewerNotesMigration.includes("revoke select on table public.seller_applications from authenticated") || !reviewerNotesMigration.includes("grant select (") || !reviewerNotesMigration.includes("returns void") || reviewerNotesMigration.includes("returning *")) errors.push("Seller application reviewer notes must be private and the review RPC must not return the private row");
   if (!reviewerNotesMigration.includes("select id, business_name, description, country_code, status") || !reviewerNotesMigration.includes("security invoker")) errors.push("Seller claim RPC must select only the approved application fields it needs under caller RLS");
   if (!productImagesMigration.includes("cardinality(image_urls) <= 5") || !productImagesMigration.includes("array_to_string(image_urls") || !productImagesMigration.includes("https://") || !productImagesMigration.includes("~ '^(https://")) errors.push("Product image URLs must be HTTPS-only and limited to five per listing");
+  if (!inquiryMigration.includes("create table if not exists public.site_inquiries") || !inquiryMigration.includes("enable row level security") || !inquiryMigration.includes("revoke all on table public.site_inquiries from anon, authenticated, service_role") || !inquiryMigration.includes("grant select, insert on table public.site_inquiries to service_role") || !inquiryMigration.includes("public.is_marketplace_admin()")) errors.push("Public inquiries must be stored in a private RLS-protected table readable only by marketplace admins");
+  if (!inquiryFunction.includes("SUPABASE_SERVICE_ROLE_KEY") || !inquiryFunction.includes('allowedOrigin = "https://beths-pet-store.vercel.app"') || !inquiryFunction.includes("company_website") || !inquiryFunction.includes("count >= 3")) errors.push("Public inquiry endpoint must use server-only credentials, strict origin checks, a honeypot and email rate limiting");
+  if (!inquiryClient.includes('functions.invoke("site-inquiry"')) errors.push("Public inquiry forms must submit through the Supabase site-inquiry Edge Function");
+  if (inquiryPages.some(html => !html.includes("data-inquiry-form") || !html.includes("scripts/inquiries.js") || /data-netlify=["']true/i.test(html))) errors.push("Contact, support and feedback forms must use the secure Vercel-compatible endpoint, not legacy Netlify Forms");
+  if (!privacyNotice.includes("private database table") || !privacyNotice.includes("no automatic email reply")) errors.push("Privacy notice must explain inquiry storage and the absence of automatic email replies");
+  if (!portal.includes('from("site_inquiries")') || !portal.includes('id="admin-inquiries"')) errors.push("Administrator portal must expose the private website inquiry inbox");
   if (!portal.includes('parsed.protocol!=="https:"')) errors.push("Seller portal must reject insecure HTTP product image URLs before submission");
   if (catalogue.includes("seller.country_code||'NG'")) errors.push("Global seller storefronts must not invent Nigeria as a missing seller location");
   if (!catalogue.includes("setPageMetadata") || !catalogue.includes('meta[property="og:title"]') || !catalogue.includes('link[rel="canonical"]')) errors.push("Product and seller storefront pages must receive specific metadata and canonical URLs after data loads");
