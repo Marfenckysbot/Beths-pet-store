@@ -13,7 +13,7 @@ The seller/admin workspace is `portal.html`; the customer account area is `accou
 
 ## Applied database migrations
 
-The connected Supabase project currently records the base schema plus 17 follow-up migrations (18 migration records total). The migration history was read directly from the live project and verified on 12 November 2026.
+The connected Supabase project currently records the base schema plus 18 follow-up migrations (19 migration records total). The migration history was read directly from the live project and verified on 13 November 2026.
 
 1. `20261110133916` — `beths_marketplace_base_schema`
 2. `20261110134023` — `admin_and_seller_workflows`
@@ -32,9 +32,9 @@ The connected Supabase project currently records the base schema plus 17 follow-
 15. `20261111171018` — `restrict_product_insert_columns`
 16. `20261111171234` — `restore_admin_moderation_column_grants`
 17. `20261111191224` — `protect_seller_reviewer_notes`
-18. `20261111191633` — `validate_product_image_urls`
+18. `20261111191633` — `validate_product_image_urls`\n19. `20261113111500` — `site_inquiries`
 
-All 14 public tables have RLS enabled. The initial category seed contains five categories. The founder account and administrator membership have been provisioned; no production sellers, verified products, customer orders or payment records are established.
+All 15 public tables have RLS enabled. The initial category seed contains five categories. The founder account and administrator membership have been provisioned; no production sellers, verified products, customer orders or payment records are established.
 
 ## Remaining Supabase setup
 
@@ -77,7 +77,7 @@ All 14 public tables have RLS enabled. The initial category seed contains five c
 - The Supabase schema and migrations are live in the connected project. Email confirmation is enabled and the founder admin membership exists, but Auth redirects, email delivery and role-based workflows have not yet been browser-tested.
 - The founder administrator membership has been bootstrapped; sign-in and permission checks still need browser verification.
 - No verified production seller accounts or real product catalogue exist.
-- The legacy Netlify seller form was removed from the seller journey; applicants apply through the authenticated Supabase portal. Other legacy Netlify Forms (contact/support/feedback) do not process on Vercel and still need a Vercel-compatible submission endpoint.
+- Seller applications use the authenticated Supabase portal. Contact, support and feedback forms use the deployed Supabase `site-inquiry` Edge Function and a private admin-only inbox; automatic email notifications are not configured.
 - Product images are public-read. Never upload private documents, identity records or customer information.
 - Orders are read-only. There is no checkout, payment collection, refund, payout, shipping action or order creation.
 - Draft PR #1 remains unmerged. A Vercel deployment is active at `https://beths-pet-store.vercel.app`, but the site is still a pre-launch preview and checkout is disabled.
