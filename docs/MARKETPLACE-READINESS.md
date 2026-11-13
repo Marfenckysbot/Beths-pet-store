@@ -34,7 +34,7 @@ This repository is a pre-launch implementation, not a live operating marketplace
 - No payment merchant account, settlement destination, delivery provider, transactional email provider or analytics property is connected.
 - The preview bag does not create orders. Checkout, payment collection, refunds, settlement and payouts are disabled.
 - Public inquiry intake is implemented and deployed. End-to-end browser submission, admin inbox review and abuse/rate-limit verification remain to be tested.
-- A Git-connected Vercel project and deployment exist at `https://beths-pet-store.vercel.app/`. Treat it as a pre-launch preview; checkout and real transactions remain disabled.
+- A Git-connected Vercel project and deployment exist at `https://beths-pet-store.vercel.app/`. The latest branch preview is `https://beths-pet-store-git-marketplace-foundation-ecohubngs-projects.vercel.app/`. Treat both as pre-launch; checkout and real transactions remain disabled.
 - Passing CI checks syntax and repository guardrails; it does not replace browser QA, database security review, provider sandbox tests or legal/compliance review.
 
 Illustrative catalogue content, sample prices, discounts and imagery are design previews. The 3D showroom is an illustrative third-party CC0 model and depends on that provider's CDN; seller model files are not guaranteed. They are not offers, verified stock, seller endorsements, customer reviews or delivery promises.
