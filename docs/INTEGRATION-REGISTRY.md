@@ -20,7 +20,7 @@ The static site is currently deployed on Vercel. The `netlify/functions/` direct
 
 | Item | Intended location | Handling |
 | --- | --- | --- |
-| Hosting account/site and preview URL | Vercel project `beths-pet-store` | Connected to `Marfenckysbot/Beths-pet-store`; deployed at `https://beths-pet-store.vercel.app/` |
+| Hosting account/site and preview URL | Vercel project `beths-pet-store` | Connected to `Marfenckysbot/Beths-pet-store`; deployed at `https://beths-pet-store.vercel.app/`; latest branch preview `https://beths-pet-store-git-marketplace-foundation-ecohubngs-projects.vercel.app/` |
 | Custom domain and DNS access | Hosting/domain registrar | Configure only after domain ownership is confirmed |
 | Supabase server URL/key | Encrypted server environment | Service-role key server-side only |
 | Provider secrets | Encrypted server environment | Add only when a provider is selected and approved |
