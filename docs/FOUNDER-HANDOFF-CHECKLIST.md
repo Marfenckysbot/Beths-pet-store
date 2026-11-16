@@ -57,8 +57,9 @@ Integration destination: seller portal/product records and the catalogue. Do not
 - [x] Supabase publishable key — configured in `scripts/portal-config.js` on the development branch.
 - [x] Base schema and 19 follow-up migrations (20 migration records total) applied to the connected Supabase project; all 15 public tables have RLS enabled. New public-schema tables, sequences and functions created by `postgres` are not exposed to Data API roles by default; future migrations must add explicit least-privilege grants.
 - [x] Founder Auth account and administrator membership — already provisioned; no password or secret is stored in the repository.
-- [ ] Site URL and redirect allowlist — Supabase Auth settings; Vercel origin verified as `https://beths-pet-store.vercel.app`, but settings still need to be saved and browser-tested.
-- [ ] Separate admin, seller and customer test accounts — security test plan. Password recovery screens are implemented but remain gated until the Auth redirect allowlist is saved.
+- [x] Site URL and redirect allowlist — founder screenshot confirmed `https://beths-pet-store.vercel.app` plus production and preview redirects for `account.html` and `portal.html`.
+- [x] Founder administrator sign-in on the Vercel preview — manually verified by founder; password Show/Hide and inline invalid-password feedback also manually verified.
+- [ ] Separate customer and seller test accounts — security test plan. Customer registration, seller application, recovery-email round trips and cross-account isolation still require browser testing.
 
 Never put the Supabase service-role key or database password in browser configuration or repository files.
 
@@ -66,7 +67,8 @@ Never put the Supabase service-role key or database password in browser configur
 
 - [ ] Hosting provider account and site identifier — deployment settings.
 - [ ] Vercel project and site URL — `https://beths-pet-store.vercel.app` is deployed; custom domain is optional and remains unconfigured.
-- [ ] Submit a real browser test from each public inquiry form and confirm the founder admin can read it in the portal inbox; verify the HTTP 429 response, form errors and privacy request workflow. Database RPC, per-email throttle and admin-only RLS were checked with rollback-only SQL tests.
+- [ ] Submit a real browser test from each public inquiry form and confirm the founder admin can read it in the portal inbox; verify the HTTP 429 response, form errors and privacy request workflow. Database RPC, per-email throttle and admin-only inbox RLS were checked with rollback-only SQL tests.
+- [ ] Review the Supabase critical advisor finding for `private.site_inquiry_rate_limits`: anon/authenticated have no schema usage or table privileges; service_role alone has table privileges. Consider enabling RLS as defense in depth after founder approval; no anon/authenticated policies should be added.
 - [ ] Environment variables configured for server functions — hosting encrypted settings.
 - [ ] Mobile, desktop, accessibility and route QA completed — release checklist.
 - [ ] Backup, restore and incident contacts documented — operations notes.
@@ -116,4 +118,4 @@ Destination: server-side email adapter, consent-aware analytics configuration an
 
 ## Current project boundary
 
-The repository is a feature-rich pre-launch implementation in open draft PR #1. It is deployed to Vercel at `https://beths-pet-store.vercel.app/`. The connected Supabase project is initialized, with the base schema plus 19 follow-up migrations (20 migration records total), and the founder administrator membership is provisioned. Auth Site URL/redirect settings and browser role tests remain pending. Contact/support/feedback forms now use the deployed Supabase `site-inquiry` Edge Function and private admin inbox; automatic email notifications are not configured. End-to-end browser submission and admin inbox review remain to be verified. No suppliers or payment/delivery/email providers are confirmed, and checkout is disabled. Completing a checklist item does not automatically authorize spending, account creation, payment activation or public disclosure.
+The repository is a feature-rich pre-launch implementation in open draft PR #1. It is deployed to Vercel at `https://beths-pet-store.vercel.app/`. The connected Supabase project is initialized, with the base schema plus 19 follow-up migrations (20 migration records total), and the founder administrator membership is provisioned. Auth Site URL and four allowed redirect URLs were confirmed by the founder, and founder administrator sign-in was verified on the preview; customer/seller browser role tests remain pending. Contact/support/feedback forms now use the deployed Supabase `site-inquiry` Edge Function and private admin inbox; automatic email notifications are not configured. End-to-end browser submission and admin inbox review remain to be verified. No suppliers or payment/delivery/email providers are confirmed, and checkout is disabled. Completing a checklist item does not automatically authorize spending, account creation, payment activation or public disclosure.
