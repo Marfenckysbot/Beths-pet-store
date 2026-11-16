@@ -1,12 +1,12 @@
 import { readFileSync } from "node:fs";
 
 const checks = [
-  { page: "account.html", script: "scripts/account.js" },
-  { page: "portal.html", script: "scripts/portal.js" }
+  { page: "account.html", script: "scripts/account.js", recovery: ["account-recovery", "account-recovery-form", "account-new-password", "account-confirm-password"] },
+  { page: "portal.html", script: "scripts/portal.js", recovery: ["portal-recovery", "portal-recovery-form", "portal-new-password", "portal-confirm-password"] }
 ];
 const errors = [];
 
-for (const { page, script } of checks) {
+for (const { page, script, recovery } of checks) {
   const html = readFileSync(page, "utf8");
   const js = readFileSync(script, "utf8");
   const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
@@ -18,12 +18,18 @@ for (const { page, script } of checks) {
   for (const id of selectors) {
     if (!idSet.has(id)) errors.push(script + " -> selector references missing #" + id + " in " + page);
   }
+  for (const id of recovery) {
+    if (!idSet.has(id)) errors.push(page + " -> missing password recovery element #" + id);
+  }
 
   if (!/<html\b[^>]*\blang=["'][^"']+["']/i.test(html)) errors.push(page + " -> document language is missing");
   if (!/<meta\b[^>]*name=["']viewport["']/i.test(html)) errors.push(page + " -> viewport metadata is missing");
   if (!/<title>[^<]+<\/title>/i.test(html)) errors.push(page + " -> page title is missing");
   if (!js.includes("config.authRedirectsConfigured===true")) {
     errors.push(script + " -> account creation and password reset must remain gated on confirmed redirect configuration");
+  }
+  if (!js.includes('event==="PASSWORD_RECOVERY"') || !js.includes("supabase.auth.updateUser({password})")) {
+    errors.push(script + " -> password recovery must handle the recovery event and update the password");
   }
   if (!js.includes("emailRedirectTo:location.origin+") || !js.includes("redirectTo:location.origin+")) {
     errors.push(script + " -> auth email and password-reset redirects must use the current site origin");
@@ -40,5 +46,5 @@ if (errors.length) {
   for (const error of errors) console.error(" - " + error);
   process.exitCode = 1;
 } else {
-  console.log("Portal contract checks passed: account/portal DOM selectors, unique IDs, document metadata, auth redirect gates and public-key configuration.");
+  console.log("Portal contract checks passed: account/portal DOM selectors, unique IDs, document metadata, auth redirect gates, password recovery and public-key configuration.");
 }
