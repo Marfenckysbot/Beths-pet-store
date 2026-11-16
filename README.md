@@ -25,7 +25,7 @@ The current work is maintained on the `marketplace-foundation` branch and propos
 
 ## Supabase setup
 
-Read [Portal setup](docs/PORTAL-SETUP.md) and [Seller inventory management](docs/SELLER-INVENTORY-MANAGEMENT.md). The connected Supabase project ref is `moqbnaotzveoljeidsez`, and the browser configuration is `scripts/portal-config.js`. The database has 14 RLS-enabled public tables, five seeded categories, seller/admin workflows and the product image bucket. The founder administrator membership is already provisioned; do not create a second founder account. Finish Auth Site URL/redirect configuration and browser role testing before inviting users. Browser code uses only the public publishable key. Never commit a service-role key, database password or payment secret.
+Read [Portal setup](docs/PORTAL-SETUP.md) and [Seller inventory management](docs/SELLER-INVENTORY-MANAGEMENT.md). The connected Supabase project ref is `moqbnaotzveoljeidsez`, and the browser configuration is `scripts/portal-config.js`. The database has 15 RLS-enabled public tables, five seeded categories, seller/admin workflows and the product image bucket. The founder administrator membership is already provisioned; do not create a second founder account. Finish Auth Site URL/redirect configuration and browser role testing before inviting users. Browser code uses only the public publishable key. Never commit a service-role key, database password or payment secret.
 
 ## Server-side integration boundary
 
