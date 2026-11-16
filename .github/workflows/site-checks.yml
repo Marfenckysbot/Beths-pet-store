@@ -32,5 +32,7 @@ jobs:
         run: deno check supabase/functions/site-inquiry/index.ts
       - name: Validate local links, assets, Vercel SEO and form readiness
         run: node scripts/validate-site.mjs
+      - name: Validate customer and seller portal contracts
+        run: node scripts/validate-portal.mjs
       - name: Validate Supabase workflow security guardrails
         run: node scripts/validate-supabase.mjs
