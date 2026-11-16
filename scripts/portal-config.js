@@ -4,5 +4,5 @@
 window.BETHS_SUPABASE_CONFIG = {
   url: "https://moqbnaotzveoljeidsez.supabase.co",
   anonKey: "sb_publishable_uxn_nE8o4sXLGvEC68UPHg_vyXvOdkv",
-  authRedirectsConfigured: false
+  authRedirectsConfigured: true
 };
