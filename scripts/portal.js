@@ -16,6 +16,7 @@ else boot();
 async function boot(){
   const supabase=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   const redirectsReady=config.authRedirectsConfigured===true;
+  let recoveryMode=/(?:^|&)type=recovery(?:&|$)/.test(location.hash.replace(/^#/,""));
   $("#sign-up-button").disabled=!redirectsReady;
   $("#reset-password").disabled=!redirectsReady;
   if(!redirectsReady)message("#auth-message","Existing accounts can sign in. New registrations and password resets are temporarily paused until the secure Supabase email redirect addresses are configured.");
@@ -37,6 +38,20 @@ async function boot(){
     const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/portal.html"});
     message("#auth-message",error?.message||( "If an account exists for that address, a password reset email has been sent."),Boolean(error));
   });
+  $("#portal-recovery-form").addEventListener("submit",async event=>{
+    event.preventDefault();
+    const password=$("#portal-new-password").value;
+    if(password.length<8){message("#portal-recovery-message","Use a password with at least 8 characters.",true);return;}
+    if(password!==$("#portal-confirm-password").value){message("#portal-recovery-message","The passwords do not match. Please check them and try again.",true);return;}
+    const button=$("#portal-recovery-form button[type='submit']");
+    button.disabled=true;message("#portal-recovery-message","Updating your password…");
+    const {error}=await supabase.auth.updateUser({password});
+    button.disabled=false;
+    if(error){message("#portal-recovery-message",error.message,true);return;}
+    $("#portal-recovery-form").reset();recoveryMode=false;show("#portal-recovery",false);
+    message("#auth-message","Your password has been updated. You can now sign in with your new password.");
+    await renderSession((await supabase.auth.getSession()).data.session);
+  });
   $("#sign-out").addEventListener("click",async()=>{
     const button=$("#sign-out");
     button.disabled=true;
@@ -50,11 +65,19 @@ async function boot(){
   $("#product-form").addEventListener("submit",createProduct);
   $("#product-edit-form").addEventListener("submit",saveProductEdits);
   document.addEventListener("click",handleModeration);
-  supabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>renderSession(session),0);});
-  const {data:{session}}=await supabase.auth.getSession(); await renderSession(session);
+  supabase.auth.onAuthStateChange((event,session)=>{
+    if(event==="PASSWORD_RECOVERY"){
+      recoveryMode=true;show("#auth-panel",false);show("#workspace",false);show("#portal-recovery",true);
+      message("#portal-recovery-message","Choose a new password for your marketplace account.");return;
+    }
+    setTimeout(()=>renderSession(session),0);
+  });
+  if(recoveryMode){show("#auth-panel",false);show("#workspace",false);show("#portal-recovery",true);}
+  else {const {data:{session}}=await supabase.auth.getSession(); await renderSession(session);}
 
   async function renderSession(session){
-    show("#auth-panel",!session);show("#workspace",Boolean(session));
+    if(recoveryMode){show("#auth-panel",false);show("#workspace",false);show("#portal-recovery",true);return;}
+    show("#portal-recovery",false);show("#auth-panel",!session);show("#workspace",Boolean(session));
     if(!session)return;
     $("#account-label").textContent=session.user.email||"Signed-in account";
     message("#workspace-message","Checking account permissions…");
