@@ -10,11 +10,11 @@
 - Responsive public storefront, category browsing, search, filters, sorting and product detail pages.
 - Seller storefront pages that resolve approved live listings when Supabase is configured.
 - Browser-local preview bag and wishlist. These are not orders and do not collect payment.
-- Customer account page with email/password authentication, private profile, account wishlist and read-only order history.
+- Customer account page with email/password authentication, private profile, account wishlist and read-only order history. Customer and seller/admin portals now include a password-recovery screen that handles Supabase recovery links and requires matching new-password entries.
 - Seller/admin portal with application review, seller activation/suspension, product moderation, product creation and image uploads.
 - Seller inventory controls: edit listing details (returns the listing to moderation), update stock without unpublishing, archive without deleting history and restore to pending review.
 - Supabase/PostgreSQL schema and 19 follow-up migrations (20 migration records including the base schema) in the connected project.
-- Fourteen public tables with RLS enabled, five seeded categories, seller/admin workflow functions and product-image storage policies.
+- Fifteen public tables with RLS enabled, five seeded categories, seller/admin workflow functions and product-image storage policies.
 - Narrowed Data API grants and supporting indexes for marketplace access paths. Future public-schema objects created by `postgres` are not exposed to Data API roles by default; migrations must grant only the access they need.
 - The website's public Supabase URL and publishable key are configured on the development branch.
 - Email/password Auth is enabled and email confirmation is ON; the founder administrator membership is provisioned. The Vercel Site URL and allowed redirect URLs still need to be saved and browser-tested. New sign-ups and password resets are temporarily paused until this is complete; existing accounts can still sign in.
@@ -23,7 +23,7 @@
 - Contact, support and feedback pages now submit through the Supabase `site-inquiry` Edge Function to a private RLS-protected table. Only marketplace administrators can read submissions; automatic email replies are not configured.
 - Server-side integration workspace reserved under `netlify/functions/`; no payment, order, delivery or email handlers are active.
 - Founder handoff materials, including the integration registry and low-cost pre-launch roadmap.
-- GitHub Actions checks for JavaScript syntax, local links/assets/forms and selected Supabase security guardrails.
+- GitHub Actions checks for JavaScript syntax, local links/assets/forms, customer/seller portal DOM contracts (including password recovery) and selected Supabase security guardrails.
 
 ## What this does not mean
 
