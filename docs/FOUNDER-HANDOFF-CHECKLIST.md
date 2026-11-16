@@ -66,7 +66,7 @@ Never put the Supabase service-role key or database password in browser configur
 
 - [ ] Hosting provider account and site identifier — deployment settings.
 - [ ] Vercel project and site URL — `https://beths-pet-store.vercel.app` is deployed; custom domain is optional and remains unconfigured.
-- [ ] Submit a real browser test from each public inquiry form and confirm the founder admin can read it in the portal inbox; verify rate limits and the privacy request workflow.
+- [ ] Submit a real browser test from each public inquiry form and confirm the founder admin can read it in the portal inbox; verify the HTTP 429 response, form errors and privacy request workflow. Database RPC, per-email throttle and admin-only RLS were checked with rollback-only SQL tests.
 - [ ] Environment variables configured for server functions — hosting encrypted settings.
 - [ ] Mobile, desktop, accessibility and route QA completed — release checklist.
 - [ ] Backup, restore and incident contacts documented — operations notes.
