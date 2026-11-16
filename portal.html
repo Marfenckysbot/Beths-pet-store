@@ -43,6 +43,16 @@
       <p class="portal-message" id="auth-message" role="status" aria-live="polite">New registrations and password resets are temporarily paused while secure email redirects are configured. Existing users can still sign in.</p>
     </section>
 
+    <section id="portal-recovery" class="portal-card auth-card" hidden>
+      <div class="portal-card-heading"><p class="eyebrow">SECURE ACCOUNT RECOVERY</p><h2>Choose a new password.</h2><p>Use at least 8 characters. This updates the password for your seller or administrator account.</p></div>
+      <form id="portal-recovery-form">
+        <label>New password<input id="portal-new-password" type="password" autocomplete="new-password" minlength="8" required></label>
+        <label>Confirm new password<input id="portal-confirm-password" type="password" autocomplete="new-password" minlength="8" required></label>
+        <button class="btn btn-primary" type="submit">Save new password</button>
+      </form>
+      <p class="portal-message" id="portal-recovery-message" role="status" aria-live="polite">Enter and confirm your new password.</p>
+    </section>
+
     <section id="workspace" hidden>
       <div class="workspace-top"><div><p class="eyebrow">YOUR WORKSPACE</p><h2 id="workspace-title">Marketplace dashboard</h2><p id="account-label"></p></div><button class="btn btn-secondary" id="sign-out" type="button">Sign out</button></div>
       <div id="workspace-message" class="portal-message" role="status" aria-live="polite"></div>
