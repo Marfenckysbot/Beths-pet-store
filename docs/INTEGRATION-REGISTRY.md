@@ -8,7 +8,8 @@ Use [the founder handoff checklist](FOUNDER-HANDOFF-CHECKLIST.md) as the master 
 | --- | --- | --- |
 | Supabase project URL | `scripts/portal-config.js` | Public project URL; configured on the development branch |
 | Supabase anon/publishable key | `scripts/portal-config.js` | Public browser key only; configured on the development branch |
-| Base schema and migrations | Supabase database | Applied to project ref `moqbnaotzveoljeidsez`; base schema plus 19 follow-up migrations applied |\n| Public site enquiries | Supabase Edge Function `site-inquiry` | Deployed; private `site_inquiries` table; admin-only reads; atomic per-email rate limiting; no automatic email notifications |
+| Base schema and migrations | Supabase database | Applied to project ref `moqbnaotzveoljeidsez`; base schema plus 19 follow-up migrations applied |
+| Public site enquiries | Supabase Edge Function `site-inquiry` | Deployed; private `site_inquiries` table; admin-only reads; atomic per-email rate limiting; no automatic email notifications |
 | Founder admin Auth user UUID | Supabase `admin_users` table | Founder account and administrator membership are already provisioned; do not create a duplicate |
 | Preview/production site URL and auth redirects | Supabase Auth URL configuration | Pending dashboard configuration; Vercel origin is verified as `https://beths-pet-store.vercel.app`; allow `/account.html` and `/portal.html` callback destinations after confirming exact redirect behavior |
 
