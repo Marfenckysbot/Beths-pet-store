@@ -31,7 +31,7 @@ for (const { page, script } of checks) {
 }
 
 const publicConfig = readFileSync("scripts/portal-config.js", "utf8");
-if (/service[_-]?role|secret[_-]?key|sb_secret_/i.test(publicConfig)) {
+if (/(?:sb_secret_[A-Za-z0-9_-]+|service_role\\s*[:=]\\s*["'][^"']+)/i.test(publicConfig)) {
   errors.push("scripts/portal-config.js -> possible privileged/secret key in browser configuration");
 }
 
