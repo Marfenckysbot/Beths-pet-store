@@ -54,3 +54,16 @@
 @media(max-width:600px){.inquiry-grid{grid-template-columns:1fr}.inquiry-panel{padding:20px}}
 
 .inquiry-panel details{margin-top:8px;font-size:11px}.inquiry-panel details summary{cursor:pointer;color:var(--ink2);font-weight:700}.inquiry-panel .inquiry-message{max-width:520px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);font-size:12px}
+
+
+/* A more distinctive Beth's wordmark across the storefront and portals */
+.brand{gap:13px;letter-spacing:-.045em;color:#173b38;text-decoration:none}
+.brand-mark{width:46px;height:46px;border:1px solid #ffffffa8;border-radius:16px;background:linear-gradient(145deg,#f58b73 0%,#d96555 100%);color:#fffdf8;font:700 31px Georgia,serif;box-shadow:0 8px 20px #d96c5838,inset 0 1px 0 #ffffff70;isolation:isolate}
+.brand-mark:before{content:"";position:absolute;inset:4px;border:1px solid #fff9e880;border-radius:12px;pointer-events:none}
+.brand-mark span{right:4px;top:1px;font:12px sans-serif;color:#fff5d8;text-shadow:0 1px 4px #8e403c}
+.brand>span:last-child{font:600 18px/1.05 Manrope,sans-serif;letter-spacing:-.055em}
+.brand>span:last-child strong{font-weight:800;color:#d96c58}
+.brand small{font-size:8px;letter-spacing:.19em;color:#71857a;margin-top:5px}
+.brand:hover .brand-mark{transform:translateY(-1px) rotate(-3deg);box-shadow:0 11px 24px #d96c5848,inset 0 1px 0 #ffffff70}
+.brand-mark{transition:transform .2s,box-shadow .2s}
+@media(max-width:650px){.brand{gap:9px}.brand-mark{width:39px;height:39px;border-radius:14px;font-size:27px}.brand>span:last-child{font-size:15px}.brand small{font-size:7px;letter-spacing:.15em}}
