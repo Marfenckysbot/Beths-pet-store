@@ -33,7 +33,7 @@ This repository is a pre-launch implementation, not a live operating marketplace
 - No verified production seller accounts, suppliers, product catalogue, live stock or customer orders exist.
 - No payment merchant account, settlement destination, delivery provider, transactional email provider or analytics property is connected.
 - The preview bag does not create orders. Checkout, payment collection, refunds, settlement and payouts are disabled.
-- Public inquiry intake is implemented and deployed. The database submission RPC uses an atomic private per-email limiter; browser submission, admin inbox review and rate-limit response still require an end-to-end browser test.
+- Public inquiry intake is implemented and deployed. The database submission RPC and atomic per-email limiter passed rollback-only SQL checks. A simulated non-admin saw zero private inbox rows while the founder admin saw the test row; all synthetic QA rows were rolled back. Browser form submission and HTTP 429 response still require an end-to-end browser test.
 - A Git-connected Vercel project and deployment exist at `https://beths-pet-store.vercel.app/`. The latest branch preview is `https://beths-pet-store-git-marketplace-foundation-ecohubngs-projects.vercel.app/`. Treat both as pre-launch; checkout and real transactions remain disabled.
 - Passing CI checks syntax and repository guardrails; it does not replace browser QA, database security review, provider sandbox tests or legal/compliance review.
 
