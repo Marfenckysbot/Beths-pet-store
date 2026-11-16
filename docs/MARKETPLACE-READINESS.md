@@ -17,10 +17,10 @@
 - Fifteen public tables with RLS enabled, five seeded categories, seller/admin workflow functions and product-image storage policies.
 - Narrowed Data API grants and supporting indexes for marketplace access paths. Future public-schema objects created by `postgres` are not exposed to Data API roles by default; migrations must grant only the access they need.
 - The website's public Supabase URL and publishable key are configured on the development branch.
-- Email/password Auth is enabled and email confirmation is ON; the founder administrator membership is provisioned. The Vercel Site URL and allowed redirect URLs still need to be saved and browser-tested. New sign-ups and password resets are temporarily paused until this is complete; existing accounts can still sign in.
-- Founder admin membership is provisioned for the existing founder account; the account sign-in and role checks still require end-to-end browser verification.
+- Email/password Auth is enabled and email confirmation is ON; the founder administrator membership is provisioned. The founder verified the Supabase Site URL and all four production/preview account and portal redirect URLs in the dashboard screenshot. `authRedirectsConfigured` is enabled in the development branch.
+- Founder successfully signed in to the administrator dashboard on the preview. The founder also manually verified the repeated Show/Hide password control and inline incorrect-password feedback on the updated portal. Customer registration, customer profile, seller onboarding and password-recovery email round trips still need separate browser tests.
 - Optional 3D model URL support is available for seller listings. The product detail page loads an interactive model-viewer for seller-supplied HTTPS GLB/glTF files. A dedicated `3d-showroom.html` page now demonstrates a CC0 pet-home scene hosted by 3DAssets.dev; it is loaded remotely and is not bundled locally.
-- Contact, support and feedback pages now submit through the Supabase `site-inquiry` Edge Function to a private RLS-protected table. Only marketplace administrators can read submissions; automatic email replies are not configured.
+- Contact, support and feedback pages submit through the Supabase `site-inquiry` Edge Function to `public.site_inquiries`, which has RLS enabled and admin-only read access. The rate-limit support table is in the non-exposed `private` schema and has no schema usage or table privileges for `anon` or `authenticated`; only `service_role` has table privileges. Supabase's security advisor nevertheless flags its RLS-disabled state as critical. Do not dismiss the finding: review enabling RLS on that private table as defense in depth, with no client policies, after the founder approves the change. Automatic email replies are not configured.
 - Server-side integration workspace reserved under `netlify/functions/`; no payment, order, delivery or email handlers are active.
 - Founder handoff materials, including the integration registry and low-cost pre-launch roadmap.
 - GitHub Actions checks for JavaScript syntax, local links/assets/forms, customer/seller portal DOM contracts (including password recovery) and selected Supabase security guardrails.
@@ -29,11 +29,11 @@
 
 This repository is a pre-launch implementation, not a live operating marketplace.
 
-- Supabase is initialized. Email/password and email-confirmation settings were confirmed by the founder; the Site URL/redirect configuration and browser-based role tests remain outstanding. The founder admin membership is provisioned.
+- Supabase is initialized. Email/password and email-confirmation settings, Site URL and four allowed redirect URLs were visually confirmed by the founder. Founder admin sign-in to the preview is verified; customer/seller cross-account tests remain outstanding.
 - No verified production seller accounts, suppliers, product catalogue, live stock or customer orders exist.
 - No payment merchant account, settlement destination, delivery provider, transactional email provider or analytics property is connected.
 - The preview bag does not create orders. Checkout, payment collection, refunds, settlement and payouts are disabled.
-- Public inquiry intake is implemented and deployed. The database submission RPC and atomic per-email limiter passed rollback-only SQL checks. A simulated non-admin saw zero private inbox rows while the founder admin saw the test row; all synthetic QA rows were rolled back. Browser form submission and HTTP 429 response still require an end-to-end browser test.
+- Public inquiry intake is implemented and deployed. The database submission RPC and atomic per-email limiter passed rollback-only SQL checks. A simulated non-admin saw zero inbox rows while the founder admin saw the test row; all synthetic QA rows were rolled back. Browser form submission and HTTP 429 response still require an end-to-end browser test. The private rate-limit table has no anon/authenticated schema or table privileges, but its RLS-disabled state remains a Supabase critical advisor finding.
 - A Git-connected Vercel project and deployment exist at `https://beths-pet-store.vercel.app/`. The latest branch preview is `https://beths-pet-store-git-marketplace-foundation-ecohubngs-projects.vercel.app/`. Treat both as pre-launch; checkout and real transactions remain disabled.
 - Passing CI checks syntax and repository guardrails; it does not replace browser QA, database security review, provider sandbox tests or legal/compliance review.
 
@@ -44,7 +44,7 @@ Illustrative catalogue content, sample prices, discounts and imagery are design 
 Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` as the master handoff record and `docs/INTEGRATION-REGISTRY.md` as the provider-specific destination map.
 
 1. **Founder-owned basics:** confirm business/contact details, brand assets, policies and intended operating model. Do not publish personal home-address or identity information by default.
-2. **Database and identity:** Supabase project is initialized. Configure Auth email/redirect settings, use the existing founder Auth account and provisioned admin membership; do not create a duplicate. Configure the Site URL/redirect allowlist only after verifying the preview origin, then test separate customer/seller accounts and the existing admin account.
+2. **Database and identity:** Supabase project is initialized. The founder has confirmed the Site URL and four production/preview redirect URLs, and has verified administrator sign-in on preview. Use the existing founder Auth account and provisioned admin membership; do not create a duplicate. Next test separate customer/seller accounts, recovery emails and cross-account data isolation.
 3. **Supply validation:** obtain written supplier permission, real product data, current prices, stock ownership/update process and fulfilment/returns terms.
 4. **Preview hosting:** Vercel project is connected and the Vercel domain responds. Verify every route and complete mobile/accessibility/browser QA. Public enquiries now use a Supabase Edge Function and private admin inbox; verify a real browser submission before launch.
 5. **Order operations:** agree who confirms stock, invoices, dispatches, handles customer support, returns, refunds and disputes. Keep the first workflow manual if that is safer.
