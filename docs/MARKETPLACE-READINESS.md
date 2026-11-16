@@ -13,7 +13,7 @@
 - Customer account page with email/password authentication, private profile, account wishlist and read-only order history.
 - Seller/admin portal with application review, seller activation/suspension, product moderation, product creation and image uploads.
 - Seller inventory controls: edit listing details (returns the listing to moderation), update stock without unpublishing, archive without deleting history and restore to pending review.
-- Supabase/PostgreSQL schema and 18 follow-up migrations (19 migration records including the base schema) in the connected project.
+- Supabase/PostgreSQL schema and 19 follow-up migrations (20 migration records including the base schema) in the connected project.
 - Fourteen public tables with RLS enabled, five seeded categories, seller/admin workflow functions and product-image storage policies.
 - Narrowed Data API grants and supporting indexes for marketplace access paths. Future public-schema objects created by `postgres` are not exposed to Data API roles by default; migrations must grant only the access they need.
 - The website's public Supabase URL and publishable key are configured on the development branch.
@@ -33,7 +33,7 @@ This repository is a pre-launch implementation, not a live operating marketplace
 - No verified production seller accounts, suppliers, product catalogue, live stock or customer orders exist.
 - No payment merchant account, settlement destination, delivery provider, transactional email provider or analytics property is connected.
 - The preview bag does not create orders. Checkout, payment collection, refunds, settlement and payouts are disabled.
-- Public inquiry intake is implemented and deployed. End-to-end browser submission, admin inbox review and abuse/rate-limit verification remain to be tested.
+- Public inquiry intake is implemented and deployed. The database submission RPC uses an atomic private per-email limiter; browser submission, admin inbox review and rate-limit response still require an end-to-end browser test.
 - A Git-connected Vercel project and deployment exist at `https://beths-pet-store.vercel.app/`. The latest branch preview is `https://beths-pet-store-git-marketplace-foundation-ecohubngs-projects.vercel.app/`. Treat both as pre-launch; checkout and real transactions remain disabled.
 - Passing CI checks syntax and repository guardrails; it does not replace browser QA, database security review, provider sandbox tests or legal/compliance review.
 
@@ -54,7 +54,7 @@ Use `docs/FOUNDER-HANDOFF-CHECKLIST.md` as the master handoff record and `docs/I
 
 ## Supabase setup and migration record
 
-The base schema and 18 follow-up migrations (19 migration records total) have been applied to the connected Supabase project. The source of truth and exact order are documented in `docs/PORTAL-SETUP.md`. The project has 15 RLS-enabled public tables and five initial categories. Continue to review security/performance advisor findings and test access with separate accounts.
+The base schema and 19 follow-up migrations (20 migration records total) have been applied to the connected Supabase project. The source of truth and exact order are documented in `docs/PORTAL-SETUP.md`. The project has 15 RLS-enabled public tables and five initial categories. Continue to review security/performance advisor findings and test access with separate accounts.
 
 Never put a service-role key in browser code or Git. The website uses only the public publishable key.
 
