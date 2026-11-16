@@ -19,6 +19,7 @@ if(!configured){
 async function boot(){
   const supabase=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   const redirectsReady=config.authRedirectsConfigured===true;
+  let recoveryMode=/(?:^|&)type=recovery(?:&|$)/.test(location.hash.replace(/^#/,""));
   $("#account-signup").disabled=!redirectsReady;
   $("#account-reset").disabled=!redirectsReady;
   if(!redirectsReady)message("#account-auth-message","Existing accounts can sign in. New registrations and password resets are temporarily paused until the secure Supabase email redirect addresses are configured.");
@@ -43,16 +44,38 @@ async function boot(){
     const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/account.html"});
     message("#account-auth-message",error?.message||"If an account exists for that address, a reset email has been sent.",Boolean(error));
   });
+  $("#account-recovery-form").addEventListener("submit",async event=>{
+    event.preventDefault();
+    const password=$("#account-new-password").value;
+    if(password.length<8){message("#account-recovery-message","Use a password with at least 8 characters.",true);return;}
+    if(password!==$("#account-confirm-password").value){message("#account-recovery-message","The passwords do not match. Please check them and try again.",true);return;}
+    const button=$("#account-recovery-form button[type='submit']");
+    button.disabled=true;message("#account-recovery-message","Updating your password…");
+    const {error}=await supabase.auth.updateUser({password});
+    button.disabled=false;
+    if(error){message("#account-recovery-message",error.message,true);return;}
+    $("#account-recovery-form").reset();recoveryMode=false;show("#account-recovery",false);
+    message("#account-auth-message","Your password has been updated. You can now sign in with your new password.");
+    await render((await supabase.auth.getSession()).data.session);
+  });
   $("#account-signout").addEventListener("click",async()=>{
     const {error}=await supabase.auth.signOut();
     if(error)message("#customer-message",error.message,true);
   });
   $("#customer-profile-form").addEventListener("submit",saveProfile);
-  supabase.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>render(session),0);});
-  await render((await supabase.auth.getSession()).data.session);
+  supabase.auth.onAuthStateChange((event,session)=>{
+    if(event==="PASSWORD_RECOVERY"){
+      recoveryMode=true;show("#account-auth",false);show("#customer-workspace",false);show("#account-recovery",true);
+      message("#account-recovery-message","Choose a new password for your account.");return;
+    }
+    setTimeout(()=>render(session),0);
+  });
+  if(recoveryMode){show("#account-auth",false);show("#customer-workspace",false);show("#account-recovery",true);}
+  else await render((await supabase.auth.getSession()).data.session);
 
   async function render(session){
-    show("#account-auth",!session);show("#customer-workspace",Boolean(session));
+    if(recoveryMode){show("#account-auth",false);show("#customer-workspace",false);show("#account-recovery",true);return;}
+    show("#account-recovery",false);show("#account-auth",!session);show("#customer-workspace",Boolean(session));
     if(!session)return;
     $("#customer-email").textContent=session.user.email||"Signed-in account";
     message("#customer-message","Loading your account…");
