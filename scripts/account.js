@@ -19,7 +19,7 @@ function preparePasswordFields(){
     input.addEventListener('input',()=>{error.textContent='';error.hidden=true;input.removeAttribute('aria-invalid');});
   });
 }
-function passwordFieldError(selector,text){const input=$(selector);if(!input)return;const error=input.parentNode.querySelector('.password-field-error');if(!error)return;error.textContent=text||'';error.hidden=!text;if(text)input.setAttribute('aria-invalid','true');else input.removeAttribute('aria-invalid');}
+function passwordFieldError(selector,text){const input=$(selector);if(!input)return;const error=input.closest('label')?.querySelector('.password-field-error');if(!error)return;error.textContent=text||'';error.hidden=!text;if(text)input.setAttribute('aria-invalid','true');else input.removeAttribute('aria-invalid');}
 
 const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=value=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(value||0));
