@@ -58,7 +58,7 @@ Integration destination: seller portal/product records and the catalogue. Do not
 - [x] Base schema and 19 follow-up migrations (20 migration records total) applied to the connected Supabase project; all 15 public tables have RLS enabled. New public-schema tables, sequences and functions created by `postgres` are not exposed to Data API roles by default; future migrations must add explicit least-privilege grants.
 - [x] Founder Auth account and administrator membership — already provisioned; no password or secret is stored in the repository.
 - [ ] Site URL and redirect allowlist — Supabase Auth settings; Vercel origin verified as `https://beths-pet-store.vercel.app`, but settings still need to be saved and browser-tested.
-- [ ] Separate admin, seller and customer test accounts — security test plan.
+- [ ] Separate admin, seller and customer test accounts — security test plan. Password recovery screens are implemented but remain gated until the Auth redirect allowlist is saved.
 
 Never put the Supabase service-role key or database password in browser configuration or repository files.
 
