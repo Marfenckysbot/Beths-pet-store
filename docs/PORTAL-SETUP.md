@@ -13,7 +13,7 @@ The seller/admin workspace is `portal.html`; the customer account area is `accou
 
 ## Applied database migrations
 
-The connected Supabase project currently records the base schema plus 19 follow-up migrations (20 migration records total). The migration history was read directly from the live project and verified on 13 November 2026.
+The connected Supabase project currently records the base schema plus 19 follow-up migrations (20 migration records total). The migration history was read directly from the live project and verified on 16 November 2026.
 
 1. `20261110133916` — `beths_marketplace_base_schema`
 2. `20261110134023` — `admin_and_seller_workflows`
@@ -32,7 +32,9 @@ The connected Supabase project currently records the base schema plus 19 follow-
 15. `20261111171018` — `restrict_product_insert_columns`
 16. `20261111171234` — `restore_admin_moderation_column_grants`
 17. `20261111191224` — `protect_seller_reviewer_notes`
-18. `20261111191633` — `validate_product_image_urls`\n19. `20261113111454` — `site_inquiries`\n20. `20261116123147` — `atomic_site_inquiry_rate_limit`
+18. `20261111191633` — `validate_product_image_urls`
+19. `20261113111454` — `site_inquiries`
+20. `20261116123147` — `atomic_site_inquiry_rate_limit`
 
 All 15 public tables have RLS enabled. The initial category seed contains five categories. The founder account and administrator membership have been provisioned; no production sellers, verified products, customer orders or payment records are established.
 
