@@ -5,6 +5,22 @@ const configured = Boolean(config.url && config.anonKey);
 const $ = (selector) => document.querySelector(selector);
 const show = (selector, visible) => { const node=$(selector); if(node) node.hidden=!visible; };
 const message = (selector, text, error=false) => { const node=$(selector); if(!node)return; node.textContent=text||""; node.classList.toggle("error",Boolean(error)); };
+function preparePasswordFields(){
+  document.querySelectorAll('input[type="password"]').forEach(input=>{
+    if(input.closest('.password-control'))return;
+    const wrapper=document.createElement('span');wrapper.className='password-control';
+    input.parentNode.insertBefore(wrapper,input);wrapper.appendChild(input);
+    const toggle=document.createElement('button');toggle.type='button';toggle.className='password-toggle';toggle.textContent='Show';
+    toggle.setAttribute('aria-label','Show password');toggle.setAttribute('aria-pressed','false');
+    toggle.addEventListener('click',()=>{const reveal=input.type==='password';input.type=reveal?'text':'password';toggle.textContent=reveal?'Hide':'Show';toggle.setAttribute('aria-label',reveal?'Hide password':'Show password');toggle.setAttribute('aria-pressed',String(reveal));input.focus();});
+    wrapper.appendChild(toggle);
+    const error=document.createElement('small');error.className='password-field-error';error.hidden=true;error.setAttribute('role','alert');
+    wrapper.parentNode.insertBefore(error,wrapper.nextSibling);
+    input.addEventListener('input',()=>{error.textContent='';error.hidden=true;input.removeAttribute('aria-invalid');});
+  });
+}
+function passwordFieldError(selector,text){const input=$(selector);if(!input)return;const error=input.parentNode.querySelector('.password-field-error');if(!error)return;error.textContent=text||'';error.hidden=!text;if(text)input.setAttribute('aria-invalid','true');else input.removeAttribute('aria-invalid');}
+
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money = value => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(value||0));
 const slugify = value => String(value||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
@@ -14,6 +30,7 @@ if(!configured){show("#config-notice",true);$("#sign-in-button").disabled=true;$
 else boot();
 
 async function boot(){
+  preparePasswordFields();
   const supabase=createClient(config.url,config.anonKey,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   const redirectsReady=config.authRedirectsConfigured===true;
   let recoveryMode=/(?:^|&)type=recovery(?:&|$)/.test(location.hash.replace(/^#/,""));
@@ -23,7 +40,7 @@ async function boot(){
   $("#auth-form").addEventListener("submit",async event=>{
     event.preventDefault(); message("#auth-message","Signing in…");
     const {error}=await supabase.auth.signInWithPassword({email:$("#auth-email").value.trim(),password:$("#auth-password").value});
-    message("#auth-message",error?.message||"Signed in.",Boolean(error));
+    if(error){if(/invalid login credentials|invalid password/i.test(error.message||"")){passwordFieldError("#auth-password","That password does not match this email. Please try again.");message("#auth-message","");}else message("#auth-message",error.message,true);}else{passwordFieldError("#auth-password","");message("#auth-message","Signed in.");}
   });
   $("#sign-up-button").addEventListener("click",async()=>{
     if(!redirectsReady){message("#auth-message","New registrations are temporarily paused until secure email redirects are configured.");return;}
@@ -41,8 +58,8 @@ async function boot(){
   $("#portal-recovery-form").addEventListener("submit",async event=>{
     event.preventDefault();
     const password=$("#portal-new-password").value;
-    if(password.length<8){message("#portal-recovery-message","Use a password with at least 8 characters.",true);return;}
-    if(password!==$("#portal-confirm-password").value){message("#portal-recovery-message","The passwords do not match. Please check them and try again.",true);return;}
+    if(password.length<8){passwordFieldError("#portal-new-password","Use at least 8 characters.");return;}
+    if(password!==$("#portal-confirm-password").value){passwordFieldError("#portal-confirm-password","These passwords do not match yet.");return;}
     const button=$("#portal-recovery-form button[type='submit']");
     button.disabled=true;message("#portal-recovery-message","Updating your password…");
     const {error}=await supabase.auth.updateUser({password});
