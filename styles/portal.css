@@ -20,3 +20,13 @@
 
 /* Visible keyboard focus across seller and admin workspaces */
 :where(a,button,input,select,textarea,[tabindex]):focus-visible{outline:3px solid #d96c58;outline-offset:3px}
+
+
+/* Accessible password controls and field-level authentication feedback */
+.password-control{position:relative;display:block;width:100%}
+.portal-shell .password-control input{padding-right:76px}
+.password-toggle{position:absolute;right:7px;top:50%;transform:translateY(-50%);min-width:56px;min-height:36px;padding:6px 9px;border:1px solid #dce5dc;border-radius:7px;background:#f6f8f3;color:#254d47;font-size:11px;font-weight:800;cursor:pointer}
+.password-toggle:hover{background:#e9f0e8}
+.password-field-error{display:block;margin-top:6px;color:#a63f32!important;font-size:11px!important;font-weight:600!important;line-height:1.45}
+.password-field-error[hidden]{display:none!important}
+.portal-shell input[aria-invalid="true"]{border-color:#b94f43;box-shadow:0 0 0 2px #b94f4318}
