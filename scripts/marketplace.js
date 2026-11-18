@@ -38,11 +38,11 @@ document.addEventListener("DOMContentLoaded",()=>{
  const storeHref=p=>"store.html?slug="+encodeURIComponent(p.sellerSlug||p.sellerId||"");
  const sellerLink=p=>p.sellerSlug?'<a class="seller-inline-link" href="'+storeHref(p)+'">Visit '+safe(p.sellerName||"seller")+(p.sellerCountry?' · Seller in '+safe(countryName(p.sellerCountry)):"")+' ↗</a>':"";
  const card=p=>{const saved=wish.includes(p.id),pct=p.was>p.price?Math.round((1-p.price/p.was)*100):0;return '<article class="product-card"><div class="product-visual"><span class="preview-tag">'+(p.isLive?"SELLER LISTING":"PREVIEW · "+pct+"% OFF*")+'</span><button class="wish-button '+(saved?"is-wished":"")+'" data-wish="'+safe(p.id)+'" aria-pressed="'+saved+'" aria-label="'+(saved?"Remove from":"Add to")+' wishlist">'+(saved?"♥":"♡")+'</button><div class="product-image-3d"><img src="'+safe(p.image)+'" alt="'+safe(p.alt||p.name)+'" loading="lazy"></div><span class="product-category">'+safe(p.tag||"PET ESSENTIALS")+'</span></div><div class="product-info"><h3><a href="'+productHref(p)+'">'+safe(p.name)+'</a></h3><p class="product-subline">'+(p.isLive?"Sold by "+safe(p.sellerName||"Marketplace seller"):"Concept listing · Seller to be confirmed")+'</p>'+sellerLink(p)+'<div class="price-row"><strong>'+money(p.price)+'</strong>'+(p.was>p.price?'<del>'+money(p.was)+'</del>':"")+'</div><small class="price-disclaimer">'+(p.isLive?"Seller listing · Preview checkout only":"Illustrative price only")+'</small><button class="add-button" data-add="'+safe(p.id)+'">Add to preview bag <span>＋</span></button><a class="product-open-link" href="'+productHref(p)+'">View details ↗</a></div></article>'};
- const normalizeSearch=value=>String(value||"").normalize("NFKD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase().trim();
+ const normalizeSearch=value=>String(value||"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
  const matches=()=>PRODUCTS.filter(p=>{
   const categoryAliases={food:"food treats nutrition feed kibble",accessories:"accessories toys collars leads play",comfort:"beds bedding comfort cushions",habitats:"habitats aquariums fish tanks aquatic",care:"grooming care hygiene small pets"};
   const searchable=normalizeSearch([p.name,p.category,p.sellerName,p.tag,p.alt,p.description,p.searchTerms,categoryAliases[p.category]||""].join(" "));
-  const terms=normalizeSearch(term).split(/\\s+/).filter(Boolean);
+  const terms=normalizeSearch(term).split(/\s+/).filter(Boolean);
   const searchMatch=terms.every(word=>searchable.includes(word));
   return (filter==="all"||p.category===filter)&&searchMatch&&(!minPrice||p.price>=Number(minPrice))&&(!maxPrice||p.price<=Number(maxPrice));
  });
