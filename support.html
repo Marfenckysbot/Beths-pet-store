@@ -1,86 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Support - Beth's Pet Store</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <nav class="navbar">
-            <a href="index.html" class="logo">Beth's Pet Store</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="community.html">Community</a></li>
-                <li><a href="faqs.html">FAQs</a></li>
-                <li><a href="support.html">Support</a></li>
-                <li><a href="feedback.html">Feedback</a></li>
-            </ul>
-        </nav>
-        <div class="hero" style="background: url('https://source.unsplash.com/1600x900/?support,help') center/cover no-repeat;">
-            <div class="hero-overlay">
-                <div class="hero-content">
-                    <h1>Customer Support</h1>
-                    <p>We are here to help you. Send us a message or reach out through email.</p>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main>
-        <section class="section support-section">
-            <h2>Contact Support</h2>
-            <p>Have a question or concern? Fill out the form below and we will respond as soon as possible.</p>
-            <form name="support" method="POST" action="thank-you.html" data-netlify="true" class="contact-form">
-                <input type="hidden" name="form-name" value="support">
-                <label for="support-name">Name</label>
-                <input type="text" id="support-name" name="name" placeholder="Your Name" required>
-                <label for="support-email">Email</label>
-                <input type="email" id="support-email" name="email" placeholder="Your Email" required>
-                <label for="support-message">Message</label>
-                <textarea id="support-message" name="message" placeholder="Your message..." required></textarea>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-            <p>You can also reach us at <a href="mailto:marfenckys@yahoo.com">marfenckys@yahoo.com</a> or <a href="mailto:bobsmithjulie@gmail.com">bobsmithjulie@gmail.com</a>.</p>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section about">
-                <h3>About Beth's Pet Store</h3>
-                <p>Our team is dedicated to pet lovers. Contact us for any help or feedback.</p>
-            </div>
-            <div class="footer-section links">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="faqs.html">FAQs</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div class="footer-section contact">
-                <h3>Contact</h3>
-                <p>Email: <a href="mailto:marfenckys@yahoo.com">marfenckys@yahoo.com</a></p>
-                <p>Email: <a href="mailto:bobsmithjulie@gmail.com">bobsmithjulie@gmail.com</a></p>
-                <p>Phone: <a href="tel:+15551234567">+1 (555) 123-4567</a></p>
-                <div class="social-icons">
-                    <a href="https://facebook.com/BethsPetStore" target="_blank">Facebook</a> |
-                    <a href="https://instagram.com/BethsPetStore" target="_blank">Instagram</a> |
-                    <a href="https://wa.me/15551234567" target="_blank">WhatsApp</a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; <span id="year"></span> Beth's Pet Store. All rights reserved.
-        </div>
-    </footer>
-    <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
-</body>
-</html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#183d39"><title>Customer Support | Beth's Pet Store</title><meta name="description" content="Send the support team a message about using the marketplace. Do not include passwords, card details or bank credentials."><link rel="icon" href="assets/beths-mark.svg" type="image/svg+xml"><link rel="stylesheet" href="styles/marketplace.css"><script defer src="scripts/marketplace.js"></script><script src="scripts/portal-config.js"></script><script type="module" src="scripts/inquiries.js"></script></head>
+<body><div class="topline"><span>🐾 A happier place for pets and the people who love them</span><span class="topline-right">Global pet marketplace · USD display</span></div>
+<header class="main-header"><a class="brand" href="index.html"><span class="brand-mark">b<span>✦</span></span><span>Beth's <strong>Pet Store</strong><small>HAPPY PETS. HAPPIER LIVES.</small></span></a><a class="seller-top" href="shop.html">Explore marketplace ↗</a></header>
+<nav class="main-nav"><a href="index.html">Home</a><a href="shop.html">Marketplace</a><a href="sell.html">Seller centre</a><a href="care.html">Pet care journal</a><a class="active" href="contact.html">Contact</a></nav>
+<main class="editorial-page"><p class="eyebrow">WE'RE HERE TO HELP</p><h1>Need a hand? Let's talk.</h1><p class="editorial-lede">Send the support team a message about using the marketplace. Do not include passwords, card details or bank credentials.</p>
+<section class="application-panel inquiry-panel"><form data-inquiry-form data-inquiry-category="support">
+<div class="inquiry-grid"><label>Your name<input name="name" type="text" autocomplete="name" minlength="2" maxlength="100" required></label><label>Email address<input name="email" type="email" autocomplete="email" maxlength="254" required></label></div>
+<label>Subject<input name="subject" type="text" minlength="3" maxlength="120" required></label>
+<label>Your message<textarea name="message" rows="6" minlength="20" maxlength="3000" required></textarea><small>20–3,000 characters. Please don't include passwords, payment details or other highly sensitive information.</small></label>
+<div class="inquiry-honeypot" aria-hidden="true"><label>Leave this field empty<input name="company_website" type="text" tabindex="-1" autocomplete="off"></label></div>
+<button class="btn btn-primary" type="submit">Send message ↗</button><p id="inquiry-status" class="form-footnote" aria-live="polite">Messages are stored securely for the marketplace team. We do not currently send automatic email replies.</p>
+</form></section></main>
+<footer class="footer"><div class="footer-bottom"><span>© <span id="year"></span> Beth's Pet Store</span><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="index.html">Home</a></div></footer></body></html>

@@ -1,23 +1,8 @@
-// EDIT: Centralized images and product data
+// Only point to image files that exist in the repository.
+// Product listings are intentionally empty until real sellers and products are approved.
 export const images = {
-  logo: { url: "assets/icons/favicon.svg", alt: "Beth Store logo" }, // EDIT: Logo URL and alt
-  hero_main: { url: "assets/img/placeholder.jpg", alt: "Happy pets and people" }, // EDIT: Hero image
+  logo: { url: "assets/beths-mark.svg", alt: "Beth's Pet Store mark" },
+  hero_main: { url: "images/animals/dog_golden.webp", alt: "Golden retriever" },
 };
 
-export const products = [
-  // EDIT: Add/replace items; priceUSD optional
-  {
-    id: "breed-tibetan-mastiff",
-    title: "Tibetan Mastiff",
-    priceUSD: 3500,
-    img: { url: "assets/img/placeholder.jpg", alt: "Tibetan Mastiff" },
-    summary: "Loyal guardian, calm at home.",
-  },
-  {
-    id: "breed-shiba-inu",
-    title: "Shiba Inu",
-    priceUSD: 1500,
-    img: { url: "assets/img/placeholder.jpg", alt: "Shiba Inu" },
-    summary: "Confident, agile, and charming.",
-  },
-];
+export const products = [];

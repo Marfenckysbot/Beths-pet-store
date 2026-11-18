@@ -1,12 +1,12 @@
-#!/bin/bash
-set -e
-echo "[1] Pulling and preparing..."
-git pull origin main || true
+#!/usr/bin/env bash
+set -euo pipefail
 
-# (existing SEO, images, sitemap steps are kept in your committed script)
-# We'll keep the commit/push behavior but remove the local netlify deploy step.
-git add .
-git commit -m "Auto: prepare updates (no local deploy)" || echo "No changes"
-git push origin main
+cat >&2 <<'NOTICE'
+This legacy deployment helper is intentionally disabled.
 
-echo "[Done] Pushed to GitHub. Netlify will build & deploy from GitHub (remote build)."
+It previously pushed directly to the production "main" branch and/or triggered
+a production Netlify deployment. Use the reviewed GitHub pull-request workflow
+instead. Do not deploy production until the founder explicitly approves it.
+NOTICE
+
+exit 1

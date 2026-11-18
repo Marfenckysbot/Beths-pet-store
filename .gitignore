@@ -1,2 +1,20 @@
 # Local Netlify folder
-.netlify
+.netlify/
+
+# Dependencies and build output
+node_modules/
+dist/
+build/
+
+# Secrets and local environment configuration
+.env
+.env.*
+!.env.example
+
+# Local OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Supabase local development artifacts
+supabase/.temp/

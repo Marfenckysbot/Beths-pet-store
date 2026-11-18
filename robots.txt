@@ -1,3 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://beths-pet-store.netlify.app/sitemap.xml
+Disallow: /seller-thanks.html
+Disallow: /thank-you.html
+
+Sitemap: https://beths-pet-store.vercel.app/sitemap.xml

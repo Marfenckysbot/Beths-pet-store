@@ -1,7 +1,7 @@
-// EDIT: Social/contact channels
+// Add only verified, business-owned contact channels. Empty values keep placeholder links hidden.
 export const social = {
-  whatsapp: "https://wa.me/00000000000", // EDIT: WhatsApp link
-  facebook: "https://facebook.com/bethstore", // EDIT: Facebook page
-  email: "mailto:hello@bethstore.example", // EDIT: Email link
-  phone: "tel:+2340000000000", // EDIT: Telephone link
+  whatsapp: "",
+  facebook: "",
+  email: "",
+  phone: "",
 };
