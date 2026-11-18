@@ -154,3 +154,49 @@ body.reading-open{overflow:hidden}
 @keyframes reading-pop{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:600px){.reading-backdrop{padding:10px;align-items:end}.reading-dialog{max-height:88vh;border-radius:18px 18px 12px 12px;padding:23px 20px}.reading-content{font-size:13px}.read-cue{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.reading-backdrop,.reading-dialog,.pulse-dot,.reading-card:hover .read-cue,.btn:hover,.add-button:hover,.seller-top:hover{animation:none!important;transition:none!important}.reading-card:hover,.reading-card:focus-visible{transform:none}.pulse-dot{box-shadow:0 0 0 5px #ef806b20}}
+
+
+/* Beth's refreshed soft-gallery palette */
+:root{--ink:#30483f;--ink2:#496357;--cream:#fbf8f4;--paper:#fffdfa;--coral:#d99a83;--coral2:#bd806b;--mint:#dce9df;--sage:#edf2eb;--line:#e9e5dd;--muted:#7d8980;--shadow:0 18px 48px #405a4a12}
+body{background:#fbf8f4;color:var(--ink)}
+.topline{background:#e9f0e8;color:#52685c}.topline-right{color:#748579}.topline-right b{color:#c58a74}
+.main-header{background:#fffdfa;border-bottom-color:#e9e5dd}
+.brand-mark{background:#d99a83;box-shadow:0 7px 18px #d99a8330}
+.main-nav{background:#edf2eb;color:#425a4e;border-top:1px solid #e4eae2;border-bottom:1px solid #e4eae2}
+.main-nav a{opacity:1}.main-nav a:hover,.main-nav a.active{color:#bd806b}
+.hero{background:radial-gradient(ellipse at 8% 10%,#fffefa 0,transparent 48%),linear-gradient(135deg,#f8f5ee,#eef3eb 72%,#f7eee8)}
+.quick-values{background:#eaf0e8}
+.seller-feature{background:linear-gradient(120deg,#e8efe7,#f5eee7);color:#30483f}
+.seller-feature .eyebrow{color:#7c8d82}.seller-feature h2 em{color:#bd806b}
+.seller-feature-copy>p:not(.eyebrow){color:#6e7e73}
+.seller-feature-art{color:#a7bbaa;opacity:.45}
+.seller-feature .btn-light{background:#fffdfa;color:#30483f;border:1px solid #e4e5dc}
+.quiz-banner{background:linear-gradient(110deg,#eaf1e9,#f5ece5)}
+.final-cta{background:linear-gradient(110deg,#f0e4d8,#f4e9e0)}
+.preview-ribbon{background:#f4eee5;border-color:#ebe1d5;color:#766f63}
+.shop-hero-pills span{background:#eaf0e8;color:#617568}
+.filter-note,.editorial-disclaimer{background:#edf2eb}
+.tile-food .tile-icon{background:#f6e9dc}.tile-accessories .tile-icon{background:#f5e5e0}.tile-comfort .tile-icon{background:#e6efe6}.tile-habitats .tile-icon{background:#e4eef0}.tile-care .tile-icon{background:#f1eaf0}
+/* Auto-rotating animal gallery */
+.hero-photo.pet-carousel{position:relative;isolation:isolate;display:block;overflow:hidden;border-radius:34px 34px 110px 34px;transform:rotate(1deg);background:#dfe9df;box-shadow:0 28px 70px #435c4b20}
+.pet-slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .9s ease,visibility .9s ease}
+.pet-slide.is-active{opacity:1;visibility:visible;z-index:1}
+.pet-slide>img{width:100%;height:100%;object-fit:cover;object-position:center 42%;transform:scale(1.04);transition:transform 5s ease}
+.pet-slide.is-active>img{transform:scale(1)}
+.pet-slide-illustration{background:radial-gradient(circle at 50% 40%,#e4f1ef,#c9dfda)}
+.pet-slide-illustration>img{object-fit:contain;padding:36px 28px 125px;filter:drop-shadow(0 15px 18px #405a4a1b)}
+.pet-glass-caption{position:absolute;left:18px;right:18px;bottom:58px;padding:17px 20px 16px;border:1px solid #ffffff88;border-radius:18px;background:linear-gradient(110deg,#ffffffd9,#ffffffa8);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 12px 35px #213d3220;color:#30483f;transform:translateY(12px);opacity:0;transition:opacity .5s ease .2s,transform .5s ease .2s}
+.pet-slide.is-active .pet-glass-caption{opacity:1;transform:translateY(0)}
+.pet-glass-caption span,.pet-glass-caption strong,.pet-glass-caption small{display:block}
+.pet-glass-caption span{font-size:8px;font-weight:800;letter-spacing:.18em;color:#a76f5f;margin-bottom:5px}
+.pet-glass-caption strong{font:700 clamp(17px,2vw,22px)/1.2 Manrope,sans-serif;letter-spacing:-.04em}
+.pet-glass-caption small{margin-top:4px;font-size:9px;color:#6f7e74}
+.pet-carousel-controls{position:absolute;z-index:3;left:17px;right:17px;bottom:15px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pet-carousel-arrow{width:31px;height:31px;border:1px solid #ffffffa8;border-radius:50%;background:#ffffffc9;color:#344c42;font-size:22px;line-height:1;backdrop-filter:blur(8px);cursor:pointer;transition:transform .2s,background .2s}
+.pet-carousel-arrow:hover{transform:scale(1.08);background:#fff}
+.pet-carousel-dots{display:flex;align-items:center;gap:7px}
+.pet-carousel-dots button{width:7px;height:7px;padding:0;border:0;border-radius:50%;background:#ffffff9c;box-shadow:0 1px 5px #263d3240;cursor:pointer;transition:width .25s,background .25s}
+.pet-carousel-dots button[aria-current="true"]{width:22px;border-radius:10px;background:#fff}
+.pet-carousel-count{position:absolute;z-index:3;top:16px;right:17px;padding:7px 10px;border:1px solid #ffffff80;border-radius:30px;background:#ffffffb8;backdrop-filter:blur(8px);color:#435a4e;font-size:8px;font-weight:800;letter-spacing:.12em}
+@media(max-width:650px){.hero-photo.pet-carousel{height:350px;min-height:350px;border-radius:26px 26px 75px 26px}.pet-glass-caption{left:12px;right:12px;bottom:55px;padding:14px 15px}.pet-carousel-controls{left:12px;right:12px;bottom:12px}.pet-carousel-count{top:12px;right:12px}.main-nav{background:#edf2eb}}
+@media(prefers-reduced-motion:reduce){.pet-slide,.pet-slide>img,.pet-glass-caption,.pet-carousel-arrow,.pet-carousel-dots button{transition:none!important}.pet-slide>img{transform:none}.pet-glass-caption{transform:none}}
