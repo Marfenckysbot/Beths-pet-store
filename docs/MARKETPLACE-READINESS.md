@@ -73,3 +73,14 @@ Never put a service-role key in browser code or Git. The website uses only the p
 - Regulated veterinary products and live-animal transactions excluded unless their exact legal, welfare, supplier, payment and transport requirements have been cleared.
 
 Until these gates are met, present the site as a pre-launch showcase and enquiry channel, not as a checkout-ready marketplace.
+
+
+
+## Security follow-up — 18 November 2026
+- Founder approved enabling RLS on `private.site_inquiry_rate_limits`.
+- Applied live: `ALTER TABLE private.site_inquiry_rate_limits ENABLE ROW LEVEL SECURITY;`.
+- Verified `relrowsecurity=true`; anon/authenticated have no `private` schema USAGE and no table SELECT/INSERT privileges. `service_role` retains SELECT/INSERT/UPDATE/DELETE and BYPASSRLS. No client-facing RLS policies were added.
+- Verified the actual `public.submit_site_inquiry` SECURITY INVOKER path after enabling RLS: three submissions for a unique synthetic email were accepted, the fourth returned the expected rate-limit exception, and the function's failed fourth attempt did not persist a counter increment.
+- All temporary test inquiry rows and rate-limit rows were deleted; follow-up query confirmed zero leftovers.
+- Supabase security advisor no longer reports the prior critical RLS-disabled finding. It now reports an INFO lint for RLS enabled with no policies (intentional for this private server-only table) and the existing WARN for leaked-password protection, which is unavailable on the current Free plan.
+- Reproducible migration added at `supabase/migrations/20261118125500_enable_rls_private_site_inquiry_rate_limits.sql`. The live SQL was applied directly through the Supabase SQL connection; the migration file records the change for repository/deployment history.
