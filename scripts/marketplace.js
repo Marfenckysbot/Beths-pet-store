@@ -129,4 +129,57 @@ document.addEventListener("DOMContentLoaded",()=>{
   }).catch(()=>showStore(null,[]));
  }
 
+
+ /* Reading pop-ups: editorial cards open in an accessible, mobile-friendly dialog. */
+ const readingCards=[...document.querySelectorAll(".editorial-grid article, .why-list article")];
+ let readingReturnFocus=null;
+ if(readingCards.length){
+  const modal=document.createElement("div");
+  modal.className="reading-backdrop";
+  modal.id="reading-modal";
+  modal.hidden=true;
+  modal.innerHTML='<section class="reading-dialog" role="dialog" aria-modal="true" aria-labelledby="reading-title" tabindex="-1"><button class="reading-close" type="button" aria-label="Close reading window">×</button><p class="eyebrow reading-kicker">BETH’S PET STORE · A CLOSER LOOK</p><h2 id="reading-title"></h2><div class="reading-content"></div><div class="reading-footer"><span>🐾</span><small>Thanks for taking a moment to read with us.</small></div></section>';
+  document.body.append(modal);
+  const dialog=modal.querySelector(".reading-dialog"),title=modal.querySelector("#reading-title"),content=modal.querySelector(".reading-content"),close=modal.querySelector(".reading-close");
+  const closeReading=()=>{if(modal.hidden)return;modal.hidden=true;document.body.classList.remove("reading-open");if(readingReturnFocus?.isConnected)readingReturnFocus.focus();};
+  const openReading=card=>{
+   const heading=card.querySelector("h2,h3,b,strong");
+   title.textContent=heading?.textContent?.trim()||"A little more to know";
+   content.innerHTML=card.innerHTML;
+   content.querySelectorAll(".read-cue").forEach(node=>node.remove());
+   content.querySelectorAll("a,button,input,select,textarea").forEach(node=>node.removeAttribute("tabindex"));
+   readingReturnFocus=card;
+   modal.hidden=false;
+   document.body.classList.add("reading-open");
+   close.focus();
+  };
+  readingCards.forEach(card=>{
+   card.classList.add("reading-card");
+   card.setAttribute("tabindex","0");
+   card.setAttribute("role","button");
+   card.setAttribute("aria-haspopup","dialog");
+   const heading=card.querySelector("h2,h3,b,strong");
+   card.setAttribute("aria-label","Read more: "+(heading?.textContent?.trim()||"information"));
+   if(!card.querySelector(".read-cue")){const cue=document.createElement("span");cue.className="read-cue";cue.textContent="Tap to read more ↗";card.append(cue);}
+   card.addEventListener("click",event=>{
+    if(event.target.closest("a,button,input,select,textarea"))return;
+    openReading(card);
+   });
+   card.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();openReading(card);}});
+  });
+  close.addEventListener("click",closeReading);
+  modal.addEventListener("click",event=>{if(event.target===modal)closeReading();});
+  document.addEventListener("keydown",event=>{
+   if(modal.hidden)return;
+   if(event.key==="Escape"){event.preventDefault();closeReading();return;}
+   if(event.key==="Tab"){
+    const focusable=[...dialog.querySelectorAll('button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(node=>!node.disabled);
+    if(!focusable.length){event.preventDefault();dialog.focus();return;}
+    const first=focusable[0],last=focusable[focusable.length-1];
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+   }
+  });
+ }
+
 });
