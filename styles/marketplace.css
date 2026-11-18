@@ -67,3 +67,39 @@
 .brand:hover .brand-mark{transform:translateY(-1px) rotate(-3deg);box-shadow:0 11px 24px #d96c5848,inset 0 1px 0 #ffffff70}
 .brand-mark{transition:transform .2s,box-shadow .2s}
 @media(max-width:650px){.brand{gap:9px}.brand-mark{width:39px;height:39px;border-radius:14px;font-size:27px}.brand>span:last-child{font-size:15px}.brand small{font-size:7px;letter-spacing:.15em}}
+
+
+/* Beth's discovery refresh: visible mobile search + real pet imagery */
+.hero{
+ background-image:radial-gradient(ellipse at 8% 10%,#fffefa 0,transparent 48%),linear-gradient(135deg,#f8f6efef,#f8f6efc9),url("../images/ui/paw_pattern.webp");
+ background-size:auto,auto,220px 220px;
+ background-repeat:no-repeat,no-repeat,repeat;
+}
+.categories-section{
+ background-image:linear-gradient(180deg,#f8f6ef 0%,#f8f6efed 100%),url("../images/animals/rabbit_white.webp");
+ background-size:cover;
+ background-position:center;
+}
+.category-tile{position:relative;isolation:isolate;background-size:cover;background-position:center;overflow:hidden}
+.category-tile:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#fffefaed 0%,#fffefad9 58%,#fffefaa6 100%);transition:opacity .25s}
+.category-tile:hover:after{opacity:.82}
+.tile-food{background-image:url("../images/products/dogfoodpremium.webp")}
+.tile-accessories{background-image:url("../images/products/colar_red.webp")}
+.tile-comfort{background-image:url("../images/products/petbedround.webp")}
+.tile-habitats{background-image:url("../images/products/fishtankstarter.jpeg")}
+.tile-care{background-image:url("../images/animals/cat_tabby.webp")}
+.seller-feature{background-image:linear-gradient(100deg,#173b38f5 0%,#173b38e8 68%,#173b3899 100%),url("../images/animals/parrot_macaw.webp");background-size:cover;background-position:center 42%}
+.shop-hero{position:relative;isolation:isolate;padding:40px 24px;border-radius:18px;background:linear-gradient(115deg,#f8f6efef 0%,#f8f6efdf 58%,#f8f6efad 100%),url("../images/animals/cat_tabby.webp");background-size:cover;background-position:center 42%}
+.shop-hero:after{content:"";position:absolute;inset:12px;border:1px solid #ffffffa8;border-radius:12px;pointer-events:none;z-index:-1}
+.header-search{position:relative}
+.header-search:focus-within{border-color:#d96c58;box-shadow:0 0 0 4px #d96c5818}
+.header-search button{min-width:54px}
+@media(max-width:650px){
+ .main-header{height:auto;min-height:70px;flex-wrap:wrap;padding:12px 17px 13px;row-gap:10px}
+ .header-search{display:flex;order:3;flex:0 0 100%;width:100%;max-width:none;height:45px;margin:0}
+ .header-search input{font-size:13px;padding-left:16px}
+ .header-search button{width:52px}
+ .main-nav{top:100%}
+ .hero{background-size:auto,auto,150px 150px}
+ .shop-hero{padding:30px 14px}
+}
